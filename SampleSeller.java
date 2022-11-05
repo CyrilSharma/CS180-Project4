@@ -1,4 +1,5 @@
 import java.util.*;
+//sample seller class
 public class SampleSeller extends SampleUser {
 
 

@@ -1,4 +1,5 @@
 import java.util.*;
+//sample user class
 public class SampleUser {
     private String username;
     private ArrayList<String> stores;

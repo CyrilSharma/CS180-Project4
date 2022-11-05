@@ -2,6 +2,7 @@ import java.util.*;
 public class Testing {
     private static final String MENU_MESSAGE = "what do you want to do? \n1. sort stores by alphabetical order \n2. sort stores by alphabetical backwards\n3. sort customers by lowest message sent\n4. sort customers by highest message sent\n5.quit";
     public static void main(String[] args) {
+        //Dashboard testing menu
         Scanner sc = new Scanner(System.in);
         Dashboard dashboard = new Dashboard(new SampleCustomer("user1", null));
         dashboard.readAndUpdate();

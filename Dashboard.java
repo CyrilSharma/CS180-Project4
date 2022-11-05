@@ -3,6 +3,7 @@ import java.util.*;
 import java.io.*;
 import java.util.stream.Collectors;
 
+//dashboard class
 public class Dashboard {
     private final String DATABASE_SECTION_STRING = "---";
     private final String ARRAY_SPLITTER = ":::";

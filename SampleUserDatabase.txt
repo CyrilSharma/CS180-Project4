@@ -1,4 +1,3 @@
-HelloWorld---customer---null
 seller1---seller---store1:::store2:::store3:::store4:::aStore:::zStore:::storeStore
 user1---customer---store1:::store2:::store3:::store4:::storeStore
 seller2---seller---store1:::store2

@@ -1,3 +1,4 @@
+Sample:
 UserDatabase:
 [username]||[customer/seller]||{list of stores}
 

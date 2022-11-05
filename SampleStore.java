@@ -1,4 +1,5 @@
 import java.util.*;
+//sample store class
 public class SampleStore {
     private HashMap<SampleCustomer, Integer> messageSent;
     private HashMap<SampleCustomer, Integer> messageReceived;

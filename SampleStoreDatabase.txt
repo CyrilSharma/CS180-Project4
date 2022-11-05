@@ -5,3 +5,4 @@ store4---seller1---user1;3:::user2;4:::user3;8---user1;1:::user2;4:::user3;9---c
 zStore---seller1---user1;5:::user2;11:::user3;9---user1;7:::user2;2:::user3;8---cs180
 storeStore---seller1---user1;8:::user2;8:::user3;9---user1;3:::user2;4:::user3;7---item
 aStore---seller1---user1;5:::user2;4:::user3;4---user1;3:::user2;4:::user3;7---cs180
+bStore---seller1---user1;5:::user2;4:::user3;4---user1;3:::user2;4:::user3;7---cs180
