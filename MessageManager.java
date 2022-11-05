@@ -5,6 +5,7 @@ import java.time.*;
 public class MessageManager {
 
     private ArrayList<HashMap<String, String>> database;
+
     // Commas are not allowed to be used for usernames or passwords
     // in fact, no special characters are allowed
     // it makes splitting the database complicated
@@ -12,12 +13,14 @@ public class MessageManager {
     private final String BLOCKED_SPLIT_STRING = ",";
     private Random random;
 
+    //Initializes the database and random
     public MessageManager() {
         database = readFromDatabase();
         random = new Random();
     }
 
-    //blocked arraylist contains all the ids of people who are blocked by this customer
+    //Creates a new user and for that to happen, the following parameters are needed
+    //blocked arraylist contains all the ids of people who are blocked by this customer (usernames can be changed, IDs can't) (can be null)
     public void add(String name, String password, Role role, ArrayList<String> blocked) throws InvalidUserException {
         if (get(name) != null) {
             throw new InvalidUserException("That username is already taken");
@@ -46,6 +49,7 @@ public class MessageManager {
         writeToDatabase();
     }
 
+    //Allows you to remove a user from the database, TODO: Sync with removal with the deletion of message history
     public void remove(String name) throws InvalidUserException {
         HashMap<String, String> toBeRemoved = get(name);
         if (toBeRemoved == null) {
@@ -56,7 +60,8 @@ public class MessageManager {
         }
     }
 
-    public void editName(String name, String newName) throws InvalidUserException {
+    //Allows you to edit your username, must enter current username
+    public void setName(String name, String newName) throws InvalidUserException {
         HashMap<String, String> changeInfo = get(name);
         if (changeInfo == null) {
             throw new InvalidUserException("That username does not exist");
@@ -71,7 +76,8 @@ public class MessageManager {
         writeToDatabase();
     }
 
-    public void editPassword(String name, String oldPassword, String newPassword) throws InvalidUserException {
+    //Allows a user to edit their password but must provide their name, old password, and new password
+    public void setPassword(String name, String oldPassword, String newPassword) throws InvalidUserException {
         if (verify(name, oldPassword)) {
             HashMap<String, String> changeInfo = get(name);
             changeInfo.put("password", newPassword);
@@ -81,6 +87,7 @@ public class MessageManager {
         }
     }
 
+    //Sets the time someone was last online to the present moment
     public void setLastOnline(String name) throws InvalidUserException {
         HashMap<String, String> changeInfo = get(name);
         if (changeInfo == null) {
@@ -90,6 +97,7 @@ public class MessageManager {
         writeToDatabase();
     }
 
+    //Adds someone to the blocked list in the database
     public void addBlocked(String name, String usernameToBlock) throws InvalidUserException {
         HashMap<String, String> changeInfo = get(name);
         if (changeInfo == null) {
@@ -100,11 +108,18 @@ public class MessageManager {
             throw new InvalidUserException("The user you want to block does not exist");
         }
         ArrayList<String> blockedUsers = getBlocked(name);
+        if (blockedUsers.size() == 1 && blockedUsers.get(0).equals("null")) {
+            blockedUsers = new ArrayList<String>();
+        }
+        if (blockedUsers.contains(blockedUser.get("id"))) {
+            throw new InvalidUserException("You already blocked that user");
+        }
         blockedUsers.add(blockedUser.get("id"));
         changeInfo.put("blocked", blockedArrayListToString(blockedUsers));
         writeToDatabase();
     }
 
+    //Removes someone from the blocked list
     public void removeBlocked(String name, String usernameToUnblock) throws InvalidUserException {
         HashMap<String, String> changeInfo = get(name);
         if (changeInfo == null) {
@@ -116,12 +131,14 @@ public class MessageManager {
         }
         ArrayList<String> blockedUsers = getBlocked(name);
         if (blockedUsers.remove(blockedUser.get("id"))) {
+            changeInfo.put("blocked", blockedArrayListToString(blockedUsers));
             writeToDatabase();
         } else {
             throw new InvalidUserException("You were not blocking that user");
         }
     }
 
+    // Searches through the database and pulls out a user's information, represented in a HashMap
     private HashMap<String, String> get(String name) {
         for (HashMap<String, String> user : database) {
             if (user.get("username").equals(name)) {
@@ -131,6 +148,7 @@ public class MessageManager {
         return null;
     }
 
+    //Returns a user's username based on their ID
     public String getUsername(String id) {
         for (HashMap<String, String> user : database) {
             if (user.get("id").equals(id)) {
@@ -157,6 +175,7 @@ public class MessageManager {
         return user.get("password");
     }
 
+    //Returns a user's 14-character ID
     public String getID(String username) {
         HashMap<String, String> user = get(username);
         if (user == null) {
@@ -165,14 +184,17 @@ public class MessageManager {
         return user.get("id");
     }
 
-    public String getRole(String username) {
+    //Returns the role a user has (Customer or Seller)
+    public Role getRole(String username) {
         HashMap<String, String> user = get(username);
         if (user == null) {
             return null;
         }
-        return user.get("role");
+        Role role = Role.valueOf(user.get("role"));
+        return role;
     }
 
+    //Gets the instant that someone was last online
     public Instant getLastOnline(String username) {
         HashMap<String, String> user = get(username);
         if (user == null) {
@@ -181,6 +203,7 @@ public class MessageManager {
         return Instant.parse(user.get("lastOnline"));
     }
 
+    //Gets an ArrayList of people blocked from messaging a user
     public ArrayList<String> getBlocked(String username) {
         HashMap<String, String> user = get(username);
         if (user == null) {
@@ -189,6 +212,7 @@ public class MessageManager {
         return blockedStringToArrayList(user.get("blocked"));
     }
 
+    //Converts a string representation of everyone blocked by a user to an ArrayList
     public ArrayList<String> blockedStringToArrayList(String blocked) {
         if (blocked == null || blocked.equals("")) {
             return new ArrayList<String>();
@@ -198,9 +222,10 @@ public class MessageManager {
         return blockedList;
     }
 
+    //Converts an ArrayList of the various people blocked by a user to a string
     public String blockedArrayListToString(ArrayList<String> blockedList) {
         String blocked = "";
-        if (blockedList == null) {
+        if (blockedList.isEmpty()) {
             return null;
         }
         for (String item : blockedList) {
@@ -218,7 +243,7 @@ public class MessageManager {
             while((line = bfr.readLine()) != null) {
                 userList.add(getDatabaseEntry(line));
             }
-            if (userList.size() == 0) {
+            if (userList.isEmpty()) {
                 return new ArrayList<HashMap<String, String>>();
             } else {
                 return userList;
@@ -232,7 +257,7 @@ public class MessageManager {
         }
     }
 
-    //Returns everything in the user database into a HashMap
+    //Returns everything for one user from the database into a HashMap
     private HashMap<String, String> readFromDatabase(String username) {
         try (BufferedReader bfr = new BufferedReader(new FileReader(new File("UserDatabase.txt")))) {
             String line;
@@ -252,15 +277,17 @@ public class MessageManager {
         }
     }
 
+    // Creates a string formatted to the specifications of being added to the database
     private String createFormattedString(String id, String username, String password, String role, String lastOnline, String blocked) {
         return id + DATABASE_SPLIT + username + DATABASE_SPLIT + password + DATABASE_SPLIT + role + DATABASE_SPLIT + lastOnline + DATABASE_SPLIT + blocked;
     }
 
-    //Checks to make sure a string that will go to the database has the right characters
+    //Checks to make sure a string that will go to the database has NO SPECIAL CHARACTERS
     private boolean validate(String str) {
         return str.matches("^[A-Za-z0-9]+$");
     }
 
+    // Returns whether the password given for a user was the correct password
     public boolean verify(String name, String password) throws InvalidUserException {
         String databasePassword = getPassword(name);
         if (databasePassword == null) {
@@ -269,6 +296,7 @@ public class MessageManager {
         return databasePassword.equals(password);
     }
 
+    // Returns a HashMap object by splitting the string from the database
     private HashMap<String, String> getDatabaseEntry(String userString) {
         HashMap<String, String> map = new HashMap<String, String>();
         String[] lineArray = userString.split(DATABASE_SPLIT);
@@ -281,13 +309,14 @@ public class MessageManager {
         return map;
     }
 
+    // Commits everything in the database ArrayList to the file UserDatabase.txt
     private void writeToDatabase() {
         try {
             File file = new File("UserDatabase.txt");
             file.createNewFile();
             PrintWriter pw = new PrintWriter(file);
             String string = "";
-            if (database != null && database.size() > 0){
+            if (database != null && !database.isEmpty()){
                 string = toString();
             }
             pw.write(string.strip());
