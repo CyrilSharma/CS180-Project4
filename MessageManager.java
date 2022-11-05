@@ -2,6 +2,10 @@ import java.io.*;
 import java.util.*;
 import java.time.*;
 
+/*
+ * TODO: ADD INVISIBILITY FOR USERS AGAINST OTHER USERS
+ */
+
 public class MessageManager {
 
     private ArrayList<HashMap<String, String>> database;
@@ -21,6 +25,7 @@ public class MessageManager {
 
     //Creates a new user and for that to happen, the following parameters are needed
     //blocked arraylist contains all the ids of people who are blocked by this customer (usernames can be changed, IDs can't) (can be null)
+    //blocking arraylist contains all the ids of people who are blocking this customer
     public void add(String name, String password, Role role, ArrayList<String> blocked) throws InvalidUserException {
         if (get(name) != null) {
             throw new InvalidUserException("That username is already taken");
@@ -44,7 +49,7 @@ public class MessageManager {
                 }
             }
         } while (get(getUsername(id)) != null);
-        String line = createFormattedString(id, name, password, role.toString(), Instant.now().toString(), blockedArrayListToString(blocked));
+        String line = createFormattedString(id, name, password, role.toString(), Instant.now().toString(), blockArrayListToString(blocked));
         database.add(getDatabaseEntry(line));
         writeToDatabase();
     }
@@ -111,11 +116,11 @@ public class MessageManager {
         if (blockedUsers.size() == 1 && blockedUsers.get(0).equals("null")) {
             blockedUsers = new ArrayList<String>();
         }
-        if (blockedUsers.contains(blockedUser.get("id"))) {
+        if (blockedUsers.contains(getID(usernameToBlock))) {
             throw new InvalidUserException("You already blocked that user");
         }
-        blockedUsers.add(blockedUser.get("id"));
-        changeInfo.put("blocked", blockedArrayListToString(blockedUsers));
+        blockedUsers.add(getID(usernameToBlock));
+        changeInfo.put("blocked", blockArrayListToString(blockedUsers));
         writeToDatabase();
     }
 
@@ -130,8 +135,8 @@ public class MessageManager {
             throw new InvalidUserException("The user you want to unblock does not exist");
         }
         ArrayList<String> blockedUsers = getBlocked(name);
-        if (blockedUsers.remove(blockedUser.get("id"))) {
-            changeInfo.put("blocked", blockedArrayListToString(blockedUsers));
+        if (blockedUsers.remove(getID(usernameToUnblock))) {
+            changeInfo.put("blocked", blockArrayListToString(blockedUsers));
             writeToDatabase();
         } else {
             throw new InvalidUserException("You were not blocking that user");
@@ -209,30 +214,72 @@ public class MessageManager {
         if (user == null) {
             return null;
         }
-        return blockedStringToArrayList(user.get("blocked"));
+        return blockStringToArrayList(user.get("blocked"));
     }
 
     //Converts a string representation of everyone blocked by a user to an ArrayList
-    public ArrayList<String> blockedStringToArrayList(String blocked) {
-        if (blocked == null || blocked.equals("")) {
+    public ArrayList<String> blockStringToArrayList(String block) {
+        if (block == null || block.equals("") || block.equals("null")) {
             return new ArrayList<String>();
         }
         ArrayList<String> blockedList = new ArrayList<String>();
-        blockedList.addAll(Arrays.asList(blocked.split(BLOCKED_SPLIT_STRING)));
+        blockedList.addAll(Arrays.asList(block.split(BLOCKED_SPLIT_STRING)));
         return blockedList;
     }
 
     //Converts an ArrayList of the various people blocked by a user to a string
-    public String blockedArrayListToString(ArrayList<String> blockedList) {
+    public String blockArrayListToString(ArrayList<String> blockList) {
         String blocked = "";
-        if (blockedList.isEmpty()) {
+        if (blockList == null || blockList.isEmpty()) {
             return null;
         }
-        for (String item : blockedList) {
+        for (String item : blockList) {
             blocked += item + BLOCKED_SPLIT_STRING;
         }
         blocked = blocked.substring(0, blocked.lastIndexOf(BLOCKED_SPLIT_STRING));
         return blocked;
+    }
+
+    //Returns the names of all the customers a user can talk to
+    public ArrayList<String> getCustomerNames(String name) throws InvalidUserException {
+        if (get(name) == null) {
+            throw new InvalidUserException("That name does not exist");
+        }
+        if (getRole(name) == Role.Customer) {
+            throw new InvalidUserException("Customers cannot see the names of other customers");
+        }
+        ArrayList<String> customerNames = getUserNames(true);
+        if (customerNames.isEmpty()) {
+            return null;
+        }
+        for (int i = customerNames.size() - 1; i >= 0; i--) {
+            String names = customerNames.get(i);
+            if (getBlocked(names).contains(getID(name))) {
+                customerNames.remove(i);
+            }
+        }
+        return customerNames;
+    }
+
+    //Gets all the sellers a customer can see
+    public ArrayList<String> getSellerNames(String name) throws InvalidUserException {
+        if (get(name) == null) {
+            throw new InvalidUserException("That name does not exist");
+        }
+        if (getRole(name) == Role.Seller) {
+            throw new InvalidUserException("Sellers cannot see the names of other sellers");
+        }
+        ArrayList<String> sellerNames = getUserNames(false);
+        if (sellerNames.isEmpty()) {
+            return null;
+        }
+        for (int i = sellerNames.size() - 1; i >= 0; i--) {
+            String names = sellerNames.get(i);
+            if (getBlocked(names).contains(getID(name))) {
+                sellerNames.remove(i);
+            }
+        }
+        return sellerNames;
     }
 
     //Returns everything in the user database into an arraylist of HashMaps
@@ -275,6 +322,22 @@ public class MessageManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private ArrayList<String> getUserNames(boolean customer) {
+        ArrayList<String> userNames = new ArrayList<String>();
+        if (database.isEmpty()) {
+            return userNames;
+        }
+        for (HashMap<String, String> user : database) {
+            String name = user.get("username");
+            if (customer && getRole(name) == Role.Customer) {
+                userNames.add(name);
+            } else if (!customer && getRole(name) == Role.Seller) {
+                userNames.add(name);
+            }
+        }
+        return userNames;
     }
 
     // Creates a string formatted to the specifications of being added to the database
@@ -337,5 +400,9 @@ public class MessageManager {
             string += createFormattedString(userInfo.get("id"), userInfo.get("username"), userInfo.get("password"), userInfo.get("role"), userInfo.get("lastOnline"), userInfo.get("blocked")) + "\n";
         }
         return string;
+    }
+
+    public void messageUser(String username, String usernameToSendMessageTo, String message) {
+        //TODO: Implement messageUser
     }
 }
