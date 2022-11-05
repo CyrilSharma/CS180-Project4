@@ -1,0 +1,7 @@
+store1---seller1---user1;8:::user2;8:::user3;9---user1;3:::user2;4:::user3;7---item
+store2---seller1---user1;2:::user2;7:::user3;2---user1;7:::user2;5:::user3;7---nohello
+store3---seller1---user1;1:::user2;9:::user3;3---user1;3:::user2;6:::user3;2---world
+store4---seller1---user1;3:::user2;4:::user3;8---user1;1:::user2;4:::user3;9---cs180
+zStore---seller1---user1;5:::user2;11:::user3;9---user1;7:::user2;2:::user3;8---cs180
+storeStore---seller1---user1;8:::user2;8:::user3;9---user1;3:::user2;4:::user3;7---item
+aStore---seller1---user1;5:::user2;4:::user3;4---user1;3:::user2;4:::user3;7---cs180

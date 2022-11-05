@@ -1,0 +1,6 @@
+UserDatabase:
+[username]||[customer/seller]||{list of stores}
+
+StoreDatabase:
+[name]||{list of users + # messages received}||{list of users + # messages sent}||[most common word]
+
