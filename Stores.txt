@@ -1,0 +1,6 @@
+BestBuy
+Costco
+Amazon
+Target
+Walmart
+GameStop
