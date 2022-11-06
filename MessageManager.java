@@ -12,9 +12,12 @@ public class MessageManager {
 
     //Returns the names of all the customers a user can talk to
     public ArrayList<String> getNames(String type) throws InvalidUserException {
+        ArrayList<HashMap<String, String>> results = db.getSelection("role", type);
         ArrayList<String> names = new ArrayList<String>();
-        // TODO: reimplement this, maybe make a filter function on the databse?
-        return null;
+        for (HashMap<String, String> result: results) {
+            names.add(result.get("username"));
+        }
+        return names;
     }
 
     public void messageUser(String username, String usernameToSendMessageTo, String message) {

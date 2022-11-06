@@ -61,6 +61,16 @@ public class Database {
         return map;
     }
 
+    public ArrayList<HashMap<String, String>> getSelection(String key, String criteria) {
+        ArrayList<HashMap<String, String>> results = new ArrayList<HashMap<String, String>>();
+        for (HashMap<String, String> entry: database) {
+            if (entry.get(key) == criteria || criteria.equals("all")) {
+                results.add(entry);
+            }
+        }
+        return results;
+    }
+
     public void add(String name, String password, Role role) throws InvalidUserException {
         if (get("username", name) != null) {
             throw new InvalidUserException("That username is already taken");
