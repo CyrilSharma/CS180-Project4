@@ -14,6 +14,7 @@ public class Seller {
         this.name = name;
         stores = new ArrayList<>();
     }
+    //Sellers can add stores to stores.txt file
     public void addStore(String store) {
         try {
             File f = new File("stores.txt");
@@ -27,6 +28,7 @@ public class Seller {
             throw new RuntimeException(e);
         }
     }
+    //Sellers can see who they can send messages to
     public void viewCustomers() throws InvalidUserException {
         MessageManager manager = new MessageManager();
         ArrayList<String> customers = manager.getNames("Customer");
@@ -38,7 +40,7 @@ public class Seller {
     public ArrayList<String> getStores() {
         return this.stores;
     }
-
+// Sellers can choose a customer to send a message to
     public void selectCustomer(String username, String message) throws InvalidUserException {
         MessageManager manager = new MessageManager();
         ArrayList<String> customers = manager.getNames("Customer");

@@ -8,6 +8,7 @@ public class Customer {
         db = new Database("UserDatabase.txt");
         this.name = name;
     }
+    //Customer can see who they can send messages to
     public void viewSellers() throws InvalidUserException, IOException {
         MessageManager manager = new MessageManager();
         BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
@@ -16,6 +17,7 @@ public class Customer {
             System.out.println(line);
         }
     }
+    //Customer can choose and send message to someone
     public void selectSeller(String username, String message) throws InvalidUserException, IOException {
         MessageManager manager = new MessageManager();
         ArrayList<String> sellers = new ArrayList<String>();
