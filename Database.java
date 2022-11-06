@@ -132,8 +132,18 @@ public class Database {
         return null;
     }
 
-    public void modify(String username, String key, String val) throws InvalidUserException {
-        // TODO: exclude invalid keys.
+    public void modify(String username, String key, String val) throws InvalidUserException,
+        InvalidKeyException {
+        boolean keyExists = false;
+        for (String k: KEYS) {
+            if (k == key) {
+                keyExists = true;
+            }
+        }
+        if (!keyExists) {
+            throw new InvalidKeyException(String.format("Invalid Key: {%s}", key));
+        }
+
         for (int i = 0; i < database.size(); i++) {
             HashMap<String, String> user = database.get(i);
             if (user.get("username").equals(username)) {
