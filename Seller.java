@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Seller {
-    String name;
+    private String name;
+    private ArrayList<String> stores;
     private Database db;
     public Seller(String name) {
         db = new Database("UserDatabase.txt");
         this.name = name;
+        stores = new ArrayList<>();
     }
     public void addStore(String store) {
         try {
@@ -18,6 +20,7 @@ public class Seller {
             FileOutputStream fos = new FileOutputStream(f, false);
             PrintWriter pw = new PrintWriter(fos);
             pw.write(store);
+            stores.add(store);
             pw.close();
 
         } catch (IOException e) {
@@ -30,6 +33,10 @@ public class Seller {
         for(String customer: customers) {
             System.out.println(customer);
         }
+    }
+
+    public ArrayList<String> getStores() {
+        return this.stores;
     }
 
     public void selectCustomer(String username, String message) throws InvalidUserException {
