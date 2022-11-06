@@ -8,16 +8,22 @@ public class Customer {
         db = new Database("UserDatabase.txt");
         this.name = name;
     }
-    public void viewSellers() throws InvalidUserException {
+    public void viewSellers() throws InvalidUserException, IOException {
         MessageManager manager = new MessageManager();
-        ArrayList<String> sellers = manager.getNames("Seller");
-        for (String seller: sellers) {
-            System.out.println(seller);
+        BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
+        String line = br.readLine();
+        while(line != null) {
+            System.out.println(line);
         }
     }
-    public void selectSeller(String username, String message) throws InvalidUserException {
+    public void selectSeller(String username, String message) throws InvalidUserException, IOException {
         MessageManager manager = new MessageManager();
-        ArrayList<String> sellers = manager.getNames("Seller");
+        ArrayList<String> sellers = new ArrayList<String>();
+        BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
+        String line = br.readLine();
+        while(line != null) {
+            sellers.add(line);
+        }
         for (String seller: sellers) {
             if (seller.equals(username)) {
                 manager.messageUser(this.name, username, message);

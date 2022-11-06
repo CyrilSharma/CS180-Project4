@@ -22,13 +22,14 @@ public class MessageManager {
 
     public void messageUser(String username, String usernameToSendMessageTo, String message) {
         //TODO: Implement messageUser
+
     }
 
     public void editMessage(String username, String usernameToSendMessageTo, String newMessage) {
-
+        //TODO
     }
     public void deleteMessage(String username, String usernameToSendMessageTo, String message) {
-
+        //TODO
     }
 
 }
