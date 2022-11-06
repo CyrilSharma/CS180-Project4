@@ -25,7 +25,7 @@ public class Test {
         try {
             // NOTE. This will eventually have to be replaced with IDs since names are not unique.
             db.modify("Cyril", "username", "Qyril");
-        } catch (InvalidUserException e) {
+        } catch (Exception e) {
             System.out.println("Test 3 Failed.");
         }
 
@@ -33,8 +33,13 @@ public class Test {
         if (!db.verify("Qyril", "password")) {
             System.out.println("Test 4 Failed.");
         }
-        
 
+        try {
+            // NOTE. This will eventually have to be replaced with IDs since names are not unique.
+            db.modify("Cyril", "name", "Qyril");
+            System.out.println("Test 5 Failed.");
+        } catch (Exception e) {}
+    
         System.out.println(db);
     }
 }
