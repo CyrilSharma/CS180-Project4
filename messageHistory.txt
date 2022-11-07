@@ -1,0 +1,11 @@
+Customer-Seller
+(MessageNumber)<TimeStamp>Sender: ""
+(MessageNumber)<TimeStamp>Sender: ""
+(MessageNumber)<TimeStamp>Sender: ""
+-
+Customer-Seller
+(MessageNumber)<TimeStamp>Sender: ""
+(MessageNumber)<TimeStamp>Sender: ""
+(MessageNumber)<TimeStamp>Sender: ""
+(MessageNumber)<TimeStamp>Sender: ""
+(MessageNumber)<TimeStamp>Sender: ""

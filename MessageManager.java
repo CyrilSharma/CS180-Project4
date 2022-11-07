@@ -19,40 +19,45 @@ public class MessageManager {
         }
         return names;
     }
-
-    public void messageUser(String username, String usernameToSendMessageTo, String message) throws IOException {
+    public void getPersonalHistory(String username) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("messageHistory.txt"));
+        PrintWriter pw = new PrintWriter(new FileWriter("messageHistory.txt"), false);
+        ArrayList<String> history = new ArrayList<String>();
+        ArrayList<String> personal = new ArrayList<String>();
+        String line = br.readLine();
+        while (line != null) {
+            history.add(line);
+            br.readLine();
+        }
+        for (int i = 0; i < history.size(); i++) {
+            if (history.get(i).contains(username)) {
+                ///need to figure out how to grab entire (multiline) message
+            }
+        }
+    }
+    public void messageUser(String sender, String recipient, String message) throws IOException {
         //TODO: Implement messageUser
-        BufferedReader customerReader = new BufferedReader(new FileReader("messageHistoryCustomer.txt"));
-        BufferedReader sellerReader = new BufferedReader(new FileReader("messageHistorySeller.txt"));
-        PrintWriter customerWriter = new PrintWriter(new FileWriter("messageHistoryCustomer.txt"), false);
-        PrintWriter sellerWriter = new PrintWriter(new FileWriter("messageHistorySeller.txt"), false);
-//        ArrayList<String> fileContents = new ArrayList<>();
-//
-//        String line = customerReader.readLine();
-//        while (true) {
-//            fileContents.add(line);
-//            if (line == null) {
-//                break;
-//            }
-//            line = customerReader.readLine();
-//        }
-//        boolean exists = false;
-//        for (String messageExists : fileContents) {
-//            if (messageExists.contains(username + "-" + usernameToSendMessageTo)) {
-//                exists = true;
-//            }
-//        }
-//        customerWriter.println(username + "-" + usernameToSendMessageTo);
-
+        BufferedReader br = new BufferedReader(new FileReader("messageHistory.txt"));
+        PrintWriter pw = new PrintWriter(new FileWriter("messageHistory.txt"), false);
+        ArrayList<String> history = new ArrayList<String>();
+        String line = br.readLine();
+        while (line != null) {
+            history.add(line);
+            br.readLine();
+        }
 
     }
 
-    public void editMessage(String username, String usernameToSendMessageTo, String newMessage) {
+    public void editMessage(String username, String usernameToSendMessageTo, int messageNum, String newMessage) {
         //TODO
+        //find message in txt file
+        //replace with newMessage
 
     }
     public void deleteMessage(String username, String usernameToSendMessageTo, String message) {
         //TODO
+        //find message in the txt file
+        //replace message with "Message deleted"
     }
 
 }
