@@ -1,0 +1,14 @@
+CustomerName-SellerName
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+CustomerName-SellerName
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+(messageNumber) [TimeStamp]Sender: message
+CustomerName-SellerName
+...

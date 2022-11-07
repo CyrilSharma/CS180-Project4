@@ -41,7 +41,7 @@ public class Seller {
         return this.stores;
     }
 // Sellers can choose a customer to send a message to
-    public void selectCustomer(String username, String message) throws InvalidUserException {
+    public void selectCustomer(String username, String message) throws InvalidUserException, IOException {
         MessageManager manager = new MessageManager();
         ArrayList<String> customers = manager.getNames("Customer");
         for (String customer : customers) {
