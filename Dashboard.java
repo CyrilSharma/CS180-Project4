@@ -15,27 +15,27 @@ public class Dashboard {
     private Seller userSeller;
     private Customer userCustomer;
     private Role role;
-    private String username;
+    private String email;
     private HashMap<String, String> userdata;
 
     private File textDatabase;
 
-    public Dashboard(String username, String msgDatabaseLocation) {
-        this.username = username;
-        Database database = new Database("TestDatabase.txt");
-        loadUserFromDatabase(username, database);
+    public Dashboard(String email, String msgDatabaseLocation) {
+        this.email = email;
+        Database database = new Database("UserDatabase.txt");
+        loadUserFromDatabase(email, database);
         textDatabase = new File(msgDatabaseLocation);
         allConversations = new ArrayList<>();
         myConversations = new ArrayList<>();
     }
 
-    private void loadUserFromDatabase(String username, Database database) {
-        HashMap<String, String> map = database.get("username", username);
+    private void loadUserFromDatabase(String email, Database database) {
+        HashMap<String, String> map = database.get("email", email);
         if (map.get("role").equals("Seller")) {
-            //userSeller = new Seller(username);
+            //userSeller = new Seller(email);
             role = Role.Seller;
         } else if (map.get("role").equals("Customer")){
-            //userCustomer = new Customer(username);
+            //userCustomer = new Customer(email);
             role = Role.Customer;
         } else {
             System.out.println("DATABASE ERROR");
@@ -50,7 +50,7 @@ public class Dashboard {
         int customerSent = 0;
         int sellerSent = 0;
         for (String[] msg: conversation) {
-            if (msg[0].equals(username)) {
+            if (msg[0].equals(email)) {
                 if (role == Role.Customer) {
                     customerSent++;
                 } else {
@@ -70,22 +70,30 @@ public class Dashboard {
     }
 
     public String getOtherName(ArrayList<String[]> conversation) {
-        //TODO: fix this with msg id in case other person doesn't send any msg
         String name = "";
-        for (String[] msg: conversation) {
-            if (!msg[0].equals(username)) {
-                name = msg[0];
-            }
+        if (conversation.get(0)[0].equals(email)) {
+            name = conversation.get(0)[1];
+        } else {
+            name = conversation.get(0)[0];
         }
         return name;
     }
 
+    public String removeSpecialChar(String word) {
+        String result = "";
+        for (int i = 0; i < word.length(); i++) {
+            if (word.charAt(i) > 64 && word.charAt(i) <= 122) {
+                result = result + word.charAt(i);
+            }
+        }
+        return result;
+    }
     public String findMostCommonWord(ArrayList<String[]> conversation) {
-        //TODO: replace special characters with ""
         HashMap<String, Integer> map = new HashMap<>();
         for (String[] msg: conversation) {
             String[] words = msg[1].split(" ");
             for (String word: words) {
+                word = removeSpecialChar(word);
                 if (map.containsKey(word)) {
                     map.put(word, map.get(word) + 1);
                 } else {
@@ -134,9 +142,10 @@ public class Dashboard {
                 if (line == null) {
                     break;
                 }
-                String[] users = line.split(USER_SPLIT_STRING);
-                line = bfr.readLine();
                 ArrayList<String[]> conversation = new ArrayList<>();
+                String[] users = line.split(USER_SPLIT_STRING);
+                conversation.add(users);
+                line = bfr.readLine();
                 if (line == null) {
                     break;
                 }
@@ -155,7 +164,7 @@ public class Dashboard {
                     }
                 }
                 allConversations.add(conversation);
-                if (users[0].equals(username) || users[1].equals(username)) {
+                if (users[0].equals(email) || users[1].equals(email)) {
                     myConversations.add(conversation);
                 }
             }
@@ -206,11 +215,27 @@ public class Dashboard {
 
     public void printConversation() {
         for (ArrayList<String[]> conversation: allConversations) {
-            for (String[] message: conversation) {
-                System.out.println(message[0] + ": " + message[1]);
+            for (int i = 0; i < conversation.size(); i++) {
+                if (i == 0) {
+                    System.out.println(conversation.get(i)[0] + "-" + conversation.get(i)[1]);
+                } else {
+                    System.out.println(conversation.get(i)[0] + ": " + conversation.get(i)[1]);
+                }
             }
             System.out.println("-----divider-----");
         }
+    }
+    public void sortByAlphabet() {
+
+    }
+    public void sortByAlphabetInverse() {
+
+    }
+    public void sortByHighestReceived() {
+
+    }
+    public void sortByLowestReceived() {
+
     }
 
 

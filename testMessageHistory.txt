@@ -3,9 +3,9 @@ John-Thomas
 (MessageNumber)<TimeStamp>Thomas: "Hi"
 (MessageNumber)<TimeStamp>John: "Can I buy a new computer?"
 -
-Daniel-Alex
-(MessageNumber)<TimeStamp>Daniel: "Is there new microwave?"
-(MessageNumber)<TimeStamp>Alex: "Yes"
-(MessageNumber)<TimeStamp>Daniel: "How much is it?"
-(MessageNumber)<TimeStamp>Daniel: "it is a thousand dollars"
-(MessageNumber)<TimeStamp>Alex: "okay"
+Jacob@gmail.com-Alex
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
+(MessageNumber)<TimeStamp>Alex: "Yes it?"
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "How much is it?"
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "it is a thousand dollars"
+(MessageNumber)<TimeStamp>Alex: "okay it"
