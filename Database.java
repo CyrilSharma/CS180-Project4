@@ -18,7 +18,7 @@ public class Database {
     private String databasePath;
     private ArrayList<HashMap<String, String>> database;
     private final String DATABASE_SPLIT = "###";
-    private final String[] KEYS = {"id", "username", "password", "role", "lastOnline", "blocked"};
+    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked"};
     private final String BLOCKED_SPLIT_STRING = ",";
     private Random random;
 
@@ -52,12 +52,12 @@ public class Database {
     private HashMap<String, String> getDatabaseEntry(String userString) {
         HashMap<String, String> map = new HashMap<String, String>();
         String[] lineArray = userString.split(DATABASE_SPLIT);
-        map.put("id", lineArray[0]);
-        map.put("username", lineArray[1]);
-        map.put("password", lineArray[2]);
-        map.put("role", lineArray[3]);
-        map.put("lastOnline", lineArray[4]);
-        map.put("blocked", lineArray[5]);
+        map.put(KEYS[0], lineArray[0]);
+        map.put(KEYS[1], lineArray[1]);
+        map.put(KEYS[2], lineArray[2]);
+        map.put(KEYS[3], lineArray[3]);
+        map.put(KEYS[4], lineArray[4]);
+        map.put(KEYS[5], lineArray[5]);
         return map;
     }
 
@@ -72,11 +72,11 @@ public class Database {
     }
 
     public void add(String name, String password, Role role) throws InvalidUserException {
-        if (get("username", name) != null) {
-            throw new InvalidUserException("That username is already taken");
-        } else if (!validate(name)) {
-            throw new InvalidUserException("Your username cannot include special characters");
-        } else if (!validate(password)) {
+        if (get("email", name) != null) {
+            throw new InvalidUserException("That email is already registered");
+        } else if (!validate(name, KEYS[1])) {
+            throw new InvalidUserException("Your email cannot include special characters");
+        } else if (!validate(password, KEYS[2])) {
             throw new InvalidUserException("Your password cannot include special characters");
         }
         String id = "";
@@ -89,22 +89,24 @@ public class Database {
         String[] tokens = {id, name, password, role.toString(), Instant.now().toString(), "null"};
         String line = String.join(DATABASE_SPLIT, tokens);
         database.add(getDatabaseEntry(line));
+        save();
     }
 
     public void remove(String name) throws InvalidUserException {
-        HashMap<String, String> toBeRemoved = get("username", name);
+        HashMap<String, String> toBeRemoved = get("email", name);
         if (toBeRemoved == null) {
-            throw new InvalidUserException("That username does not exist");
+            throw new InvalidUserException("That email does not exist");
         }
         database.remove(toBeRemoved);
+        save();
     }
 
-    public void block(String name, String usernameToBlock) throws InvalidUserException {
-        HashMap<String, String> changeInfo = get("username", name);
+    public void block(String name, String emailToBlock) throws InvalidUserException {
+        HashMap<String, String> changeInfo = get("email", name);
         if (changeInfo == null) {
-            throw new InvalidUserException("That username does not exist");
+            throw new InvalidUserException("That email does not exist");
         }
-        HashMap<String, String> blockedUser = get("username", usernameToBlock);
+        HashMap<String, String> blockedUser = get("email", emailToBlock);
         if (blockedUser == null) {
             throw new InvalidUserException("The user you want to block does not exist");
         }
@@ -120,11 +122,12 @@ public class Database {
         }
         blockedUsers.add(blockedUser.get("id"));
         changeInfo.put("blocked", String.join(",", blockedUsers));
+        save();
     }
 
     // Returns whether the password given for a user was the correct password
     public boolean verify(String name, String password) {
-        HashMap<String, String> user = get("username", name);
+        HashMap<String, String> user = get("email", name);
         if (user != null) {
             String databasePassword = user.get("password");
             return databasePassword.equals(password);
@@ -142,12 +145,13 @@ public class Database {
         return null;
     }
 
-    public void modify(String username, String key, String val) throws InvalidUserException,
+    public void modify(String email, String key, String val) throws InvalidUserException,
         InvalidKeyException {
         boolean keyExists = false;
         for (String k: KEYS) {
             if (k == key) {
                 keyExists = true;
+                break;
             }
         }
         if (!keyExists) {
@@ -156,9 +160,10 @@ public class Database {
 
         for (int i = 0; i < database.size(); i++) {
             HashMap<String, String> user = database.get(i);
-            if (user.get("username").equals(username)) {
+            if (user.get("email").equals(email)) {
                 user.put(key, val);
                 database.set(i, user);
+                save();
                 return;
             }
         }
@@ -166,8 +171,16 @@ public class Database {
     }
 
     //Checks to make sure a string that will go to the database has NO SPECIAL CHARACTERS
-    private boolean validate(String str) {
-        return str.matches("^[A-Za-z0-9]+$");
+    private boolean validate(String str, String key) {
+        if (key == KEYS[1]) {
+            return str.matches("^[A-Za-z0-9\\-\\._]{1,64}[^.]@[A-Za-z0-9]+\\.[a-z]{3}$");
+        }
+        else if (key == KEYS[2]) {
+            return str.matches("^[A-Za-z0-9]+$");
+        }
+        else {
+            return true;
+        }
     }
 
     public void save() {
