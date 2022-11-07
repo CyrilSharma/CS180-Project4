@@ -118,14 +118,14 @@ public class Dashboard {
                 int[] data = getMessageData(conv);
                 System.out.printf("Seller name: %s\n", getOtherName(conv));
                 System.out.printf("Message Sent: %d\n", data[0]);
-                System.out.printf("Message Received: %d\n", data[1]);
+                System.out.printf("Message Received: %d\n\n", data[1]);
             }
         } else {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
                 System.out.printf("Customer name: %s\n", getOtherName(conv));
                 System.out.printf("Message Received: %d\n", data[0]);
-                System.out.printf("Most Common Word: %s\n", findMostCommonWord(conv));
+                System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
             }
         }
 
@@ -189,9 +189,9 @@ public class Dashboard {
         String SORT_MESSAGE = "How do you want to sort? " +
                 "\n1. sort by alphabetical order " +
                 "\n2. sort by alphabetical backwards" +
-                "\n3. sort by lowest message sent" +
-                "\n4. sort by highest message sent" +
-                "\n5.quit";
+                "\n3. sort by lowest message received" +
+                "\n4. sort by highest message received" +
+                "\n5. go back to previous menu";
         String ERROR_MSG = "Please enter a valid number";
         boolean ongoing = true;
         while (ongoing) {
@@ -202,6 +202,33 @@ public class Dashboard {
                 case "1":
                     break;
                 case "2":
+                    boolean ongoing2 = true;
+                    while (ongoing2) {
+                        System.out.println(SORT_MESSAGE);
+                        String option1 = sc.nextLine();
+                        switch (option1) {
+                            case "1":
+                                sortByAlphabet(2);
+                                printMyStatistic();
+                                break;
+                            case "2":
+                                sortByAlphabetInverse(2);
+                                printMyStatistic();
+                                break;
+                            case "3":
+                                sortByLowestReceived();
+                                printMyStatistic();
+                                break;
+                            case "4":
+                                sortByHighestReceived();
+                                printMyStatistic();
+                                break;
+                            case "5":
+                                ongoing2 = false;
+                                break;
+                            default:
+                        }
+                    }
                     break;
                 case "3":
                     ongoing = false;
@@ -225,17 +252,101 @@ public class Dashboard {
             System.out.println("-----divider-----");
         }
     }
-    public void sortByAlphabet() {
+    //option 1 = sort store, 2 = sort other users
+    public void sortByAlphabet(int option) {
+        //TODO ADD IMPLEMENTATION FOR STORE
+        ArrayList<String> sortedList = new ArrayList<>();
+        if (option == 1) {
 
+        } else {
+            if (role == Role.Seller) {
+                for (ArrayList<String[]> conversation: myConversations) {
+                    sortedList.add(conversation.get(0)[0]);
+                }
+            } else {
+                for (ArrayList<String[]> conversation: myConversations) {
+                    sortedList.add(conversation.get(0)[1]);
+                }
+            }
+        }
+        Collections.sort(sortedList);
+        ArrayList<ArrayList<String[]>> temp = new ArrayList<>();
+        for (String user: sortedList) {
+            for (ArrayList<String[]> conversation: myConversations) {
+                if (role == Role.Seller) {
+                    if (conversation.get(0)[0].equals(user)) {
+                        temp.add(conversation);
+                        break;
+                    }
+                } else {
+                    if (conversation.get(0)[1].equals(user)) {
+                        temp.add(conversation);
+                    }
+                }
+            }
+        }
+        myConversations = temp;
     }
-    public void sortByAlphabetInverse() {
-
+    public void sortByAlphabetInverse(int option) {
+        sortByAlphabet(option);
+        Collections.reverse(myConversations);
+    }
+    public int getMessageSent(ArrayList<String[]> conversation) {
+        int count = 0;
+        for (int i = 1; i < conversation.size(); i++) {
+            if (!conversation.get(i)[0].equals(email)) {
+                count++;
+            }
+        }
+        return count;
     }
     public void sortByHighestReceived() {
-
+        ArrayList<String> users = new ArrayList<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        for (ArrayList<String[]> conversation: myConversations) {
+            int sent = getMessageSent(conversation);
+            String otherEmail = getOtherName(conversation);
+            if (map.size() == 0) {
+                map.put(otherEmail, sent);
+                users.add(otherEmail);
+            } else {
+                int index = 0;
+                int size = map.size();
+                for (String email: map.keySet()) {
+                    if (sent > map.get(email)) {
+                        map.put(otherEmail, sent);
+                        users.add(index, otherEmail);
+                        break;
+                    }
+                    if (index == size - 1) {
+                        map.put(otherEmail,sent);
+                        users.add(otherEmail);
+                    }
+                    index++;
+                }
+            }
+        }
+        ArrayList<ArrayList<String[]>> temp = new ArrayList<>();
+        for (String user: users) {
+            for (ArrayList<String[]> conversation: myConversations) {
+                if (role == Role.Seller) {
+                    if (conversation.get(0)[0].equals(user)) {
+                        temp.add(conversation);
+                        break;
+                    }
+                } else {
+                    if (conversation.get(0)[1].equals(user)) {
+                        temp.add(conversation);
+                        break;
+                    }
+                }
+            }
+        }
+        myConversations = temp;
     }
     public void sortByLowestReceived() {
-
+        sortByHighestReceived();
+        Collections.reverse(myConversations);
     }
 
 

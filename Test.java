@@ -40,11 +40,11 @@ public class Test {
             db.modify("Cyril", "name", "Qyril");
             System.out.println("Test 5 Failed.");
         } catch (Exception e) {}
-    
-        System.out.println(db);
-        Dashboard dashboard = new Dashboard("Daniel", "testMessageHistory.txt");
+
+        Dashboard dashboard = new Dashboard("Jacob@gmail.com", "testMessageHistory.txt");
         dashboard.readDatabase();
         //dashboard.printConversation();
         dashboard.printMyStatistic();
+        //dashboard.presentDashboard();
     }
 }

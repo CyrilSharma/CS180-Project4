@@ -9,3 +9,20 @@ Jacob@gmail.com-Alex
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "How much is it?"
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "it is a thousand dollars"
 (MessageNumber)<TimeStamp>Alex: "okay it"
+-
+Jacob@gmail.com-Rick
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "I need a new one"
+(MessageNumber)<TimeStamp>Rick: "no sorry"
+-
+Jacob@gmail.com-Sasha
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
+(MessageNumber)<TimeStamp>Sasha: "Yes"
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "How much is it?"
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "I need it to be cheap"
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "is it under a thousand dollars?"
+(MessageNumber)<TimeStamp>Sasha: "Yes"
+(MessageNumber)<TimeStamp>Sasha: "It's 500 dollars"
+-
+Jacob@gmail.com-Bill
+(MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
