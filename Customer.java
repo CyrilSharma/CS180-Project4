@@ -32,7 +32,7 @@ public class Customer {
         }
         for (int i = 0; i < stores.size(); i++) {
             if (stores.get(i).contains(store)) {
-                String seller = Arrays.toString(stores.get(i).split("-", 1));
+                String seller = stores.get(i).split("-")[1];
                 manager.messageUser(this.name, seller, message);
             }
         }
