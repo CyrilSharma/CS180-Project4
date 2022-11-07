@@ -41,5 +41,9 @@ public class Test {
         } catch (Exception e) {}
     
         System.out.println(db);
+        Dashboard dashboard = new Dashboard("Daniel", "testMessageHistory.txt");
+        dashboard.readDatabase();
+        //dashboard.printConversation();
+        dashboard.printMyStatistic();
     }
 }
