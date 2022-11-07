@@ -20,7 +20,7 @@ public class Seller {
             File f = new File("stores.txt");
             FileOutputStream fos = new FileOutputStream(f, false);
             PrintWriter pw = new PrintWriter(fos);
-            pw.write(store);
+            pw.write(store + "-" + this.name + "\n");
             stores.add(store);
             pw.close();
 

@@ -1,6 +1,6 @@
-BestBuy
-Costco
-Amazon
-Target
-Walmart
-GameStop
+BestBuy-Seller1
+Costco-Seller2
+Amazon-Seller3
+Target-Seller4
+Walmart-Seller5
+GameStop-Seller6
