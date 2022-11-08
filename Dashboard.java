@@ -29,6 +29,7 @@ public class Dashboard {
         myConversations = new ArrayList<>();
     }
 
+    //sets up role from the userDatabase
     private void loadUserFromDatabase(String email, Database database) {
         HashMap<String, String> map = database.get("email", email);
         if (map.get("role").equals("Seller")) {
@@ -44,6 +45,7 @@ public class Dashboard {
         System.out.println("Successfully loaded!");
     }
 
+    //return int[2] data where data[0] = message customer sent and data[1] = message seller sent from history txt file
     public int[] getMessageData(ArrayList<String[]> conversation) {
         //messageData[0] = # customer sent && messageData[1] = # seller sent
         int[] messageData = new int[2];
@@ -69,6 +71,7 @@ public class Dashboard {
         return messageData;
     }
 
+    //get other user's name with conversation list
     public String getOtherName(ArrayList<String[]> conversation) {
         String name = "";
         if (conversation.get(0)[0].equals(email)) {
@@ -79,6 +82,7 @@ public class Dashboard {
         return name;
     }
 
+    //remove special characters from word
     public String removeSpecialChar(String word) {
         String result = "";
         for (int i = 0; i < word.length(); i++) {
@@ -88,6 +92,7 @@ public class Dashboard {
         }
         return result;
     }
+    //finds the most common word from conversation(excluding special characters)
     public String findMostCommonWord(ArrayList<String[]> conversation) {
         HashMap<String, Integer> map = new HashMap<>();
         for (String[] msg: conversation) {
@@ -112,6 +117,7 @@ public class Dashboard {
         return word;
     }
 
+    //print the statistics of the current user
     public void printMyStatistic() {
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
@@ -131,6 +137,7 @@ public class Dashboard {
 
     }
 
+    // read database and store conversation data
     public void readDatabase() {
         FileReader fr;
         BufferedReader bfr;
@@ -173,6 +180,8 @@ public class Dashboard {
             System.out.println("Database Error!");
         }
     }
+
+    //dashboard menu
 
     public void presentDashboard() {
         String MENU_MESSAGE = "what do you want to do? " +
@@ -227,6 +236,8 @@ public class Dashboard {
                                 ongoing2 = false;
                                 break;
                             default:
+                                System.out.println(ERROR_MSG);
+                                break;
                         }
                     }
                     break;
@@ -239,6 +250,7 @@ public class Dashboard {
             }
         }
     }
+
 
     public void printConversation() {
         for (ArrayList<String[]> conversation: allConversations) {
@@ -253,6 +265,7 @@ public class Dashboard {
         }
     }
     //option 1 = sort store, 2 = sort other users
+    //set myConversation list that sorted store/customers in alphabetical order
     public void sortByAlphabet(int option) {
         //TODO ADD IMPLEMENTATION FOR STORE
         ArrayList<String> sortedList = new ArrayList<>();
@@ -287,10 +300,12 @@ public class Dashboard {
         }
         myConversations = temp;
     }
+    //reverse sortByAlphabet();
     public void sortByAlphabetInverse(int option) {
         sortByAlphabet(option);
         Collections.reverse(myConversations);
     }
+    //get number of message sent by users from history txt file
     public int getMessageSent(ArrayList<String[]> conversation) {
         int count = 0;
         for (int i = 1; i < conversation.size(); i++) {
@@ -300,6 +315,7 @@ public class Dashboard {
         }
         return count;
     }
+    //sort myConversation list in a way from # highest message received to lowest.
     public void sortByHighestReceived() {
         ArrayList<String> users = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
@@ -344,6 +360,7 @@ public class Dashboard {
         }
         myConversations = temp;
     }
+    //reverse previous method
     public void sortByLowestReceived() {
         sortByHighestReceived();
         Collections.reverse(myConversations);
