@@ -1,4 +1,5 @@
 import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.time.*;
 /**
@@ -37,15 +38,46 @@ public class MessageManager {
     }
     public void messageUser(String sender, String recipient, String message) throws IOException {
         //TODO: Implement messageUser
-        BufferedReader br = new BufferedReader(new FileReader("messageHistory.txt"));
-        PrintWriter pw = new PrintWriter(new FileWriter("messageHistory.txt"), false);
+        int messageCount;
+        String messageSplit = "-----";
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter myFormatTime = DateTimeFormatter.ofPattern(("MM-dd-yyyy HH:mm"));
+        //timestamp = myFormatTime variable
+        boolean previousLine = false;
+        boolean convExists = false;
+        File f = new File("messageHistory.txt");
         ArrayList<String> history = new ArrayList<String>();
-        String line = br.readLine();
-        while (line != null) {
-            history.add(line);
-            br.readLine();
-        }
+        if (f.createNewFile() || f.length() == 0) {
+            //messageHistory does not exist
+            FileOutputStream fos = new FileOutputStream(f, false);
+            PrintWriter pw1 = new PrintWriter(fos);
+            messageCount = 1;
+            pw1.println(db.getSelection("role", "Customer") + "-" + db.getSelection("role", "Seller"));
+            pw1.println(messageCount + "<" + myFormatTime + ">" + sender + ": " + message);
+            pw1.println(messageSplit);
+        } else {
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            PrintWriter pw = new PrintWriter(new FileWriter(f), false);
+            String line = br.readLine();
+            while (line != null) {
+                history.add(line);
+                br.readLine();
+            }
+            for (int i = 0; i < history.size(); i++) {
+                if (history.contains(sender + "-" + recipient) || history.contains(recipient + "-" + sender)) {
+                    //conversation exists
+                    while (!previousLine) {
+                        if (history.get(i).equals(messageSplit)) {
+                            messageCount = i - 1;
+                            previousLine = true;
+                            // need to reprint file with new line replacing dashes(messageSplit), dashes line below
+                            //followed by a blank line then next conversation
+                        }
+                    }
 
+                }
+            }
+        }
     }
 
     public void editMessage(String username, String usernameToSendMessageTo, int messageNum, String newMessage) {
