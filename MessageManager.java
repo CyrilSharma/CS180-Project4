@@ -55,6 +55,8 @@ public class MessageManager {
             pw1.println(db.getSelection("role", "Customer") + "-" + db.getSelection("role", "Seller"));
             pw1.println(messageCount + "<" + myFormatTime + ">" + sender + ": " + message);
             pw1.println(messageSplit);
+            fos.close();
+            pw1.close();
         } else {
             BufferedReader br = new BufferedReader(new FileReader(f));
             PrintWriter pw = new PrintWriter(new FileWriter(f), false);
@@ -78,19 +80,50 @@ public class MessageManager {
 
                 }
             }
+            pw.close();
+            br.close();
         }
-    }
-
-    public void editMessage(String username, String usernameToSendMessageTo, int messageNum, String newMessage) {
-        //TODO
-        //find message in txt file
-        //replace with newMessage
 
     }
-    public void deleteMessage(String username, String usernameToSendMessageTo, String message) {
-        //TODO
-        //find message in the txt file
-        //replace message with "Message deleted"
+
+    public void editMessage(String username, String usernameToSendMessageTo, int messageNum, String newMessage) throws IOException {
+        File f = new File("messageHistory.txt");
+        ArrayList<String> history = new ArrayList<String>();
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        PrintWriter pw = new PrintWriter(new FileWriter(f), false);
+        String line = br.readLine();
+        while (line != null) {
+            history.add(line);
+            br.readLine();
+        }
+        for (int i = 0; i < history.size(); i++) {
+            if ((i + 1) != messageNum) {
+                pw.println(history.get(i));
+            } else {
+                pw.println(newMessage);
+            }
+        }
+        pw.close();
+    }
+
+    public void deleteMessage(String username, String usernameToSendMessageTo, String message) throws IOException {
+        File f = new File("messageHistory.txt");
+        ArrayList<String> history = new ArrayList<String>();
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        PrintWriter pw = new PrintWriter(new FileWriter(f), false);
+        String line = br.readLine();
+        while (line != null) {
+            history.add(line);
+            br.readLine();
+        }
+        for (int i = 0; i < history.size(); i++) {
+            if (!history.get(i).equals(message)) {
+                pw.println(history.get(i));
+            } else {
+                pw.println("Message deleted");
+            }
+        }
+        pw.close();
     }
 
 }
