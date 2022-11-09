@@ -72,6 +72,7 @@ public class MessageManager {
                             previousLine = true;
                             // need to reprint file with new line replacing dashes(messageSplit), dashes line below
                             //followed by a blank line then next conversation
+                            //
                         }
                     }
 
