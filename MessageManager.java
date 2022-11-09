@@ -87,6 +87,7 @@ public class MessageManager {
     }
 
     public void editMessage(String username, String usernameToSendMessageTo, int messageNum, String newMessage) throws IOException {
+        //need to incorproate within both files
         File f = new File("messageHistory.txt");
         ArrayList<String> history = new ArrayList<String>();
         BufferedReader br = new BufferedReader(new FileReader(f));
@@ -107,6 +108,7 @@ public class MessageManager {
     }
 
     public void deleteMessage(String username, String usernameToSendMessageTo, String message) throws IOException {
+        //need to incorproate within a specific file
         File f = new File("messageHistory.txt");
         ArrayList<String> history = new ArrayList<String>();
         BufferedReader br = new BufferedReader(new FileReader(f));
