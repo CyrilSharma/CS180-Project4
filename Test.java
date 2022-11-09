@@ -1,12 +1,13 @@
 public class Test {
     public static void main(String[] args) {
-        Database db = new Database("TestDatabase.txt");
+        Database db = new Database("UserDatabase.txt");
         try {
-            db.add("Cyril", "eriuhefur", Role.Customer);
+            db.add("Cyril@bohemia.com", "eriuhefur", Role.Customer);
+        } catch (InvalidUserException e) {
             System.out.println("Test 1 Failed.");
-        } catch (InvalidUserException e) {}
+        }
         try {
-            db.add("Joniel", "eriuhefur", Role.Customer);
+            db.add("Joniel@mars.biz", "eriuhefur", Role.Customer);
         } catch (InvalidUserException e) {
             System.out.println("Test 2 Failed.");
         }
@@ -15,7 +16,7 @@ public class Test {
         
         try {
             // NOTE. This will eventually have to be replaced with IDs since names are not unique.
-            db.remove("Joniel");
+            db.remove("Joniel@mars.biz");
         } catch (InvalidUserException e) {
             System.out.println("Test 3 Failed.");
         }
@@ -24,13 +25,13 @@ public class Test {
 
         try {
             // NOTE. This will eventually have to be replaced with IDs since names are not unique.
-            db.modify("Cyril", "username", "Qyril");
+            db.modify("Cyril@bohemia.com", "email", "Qyril@gmail.com");
         } catch (Exception e) {
             System.out.println("Test 3 Failed.");
         }
 
         // NOTE. This will eventually have to be replaced with IDs since names are not unique.
-        if (!db.verify("Qyril", "password")) {
+        if (!db.verify("Qyril@gmail.com", "password")) {
             System.out.println("Test 4 Failed.");
         }
 
@@ -39,7 +40,10 @@ public class Test {
             db.modify("Cyril", "name", "Qyril");
             System.out.println("Test 5 Failed.");
         } catch (Exception e) {}
-    
-        System.out.println(db);
+
+        Dashboard dashboard = new Dashboard("Alex@gmail.com", "testMessageHistory.txt");
+        dashboard.readDatabase();
+        dashboard.printMyStatistic();
+        //dashboard.presentDashboard();
     }
 }
