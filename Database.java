@@ -52,12 +52,9 @@ public class Database {
     private HashMap<String, String> getDatabaseEntry(String userString) {
         HashMap<String, String> map = new HashMap<String, String>();
         String[] lineArray = userString.split(DATABASE_SPLIT);
-        map.put(KEYS[0], lineArray[0]);
-        map.put(KEYS[1], lineArray[1]);
-        map.put(KEYS[2], lineArray[2]);
-        map.put(KEYS[3], lineArray[3]);
-        map.put(KEYS[4], lineArray[4]);
-        map.put(KEYS[5], lineArray[5]);
+        for (int i = 0; i < KEYS.length; i++) {
+            map.put(KEYS[i], lineArray[i]);
+        }
         return map;
     }
 
@@ -89,7 +86,6 @@ public class Database {
         String[] tokens = {id, name, password, role.toString(), Instant.now().toString(), "null"};
         String line = String.join(DATABASE_SPLIT, tokens);
         database.add(getDatabaseEntry(line));
-        save();
     }
 
     public void remove(String name) throws InvalidUserException {
@@ -98,7 +94,6 @@ public class Database {
             throw new InvalidUserException("That email does not exist");
         }
         database.remove(toBeRemoved);
-        save();
     }
 
     public void block(String name, String emailToBlock) throws InvalidUserException {
@@ -122,7 +117,6 @@ public class Database {
         }
         blockedUsers.add(blockedUser.get("id"));
         changeInfo.put("blocked", String.join(",", blockedUsers));
-        save();
     }
 
     // Returns whether the password given for a user was the correct password
@@ -137,6 +131,9 @@ public class Database {
     }
     // Searches through the database and pulls out a user's information, represented in a HashMap
     public HashMap<String, String> get(String key, String val) {
+        if (!validateKey(key)) {
+            return null;
+        }
         for (HashMap<String, String> user : database) {
             if (user.get(key) != null && user.get(key).equals(val)) {
                 return user;
@@ -147,14 +144,7 @@ public class Database {
 
     public void modify(String email, String key, String val) throws InvalidUserException,
         InvalidKeyException {
-        boolean keyExists = false;
-        for (String k: KEYS) {
-            if (k == key) {
-                keyExists = true;
-                break;
-            }
-        }
-        if (!keyExists) {
+        if (!validateKey(key)) {
             throw new InvalidKeyException(String.format("Invalid Key: {%s}", key));
         }
 
@@ -163,7 +153,6 @@ public class Database {
             if (user.get("email").equals(email)) {
                 user.put(key, val);
                 database.set(i, user);
-                save();
                 return;
             }
         }
@@ -174,13 +163,21 @@ public class Database {
     private boolean validate(String str, String key) {
         if (key == KEYS[1]) {
             return str.matches("^[A-Za-z0-9\\-\\._]{1,64}[^.]@[A-Za-z0-9]+\\.[a-z]{3}$");
-        }
-        else if (key == KEYS[2]) {
+        } else if (key == KEYS[2]) {
             return str.matches("^[A-Za-z0-9]+$");
         }
-        else {
-            return true;
+        return true;
+    }
+
+    private boolean validateKey(String key) {
+        boolean keyExists = false;
+        for (String k: KEYS) {
+            if (k == key) {
+                keyExists = true;
+                break;
+            }
         }
+        return keyExists;
     }
 
     public void save() {
@@ -202,14 +199,7 @@ public class Database {
         for (HashMap<String, String> user : database) {
             ArrayList<String> strings = new ArrayList<String>();
             for (String key : KEYS) {
-                if (key == "blocked") {
-                    String blocklist = "";
-                    String[] tokens = user.get(key).split(",");
-                    blocklist = String.join(",", tokens);
-                    strings.add(blocklist);
-                } else {
-                    strings.add(user.get(key));
-                }
+                strings.add(user.get(key));
             }
             output += "\n" + String.join(DATABASE_SPLIT, strings);
         }
