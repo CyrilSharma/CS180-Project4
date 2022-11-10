@@ -1,16 +1,18 @@
 import java.io.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.time.*;
 import java.time.Instant;
 /**
  * This class handles message sending for a particular user.
  */
 public class MessageManager {
-    String idSep = "|||||";
+    String tokenSep = "|||||";
     String messageSplit = "-----";
     String conversationSplit = "#####";
     private Database db;
+
     public MessageManager(String path) {
         db = new Database(path);
     }
@@ -80,35 +82,62 @@ public class MessageManager {
             if (f.createNewFile()) {
                 history.add(senderID + "-" + recipientID);
             } else {
-                BufferedReader br = new BufferedReader(new FileReader(f));
+                Scanner scan = new Scanner(f);
+                scan.useDelimiter(Pattern.compile(messageSplit));
                 PrintWriter pw = new PrintWriter(new FileWriter(f), false);
                 String line;
-                while ((line = br.readLine()) != null) {
-                    if (action.equals("message")) {
-                        if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
-                            history.add(line);
-                            int id = (senderID + recipientID + message + Instant.now().toString()).hashCode();
-                            history.add(message + idSep + id  + messageSplit);
-                        }
-                    } else if (action.equals("modify")) {
-                        String[] tokens = line.split(idSep);
-                        if (Integer.parseInt(tokens[1]) == messageID) {
-                            history.add(line);
-                            int id = (senderID + recipientID + message + Instant.now().toString()).hashCode();
-                            history.add(message + idSep + id  + messageSplit);
-                        }
-                    } else if (action.equals("delete")) {
-                        String[] tokens = line.split(idSep);
-                        if (Integer.parseInt(tokens[1]) != messageID) {
-                            history.add(line);
-                        }
+                int messageLine = 0;
+                int counter = 0;
+
+                // read until you find the conversation.
+                String curLine = "";
+                while ((curLine = scan.nextLine()) != null) {
+                    if (!curLine.equals(senderID + "-" + recipientID)) {
+                        history.add(curLine);
                     }
                 }
+
+                HashMap<Long, Integer> hm = new HashMap<Long, Integer>();
+                while (scan.hasNext()) {
+                    line = scan.next();
+                    history.add(line);
+                    String[] tokens = line.split(tokenSep);
+                    Long id = Long.parseLong(tokens[tokens.length-1]);
+                    if (action.equals("message")) {
+                        messageLine = counter;
+                        if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
+                            messageLine = counter;
+                        }
+                    } else if (action.equals("modify") || action.equals("delete")) {
+                        if (Integer.parseInt(tokens[1]) == messageID) {
+                            messageLine = counter;
+                        }
+                    }
+                    hm.put(id, counter);
+                    counter++;
+                }
+
+                // find smallest unused ID.
+                Long newId = (long) 1;
+                while (!hm.containsKey(newId)) {
+                    newId++;
+                }
+
+                if (action.equals("message")) {
+                    String time = Instant.now().toString();
+                    history.add(messageLine, message + tokenSep + newId + tokenSep + time + messageSplit);
+                } else if (action.equals("modify")) {
+                    String time = Instant.now().toString();
+                    history.add(messageLine, message + tokenSep + newId + tokenSep + time + messageSplit);
+                } else if (action.equals("delete")) {
+                    history.remove(messageLine);
+                }
+
                 if (!history.get(history.size() - 1).equals(conversationSplit)) {
                     history.add(conversationSplit);
                 }
                 pw.close();
-                br.close();
+                scan.close();
             }
         }
     }
