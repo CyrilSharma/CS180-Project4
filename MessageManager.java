@@ -10,7 +10,7 @@ import java.time.Instant;
 public class MessageManager {
     String tokenSep = "|||||";
     String messageSplit = "-----";
-    String conversationSplit = "#####";
+    String conversationSplit = "\n#####";
     private Database db;
 
     public MessageManager(String path) {
@@ -83,7 +83,6 @@ public class MessageManager {
                 history.add(senderID + "-" + recipientID);
             } else {
                 Scanner scan = new Scanner(f);
-                scan.useDelimiter(Pattern.compile(messageSplit));
                 PrintWriter pw = new PrintWriter(new FileWriter(f), false);
                 String line;
                 int messageLine = 0;
@@ -92,19 +91,32 @@ public class MessageManager {
                 // read until you find the conversation.
                 String curLine = "";
                 while ((curLine = scan.nextLine()) != null) {
+                    history.add(curLine);
                     if (!curLine.equals(senderID + "-" + recipientID)) {
-                        history.add(curLine);
+                        break;
                     }
                 }
 
+                boolean conversationOver = false;
                 HashMap<Long, Integer> hm = new HashMap<Long, Integer>();
-                while (scan.hasNext()) {
-                    line = scan.next();
+                while (scan.hasNextLine() && !conversationOver) {
+                    // read potentially multiline string.
+                    line = "";
+                    String diff;
+                    while (!(diff = scan.nextLine()).contains(messageSplit)) {
+                        line += diff;
+                        if (diff.equals(conversationSplit)) {
+                            conversationOver = true;
+                            break;
+                        }
+                    }
+
+                    // read lines in conversation, and determine postion to insert | delete
+                    // also keep track of which ids exist.
                     history.add(line);
                     String[] tokens = line.split(tokenSep);
                     Long id = Long.parseLong(tokens[tokens.length-1]);
                     if (action.equals("message")) {
-                        messageLine = counter;
                         if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
                             messageLine = counter;
                         }
@@ -117,22 +129,32 @@ public class MessageManager {
                     counter++;
                 }
 
+                // finish reading the file.
+                curLine = "";
+                while ((curLine = scan.nextLine()) != null) {
+                    history.add(curLine);
+                }
+
                 // find smallest unused ID.
                 Long newId = (long) 1;
                 while (!hm.containsKey(newId)) {
                     newId++;
                 }
 
+                // add new message along with associated information
                 if (action.equals("message")) {
                     String time = Instant.now().toString();
-                    history.add(messageLine, message + tokenSep + newId + tokenSep + time + messageSplit);
+                    history.add(messageLine, message + tokenSep + senderID + tokenSep 
+                        + newId + tokenSep + time + messageSplit);
                 } else if (action.equals("modify")) {
                     String time = Instant.now().toString();
-                    history.add(messageLine, message + tokenSep + newId + tokenSep + time + messageSplit);
+                    history.add(messageLine, message + tokenSep + senderID + tokenSep 
+                        + newId + tokenSep + time + messageSplit);
                 } else if (action.equals("delete")) {
                     history.remove(messageLine);
                 }
-
+                
+                // add conversation delimiter if it does not exist.
                 if (!history.get(history.size() - 1).equals(conversationSplit)) {
                     history.add(conversationSplit);
                 }
