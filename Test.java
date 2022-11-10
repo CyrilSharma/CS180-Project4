@@ -1,8 +1,8 @@
 public class Test {
     public static void main(String[] args) {
-        Database db = new Database("UserDatabase.txt");
+        Database db = new Database("TestDatabase.txt");
         try {
-            db.add("Cyril@bohemia.com", "eriuhefur", Role.Customer);
+            db.add("Cyril@bohemia.com", "password", Role.Customer);
         } catch (InvalidUserException e) {
             System.out.println("Test 1 Failed.");
         }
@@ -15,7 +15,6 @@ public class Test {
         System.out.println(db);
         
         try {
-            // NOTE. This will eventually have to be replaced with IDs since names are not unique.
             db.remove("Joniel@mars.biz");
         } catch (InvalidUserException e) {
             System.out.println("Test 3 Failed.");

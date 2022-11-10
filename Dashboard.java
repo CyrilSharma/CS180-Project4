@@ -122,6 +122,7 @@ public class Dashboard {
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
+                System.out.printf("Store name: %s\n", conv.get(0)[2]);
                 System.out.printf("Seller name: %s\n", getOtherName(conv));
                 System.out.printf("Message Sent: %d\n", data[0]);
                 System.out.printf("Message Received: %d\n\n", data[1]);
@@ -129,6 +130,7 @@ public class Dashboard {
         } else {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
+                System.out.printf("Store name: %s\n", conv.get(0)[2]);
                 System.out.printf("Customer name: %s\n", getOtherName(conv));
                 System.out.printf("Message Received: %d\n", data[0]);
                 System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
@@ -164,6 +166,7 @@ public class Dashboard {
                     String msg = chart[1].substring(1);
                     message[0] = name;
                     message[1] = msg;
+
                     conversation.add(message);
                     line = bfr.readLine();
                     if (line == null) {
@@ -201,6 +204,10 @@ public class Dashboard {
                 "\n3. sort by lowest message received" +
                 "\n4. sort by highest message received" +
                 "\n5. go back to previous menu";
+        String SORT_MESSAGE1 = "How do you want to sort? " +
+                "\n1. sort by alphabetical order " +
+                "\n2. sort by alphabetical backwards" +
+                "\n3. go back to previous menu";
         String ERROR_MSG = "Please enter a valid number";
         boolean ongoing = true;
         while (ongoing) {
@@ -209,6 +216,27 @@ public class Dashboard {
             String option = sc.nextLine();
             switch (option) {
                 case "1":
+                    boolean ongoing1 = true;
+                    while (ongoing1) {
+                        System.out.println(SORT_MESSAGE1);
+                        String option1 = sc.nextLine();
+                        switch (option1) {
+                            case "1":
+                                sortByAlphabet(1);
+                                printMyStatistic();
+                                break;
+                            case "2":
+                                sortByAlphabetInverse(1);
+                                printMyStatistic();
+                                break;
+                            case "3":
+                                ongoing1 = false;
+                                break;
+                            default:
+                                System.out.println(ERROR_MSG);
+                                break;
+                        }
+                    }
                     break;
                 case "2":
                     boolean ongoing2 = true;
@@ -270,7 +298,9 @@ public class Dashboard {
         //TODO ADD IMPLEMENTATION FOR STORE
         ArrayList<String> sortedList = new ArrayList<>();
         if (option == 1) {
-
+                for (ArrayList<String[]> conversation: myConversations) {
+                    sortedList.add(conversation.get(0)[2]);
+                }
         } else {
             if (role == Role.Seller) {
                 for (ArrayList<String[]> conversation: myConversations) {
@@ -286,14 +316,21 @@ public class Dashboard {
         ArrayList<ArrayList<String[]>> temp = new ArrayList<>();
         for (String user: sortedList) {
             for (ArrayList<String[]> conversation: myConversations) {
-                if (role == Role.Seller) {
-                    if (conversation.get(0)[0].equals(user)) {
+                if (option == 1) {
+                    if (conversation.get(0)[2].equals(user)) {
                         temp.add(conversation);
                         break;
                     }
                 } else {
-                    if (conversation.get(0)[1].equals(user)) {
-                        temp.add(conversation);
+                    if (role == Role.Seller) {
+                        if (conversation.get(0)[0].equals(user)) {
+                            temp.add(conversation);
+                            break;
+                        }
+                    } else {
+                        if (conversation.get(0)[1].equals(user)) {
+                            temp.add(conversation);
+                        }
                     }
                 }
             }

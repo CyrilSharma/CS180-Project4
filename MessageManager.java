@@ -7,8 +7,8 @@ import java.time.*;
  */
 public class MessageManager {
     private Database db;
-    public MessageManager() {
-        db = new Database("UserDatabase.txt");
+    public MessageManager(String path) {
+        db = new Database(path);
     }
 
     //Returns the names of all the customers a user can talk to
@@ -37,93 +37,28 @@ public class MessageManager {
         }
     }
     public void messageUser(String sender, String recipient, String message) throws IOException {
-        //TODO: Implement messageUser
-        int messageCount;
         String messageSplit = "-----";
-        LocalTime time = LocalTime.now();
-        DateTimeFormatter myFormatTime = DateTimeFormatter.ofPattern(("MM-dd-yyyy HH:mm"));
-        //timestamp = myFormatTime variable
-        boolean previousLine = false;
-        boolean convExists = false;
-        String senderID = String.valueOf(db.getSelection("id", sender));
-        String recipientID = String.valueOf(db.getSelection("id", recipient));
-
-
-        File f = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        File f2 = new File(recipientID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        ArrayList<String> history = new ArrayList<String>();
-        if (f.createNewFile() || f.length() == 0) {
-            //for sender
-            //messageHistory does not exist
-            FileOutputStream fos = new FileOutputStream(f, false);
-            PrintWriter pw1 = new PrintWriter(fos);
-            messageCount = 1;
-            pw1.println(db.getSelection("role", "Customer") + "-" + db.getSelection("role", "Seller") + "-" /* + get stores*/);
-            pw1.println(messageCount + "<" + myFormatTime + ">" + sender + ": " + message);
-            pw1.println(messageSplit);
-            fos.close();
-            pw1.close();
-        } else {
-            BufferedReader br = new BufferedReader(new FileReader(f));
-            PrintWriter pw = new PrintWriter(new FileWriter(f), false);
-            String line = br.readLine();
-            while (line != null) {
-                history.add(line);
-                br.readLine();
-            }
-            for (int i = 0; i < history.size(); i++) {
-                if (history.contains(sender + "-" + recipient) || history.contains(recipient + "-" + sender)) {
-                    //conversation exists
-                    while (!previousLine) {
-                        if (history.get(i).equals(messageSplit)) {
-                            messageCount = i - 1;
-                            previousLine = true;
-                            // need to reprint file with new line replacing dashes(messageSplit), dashes line below
-                            //followed by a blank line then next conversation
-                            //
-                        }
-                    }
-
-                }
-            }
-            if (f2.createNewFile() || f2.length() == 0) {
-                //for recipient
-                //messageHistory does not exist
-                FileOutputStream fos = new FileOutputStream(f2, false);
-                PrintWriter pw1 = new PrintWriter(fos);
-                messageCount = 1;
-                pw1.println(db.getSelection("role", "Customer") + "-" + db.getSelection("role", "Seller") + "-" /* + get stores*/);
-                pw1.println(messageCount + "<" + myFormatTime + ">" + sender + ": " + message);
-                pw1.println(messageSplit);
-                fos.close();
-                pw1.close();
+        String senderID = String.valueOf(db.get("id", sender));
+        String recipientID = String.valueOf(db.get("id", recipient));
+        File fs = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
+        File fr = new File(recipientID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
+        File[] files = {fs, fr};
+        for (File f: files) {
+            ArrayList<String> history = new ArrayList<String>();
+            if (f.createNewFile()) {
+                history.add(senderID + "-" + recipientID);
             } else {
-                BufferedReader br2 = new BufferedReader(new FileReader(f2));
-                PrintWriter pw2 = new PrintWriter(new FileWriter(f2), false);
-                String line2 = br.readLine();
-                while (line2 != null) {
-                    history.add(line2);
-                    br2.readLine();
-                }
-                for (int i = 0; i < history.size(); i++) {
-                    if (history.contains(sender + "-" + recipient) || history.contains(recipient + "-" + sender)) {
-                        //conversation exists
-                        while (!previousLine) {
-                            if (history.get(i).equals(messageSplit)) {
-                                messageCount = i - 1;
-                                previousLine = true;
-                                // need to reprint file with new line replacing dashes(messageSplit), dashes line below
-                                //followed by a blank line then next conversation
-                                //
-                            }
-                        }
-
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                PrintWriter pw = new PrintWriter(new FileWriter(f), false);
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.equals(sender + "-" + recipient) || line.equals(recipient + "-" + sender)) {
+                        history.add(line);
+                        history.add(message + messageSplit);
                     }
                 }
                 pw.close();
                 br.close();
-                pw2.close();
-                br2.close();
             }
         }
     }
