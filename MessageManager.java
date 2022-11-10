@@ -2,10 +2,14 @@ import java.io.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.time.*;
+import java.time.Instant;
 /**
  * This class handles message sending for a particular user.
  */
 public class MessageManager {
+    String idSep = "|||||";
+    String messageSplit = "-----";
+    String conversationSplit = "#####";
     private Database db;
     public MessageManager(String path) {
         db = new Database(path);
@@ -36,13 +40,35 @@ public class MessageManager {
             }
         }
     }
-    public void messageUser(String sender, String recipient, String message) throws IOException {
-        String messageSplit = "-----";
-        String senderID = String.valueOf(db.get("id", sender));
-        String recipientID = String.valueOf(db.get("id", recipient));
-        File fs = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        File fr = new File(recipientID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        File[] files = {fs, fr};
+
+    public void messageUser(String senderID, String recipientID, String message) {
+        try {
+            generalMessage(senderID, recipientID, message, "message", -1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void editMessage(String senderID, String recipientID, String message, int messageId) {
+        try {
+            generalMessage(senderID, recipientID, message, "edit", messageId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteMessage(String senderID, String recipientID, int messageId) {
+        try {
+            generalMessage(senderID, recipientID, "", "delete", messageId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void generalMessage(String senderID, String recipientID, String message, String action, int messageID) throws IOException {
+        File[] files = {new File(senderID + "-messageHistory.txt"), 
+            new File(recipientID + "-messageHistory.txt")};
         for (File f: files) {
             ArrayList<String> history = new ArrayList<String>();
             if (f.createNewFile()) {
@@ -52,87 +78,32 @@ public class MessageManager {
                 PrintWriter pw = new PrintWriter(new FileWriter(f), false);
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.equals(sender + "-" + recipient) || line.equals(recipient + "-" + sender)) {
-                        history.add(line);
-                        history.add(message + messageSplit);
+                    if (action == "message") {
+                        if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
+                            history.add(line);
+                            int id = (senderID + recipientID + message + Instant.now().toString()).hashCode();
+                            history.add(message + idSep + id  + messageSplit);
+                        }
+                    } else if (action == "modify") {
+                        String[] tokens = line.split(idSep);
+                        if (Integer.parseInt(tokens[1]) == messageID) {
+                            history.add(line);
+                            int id = (senderID + recipientID + message + Instant.now().toString()).hashCode();
+                            history.add(message + idSep + id  + messageSplit);
+                        }
+                    } else if (action == "delete") {
+                        String[] tokens = line.split(idSep);
+                        if (Integer.parseInt(tokens[1]) != messageID) {
+                            history.add(line);
+                        }
                     }
+                }
+                if (!history.get(history.size() - 1).equals(conversationSplit)) {
+                    history.add(conversationSplit);
                 }
                 pw.close();
                 br.close();
             }
         }
     }
-
-    public void editMessage(String username, String usernameToSendMessageTo, int messageNum, String newMessage) throws IOException {
-        //need to incorproate within both files
-
-        String senderID = String.valueOf(db.getSelection("id", username));
-        String recipientID = String.valueOf(db.getSelection("id", usernameToSendMessageTo));
-
-
-        File f = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        File f2 = new File(recipientID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-
-
-        //File f = new File("messageHistory.txt");
-        ArrayList<String> history = new ArrayList<String>();
-        BufferedReader br = new BufferedReader(new FileReader(f));
-        PrintWriter pw = new PrintWriter(new FileWriter(f), false);
-        String line = br.readLine();
-        while (line != null) {
-            history.add(line);
-            br.readLine();
-        }
-        for (int i = 0; i < history.size(); i++) {
-            if ((i + 1) != messageNum) {
-                pw.println(history.get(i));
-            } else {
-                pw.println(newMessage);
-            }
-        }
-        history.clear();
-
-        BufferedReader br2 = new BufferedReader(new FileReader(f2));
-        PrintWriter pw2 = new PrintWriter(new FileWriter(f2), false);
-        String line2 = br.readLine();
-        while (line2 != null) {
-            history.add(line2);
-            br.readLine();
-        }
-        for (int i = 0; i < history.size(); i++) {
-            if ((i + 1) != messageNum) {
-                pw.println(history.get(i));
-            } else {
-                pw.println(newMessage);
-            }
-        }
-        br.close();
-        pw.close();
-        br2.close();
-        pw2.close();
-    }
-
-    public void deleteMessage(String username, String usernameToSendMessageTo, String message) throws IOException {
-        //need to incorporate within a specific file
-
-        String senderID = String.valueOf(db.getSelection("id", username));
-        File f = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        ArrayList<String> history = new ArrayList<String>();
-        BufferedReader br = new BufferedReader(new FileReader(f));
-        PrintWriter pw = new PrintWriter(new FileWriter(f), false);
-        String line = br.readLine();
-        while (line != null) {
-            history.add(line);
-            br.readLine();
-        }
-        for (int i = 0; i < history.size(); i++) {
-            if (!history.get(i).equals(message)) {
-                pw.println(history.get(i));
-            } else {
-                pw.println("Message deleted");
-            }
-        }
-        pw.close();
-    }
-
 }
