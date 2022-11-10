@@ -6,10 +6,10 @@ public class MainInterface {
     public static void main(String[] args) throws InvalidUserException {
         Database db = new Database("Database.txt");
         String PROMPT = "Would you like to..." +
-        "\n1. Login" +
-        "\n2. Create an account" +
+                "\n1. Login" +
+                "\n2. Create an account" +
                 "\n3. Delete an account" +
-        "\n4. Exit\n";
+                "\n4. Exit\n";
 
         Scanner scan = new Scanner(System.in);
         System.out.println("Welcome to the {**NAME**} application");
