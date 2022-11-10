@@ -12,7 +12,8 @@ public class MainInterface {
                 "\n4. Exit\n";
 
         Scanner scan = new Scanner(System.in);
-        System.out.println("Welcome to the {**NAME**} application");
+        //Welcome message
+        System.out.println("Welcome to the Turkey Store!");
         System.out.println(PROMPT);
         int resp = -1;
         do {
