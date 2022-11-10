@@ -67,9 +67,15 @@ public class MessageManager {
 
 
     public void generalMessage(String senderID, String recipientID, String message, String action, int messageID) throws IOException {
-        File[] files = {new File(senderID + "-messageHistory.txt"), 
+        File[] files = {new File(senderID + "-messageHistory.txt"),
             new File(recipientID + "-messageHistory.txt")};
-        for (File f: files) {
+
+        for (int i = 0; i < files.length; i++) {
+            // don't update recipient file on delete.
+            if (action.equals("delete") && i == 1) {
+                continue;
+            }
+            File f = files[i];
             ArrayList<String> history = new ArrayList<String>();
             if (f.createNewFile()) {
                 history.add(senderID + "-" + recipientID);
@@ -78,20 +84,20 @@ public class MessageManager {
                 PrintWriter pw = new PrintWriter(new FileWriter(f), false);
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (action == "message") {
+                    if (action.equals("message")) {
                         if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
                             history.add(line);
                             int id = (senderID + recipientID + message + Instant.now().toString()).hashCode();
                             history.add(message + idSep + id  + messageSplit);
                         }
-                    } else if (action == "modify") {
+                    } else if (action.equals("modify")) {
                         String[] tokens = line.split(idSep);
                         if (Integer.parseInt(tokens[1]) == messageID) {
                             history.add(line);
                             int id = (senderID + recipientID + message + Instant.now().toString()).hashCode();
                             history.add(message + idSep + id  + messageSplit);
                         }
-                    } else if (action == "delete") {
+                    } else if (action.equals("delete")) {
                         String[] tokens = line.split(idSep);
                         if (Integer.parseInt(tokens[1]) != messageID) {
                             history.add(line);
