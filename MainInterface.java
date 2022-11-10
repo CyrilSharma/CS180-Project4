@@ -28,15 +28,37 @@ public class MainInterface {
         } while (resp == -1);
 
         MessageManager messageManager = new MessageManager();
-        if (resp == 1) {
-            System.out.println("Please enter your username.");
+        if (resp == 1) { //Login
+            System.out.println("Please enter your username: ");
             String username = scan.nextLine();
-            System.out.println("Please enter your password.");
+            System.out.println("Please enter your password: ");
             String password = scan.nextLine();
-        } else if (resp == 2) {
 
+            //incorporate Database
+
+        } else if (resp == 2) { //Creating Acct
+            System.out.println("Please enter your username: ");
+            String username = scan.nextLine();
+            System.out.println("Please enter your email: ");
+            String email = scan.nextLine();
+            System.out.println("Please enter your password: ");
+            String password = scan.nextLine();
+
+            boolean roleValid = false;
+            String role = "";
+            while (!roleValid) {
+                System.out.println("Please enter your role (Seller/Customer): ");
+                role = scan.nextLine();
+
+                if (role.toLowerCase().equals("seller") || role.toLowerCase().equals("customer")) {
+                    roleValid = true;
+                }
+            }
+            User account = new User(username, email, password, role);
+
+            //incorporate database
         } else if (resp == 3) {
-            System.out.println("Bye bye!");
+            System.out.println("Have a nice rest of your day!");
         }
     }
 }
