@@ -47,7 +47,7 @@ public class User {
         }
     }
 
-    public void selectSeller(String store, String message) throws InvalidUserException, IOException {
+    public void selectStore(String store, String message) throws InvalidUserException, IOException {
         if (this.role.toLowerCase().equals("customer")) {
             ArrayList<String> stores = new ArrayList<String>();
             BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
