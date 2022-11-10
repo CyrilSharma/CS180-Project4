@@ -3,14 +3,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.time.*;
+import java.time.Instant;
 /**
  * This class handles message sending for a particular user.
  */
 public class MessageManager {
+    String tokenSep = "|||||";
+    String messageSplit = "-----";
+    String conversationSplit = "\n#####";
+    private Random random;
     private Database db;
-    public MessageManager() {
-        db = new Database("UserDatabase.txt");
+
+    public MessageManager(String path) {
+        db = new Database(path);
     }
 
     //Returns the names of all the customers a user can talk to
@@ -51,169 +58,129 @@ public class MessageManager {
         }
         return null;
     }
-    
-    public void messageUser(String sender, String recipient, String message) throws IOException {
-        //TODO: Implement messageUser
-        int messageCount;
-        String messageSplit = "-----";
-        LocalTime time = LocalTime.now();
-        DateTimeFormatter myFormatTime = DateTimeFormatter.ofPattern(("MM-dd-yyyy HH:mm"));
-        //timestamp = myFormatTime variable
-        boolean previousLine = false;
-        boolean convExists = false;
-        String senderID = String.valueOf(db.getSelection("id", sender));
-        String recipientID = String.valueOf(db.getSelection("id", recipient));
+
+    public void messageUser(String senderID, String recipientID, String message) {
+        try {
+            generalMessage(senderID, recipientID, message, "message", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void editMessage(String senderID, String recipientID, String message, String messageId) {
+        try {
+            generalMessage(senderID, recipientID, message, "edit", messageId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteMessage(String senderID, String recipientID, String messageId) {
+        try {
+            generalMessage(senderID, recipientID, "", "delete", messageId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
-        File f = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        File f2 = new File(recipientID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        ArrayList<String> history = new ArrayList<String>();
-        if (f.createNewFile() || f.length() == 0) {
-            //for sender
-            //messageHistory does not exist
-            FileOutputStream fos = new FileOutputStream(f, false);
-            PrintWriter pw1 = new PrintWriter(fos);
-            messageCount = 1;
-            pw1.println(db.getSelection("role", "Customer") + "-" + db.getSelection("role", "Seller") + "-" /* + get stores*/);
-            pw1.println(messageCount + "<" + myFormatTime + ">" + sender + ": " + message);
-            pw1.println(messageSplit);
-            fos.close();
-            pw1.close();
-        } else {
-            BufferedReader br = new BufferedReader(new FileReader(f));
-            PrintWriter pw = new PrintWriter(new FileWriter(f), false);
-            String line = br.readLine();
-            while (line != null) {
-                history.add(line);
-                br.readLine();
+    public void generalMessage(String senderID, String recipientID, String message, String action, String messageID) throws IOException {
+        File[] files = {new File(senderID + "-messageHistory.txt"),
+            new File(recipientID + "-messageHistory.txt")};
+
+        for (int fileInd = 0; fileInd < files.length; fileInd++) {
+            // don't update recipient file on delete.
+            if (action.equals("delete") && fileInd == 1) {
+                continue;
             }
-            for (int i = 0; i < history.size(); i++) {
-                if (history.contains(sender + "-" + recipient) || history.contains(recipient + "-" + sender)) {
-                    //conversation exists
-                    while (!previousLine) {
-                        if (history.get(i).equals(messageSplit)) {
-                            messageCount = i - 1;
-                            previousLine = true;
-                            // need to reprint file with new line replacing dashes(messageSplit), dashes line below
-                            //followed by a blank line then next conversation
-                            //
-                        }
-                    }
-
-                }
-            }
-            if (f2.createNewFile() || f2.length() == 0) {
-                //for recipient
-                //messageHistory does not exist
-                FileOutputStream fos = new FileOutputStream(f2, false);
-                PrintWriter pw1 = new PrintWriter(fos);
-                messageCount = 1;
-                pw1.println(db.getSelection("role", "Customer") + "-" + db.getSelection("role", "Seller") + "-" /* + get stores*/);
-                pw1.println(messageCount + "<" + myFormatTime + ">" + sender + ": " + message);
-                pw1.println(messageSplit);
-                fos.close();
-                pw1.close();
+            File f = files[fileInd];
+            ArrayList<String> history = new ArrayList<String>();
+            if (f.createNewFile()) {
+                history.add(senderID + "-" + recipientID);
             } else {
-                BufferedReader br2 = new BufferedReader(new FileReader(f2));
-                PrintWriter pw2 = new PrintWriter(new FileWriter(f2), false);
-                String line2 = br.readLine();
-                while (line2 != null) {
-                    history.add(line2);
-                    br2.readLine();
-                }
-                for (int i = 0; i < history.size(); i++) {
-                    if (history.contains(sender + "-" + recipient) || history.contains(recipient + "-" + sender)) {
-                        //conversation exists
-                        while (!previousLine) {
-                            if (history.get(i).equals(messageSplit)) {
-                                messageCount = i - 1;
-                                previousLine = true;
-                                // need to reprint file with new line replacing dashes(messageSplit), dashes line below
-                                //followed by a blank line then next conversation
-                                //
-                            }
-                        }
+                Scanner scan = new Scanner(f);
+                PrintWriter pw = new PrintWriter(new FileWriter(f), false);
+                String line;
+                int messageLine = 0;
+                int counter = 0;
 
+                // read until you find the conversation.
+                String curLine = "";
+                while ((curLine = scan.nextLine()) != null) {
+                    history.add(curLine);
+                    if (!curLine.equals(senderID + "-" + recipientID)) {
+                        break;
                     }
+                }
+
+                boolean conversationOver = false;
+                HashSet<String> hm = new HashSet<String>();
+                while (scan.hasNextLine() && !conversationOver) {
+                    // read potentially multiline string.
+                    line = "";
+                    String diff;
+                    while (!(diff = scan.nextLine()).contains(messageSplit)) {
+                        line += diff;
+                        if (diff.equals(conversationSplit)) {
+                            conversationOver = true;
+                            break;
+                        }
+                    }
+
+                    // read lines in conversation, and determine postion to insert | delete
+                    // also keep track of which ids exist.
+                    history.add(line);
+                    String[] tokens = line.split(tokenSep);
+                    String id = tokens[tokens.length-1];
+                    if (action.equals("message")) {
+                        if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
+                            messageLine = counter;
+                        }
+                    } else if (action.equals("modify") || action.equals("delete")) {
+                        if (id == messageID) {
+                            messageLine = counter;
+                        }
+                    }
+                    hm.add(id);
+                    counter++;
+                }
+
+                // finish reading the file.
+                curLine = "";
+                while ((curLine = scan.nextLine()) != null) {
+                    history.add(curLine);
+                }
+
+                // find valid new message ID.
+                String newId = "";
+                do {
+                    for (int i = 0; i < 14; i++) {
+                        int num = random.nextInt(50);
+                        newId += (char)('0' + num);
+                    }
+                } while (hm.contains(newId));
+
+                // add new message along with associated information
+                if (action.equals("message")) {
+                    String time = Instant.now().toString();
+                    history.add(messageLine, message + tokenSep + senderID + tokenSep 
+                        + newId + tokenSep + time + messageSplit);
+                } else if (action.equals("modify")) {
+                    String time = Instant.now().toString();
+                    history.add(messageLine, message + tokenSep + senderID + tokenSep 
+                        + newId + tokenSep + time + messageSplit);
+                } else if (action.equals("delete")) {
+                    history.remove(messageLine);
+                }
+                
+                // add conversation delimiter if it does not exist.
+                if (!history.get(history.size() - 1).equals(conversationSplit)) {
+                    history.add(conversationSplit);
                 }
                 pw.close();
-                br.close();
-                pw2.close();
-                br2.close();
+                scan.close();
             }
         }
-    }
-
-    public void editMessage(String username, String usernameToSendMessageTo, int messageNum, String newMessage) throws IOException {
-        //need to incorproate within both files
-
-        String senderID = String.valueOf(db.getSelection("id", username));
-        String recipientID = String.valueOf(db.getSelection("id", usernameToSendMessageTo));
-
-
-        File f = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        File f2 = new File(recipientID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-
-
-        //File f = new File("messageHistory.txt");
-        ArrayList<String> history = new ArrayList<String>();
-        BufferedReader br = new BufferedReader(new FileReader(f));
-        PrintWriter pw = new PrintWriter(new FileWriter(f), false);
-        String line = br.readLine();
-        while (line != null) {
-            history.add(line);
-            br.readLine();
-        }
-        for (int i = 0; i < history.size(); i++) {
-            if ((i + 1) != messageNum) {
-                pw.println(history.get(i));
-            } else {
-                pw.println(newMessage);
-            }
-        }
-        history.clear();
-
-        BufferedReader br2 = new BufferedReader(new FileReader(f2));
-        PrintWriter pw2 = new PrintWriter(new FileWriter(f2), false);
-        String line2 = br.readLine();
-        while (line2 != null) {
-            history.add(line2);
-            br.readLine();
-        }
-        for (int i = 0; i < history.size(); i++) {
-            if ((i + 1) != messageNum) {
-                pw.println(history.get(i));
-            } else {
-                pw.println(newMessage);
-            }
-        }
-        br.close();
-        pw.close();
-        br2.close();
-        pw2.close();
-    }
-
-    public void deleteMessage(String username, String usernameToSendMessageTo, String message) throws IOException {
-        //need to incorporate within a specific file
-
-        String senderID = String.valueOf(db.getSelection("id", username));
-        File f = new File(senderID + "-messageHistory.txt"); //format: 1231-messageHistory.txt
-        ArrayList<String> history = new ArrayList<String>();
-        BufferedReader br = new BufferedReader(new FileReader(f));
-        PrintWriter pw = new PrintWriter(new FileWriter(f), false);
-        String line = br.readLine();
-        while (line != null) {
-            history.add(line);
-            br.readLine();
-        }
-        for (int i = 0; i < history.size(); i++) {
-            if (!history.get(i).equals(message)) {
-                pw.println(history.get(i));
-            } else {
-                pw.println("Message deleted");
-            }
-        }
-        pw.close();
     }
 
     public String readTextFromFile(String path) throws FileNotFoundException {

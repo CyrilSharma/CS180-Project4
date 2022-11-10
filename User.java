@@ -6,19 +6,17 @@ public class User {
 
     private boolean hasAccount;
     private String password;
-    private String username;
     private String role;
     private Database db;
     private ArrayList<String> stores;
     private MessageManager manager;
     //creating an account
-    public User(String username, String email, String password, String role) {
+    public User(String email, String password, String role) {
         this.email = email;
-        this.username = username;
         this.password = password;
         this.role = role;
         this.hasAccount = true;
-        this.manager = new MessageManager();
+        this.manager = new MessageManager("UserDatabase.txt");
         db = new Database("UserDatabase.txt");
         stores = new ArrayList<>();
     }
@@ -26,7 +24,6 @@ public class User {
     //deleting an account
     public void deleteAccount() {
         this.email = null;
-        this.username = null;
         this.password = null;
         this.role = null;
         this.hasAccount = false;
@@ -35,7 +32,6 @@ public class User {
     //edit an account
     public void editAccount(String username, String email, String password, String role) {
         this.email = email;
-        this.username = username;
         this.password = password;
         this.role = role;
     }
@@ -67,7 +63,7 @@ public class User {
             for (int i = 0; i < stores.size(); i++) {
                 if (stores.get(i).contains(store)) {
                     String seller = stores.get(i).split("-")[1];
-                    manager.messageUser(this.username, seller, message);
+                    manager.messageUser(this.email, seller, message);
                 }
             }
         }
@@ -80,7 +76,7 @@ public class User {
                 File f = new File("stores.txt");
                 FileOutputStream fos = new FileOutputStream(f, false);
                 PrintWriter pw = new PrintWriter(fos);
-                pw.write(store + "-" + this.username + "\n");
+                pw.write(store + "-" + this.email + "\n");
                 stores.add(store);
                 pw.close();
             } catch (IOException e) {
@@ -107,8 +103,8 @@ public class User {
         if (this.role.toLowerCase().equals("seller")) {
             ArrayList<String> customers = manager.getNames("Customer");
             for (String customer : customers) {
-                if (username.equals(customer)) {
-                    manager.messageUser(this.username, recipient, message);
+                if (email.equals(customer)) {
+                    manager.messageUser(this.email, recipient, message);
                 }
             }
         }
