@@ -46,7 +46,7 @@ public class MessageManager {
 
     public void messageUser(String senderID, String recipientID, String message) {
         try {
-            generalMessage(senderID, recipientID, message, "message", -1);
+            generalMessage(senderID, recipientID, message, "message", "");
         } catch (Exception e) {
             e.printStackTrace();
         }
