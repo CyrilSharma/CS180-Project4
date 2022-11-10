@@ -50,7 +50,6 @@ public class MainInterface {
                     System.out.println("Incorrect username or password. Please try again");
                 }
             }
-            //incorporate Database
 
         } else if (resp == 2) { //Creating Acct
             System.out.println("Please enter your email: ");
@@ -71,13 +70,14 @@ public class MainInterface {
             User account = new User(email, password, role);
             db.add(email, password, Role.valueOf(role));
             System.out.println("Account created!");
-            //incorporate database
         } else if (resp == 3) {
+            //deleting account
             System.out.println("Please enter your email: ");
             String email = scan.nextLine();
             db.remove(email);
             System.out.println("Account deleted!");
         } else if (resp == 4) {
+            //Exit program
             System.out.println("Have a nice rest of your day!");
         }
     }
