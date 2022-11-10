@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 public class User {
     private String email;
+
+    private boolean hasAccount;
     private String password;
     private String username;
     private String role;
@@ -15,6 +17,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.hasAccount = true;
         this.manager = new MessageManager();
         db = new Database("UserDatabase.txt");
         stores = new ArrayList<>();
@@ -26,6 +29,7 @@ public class User {
         this.username = null;
         this.password = null;
         this.role = null;
+        this.hasAccount = false;
     }
 
     //edit an account
@@ -34,6 +38,10 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public boolean accountExists() {
+        return this.hasAccount;
     }
 
     public void viewStores() throws InvalidUserException, IOException {
