@@ -1,4 +1,6 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.time.*;
@@ -20,22 +22,36 @@ public class MessageManager {
         }
         return names;
     }
-    public void getPersonalHistory(String username) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(username + "messageHistory.txt"));
-        PrintWriter pw = new PrintWriter(new FileWriter(username + "messageHistory.txt"), false);
-        ArrayList<String> history = new ArrayList<String>();
-        ArrayList<String> personal = new ArrayList<String>();
-        String line = br.readLine();
-        while (line != null) {
-            history.add(line);
-            br.readLine();
-        }
-        for (int i = 0; i < history.size(); i++) {
-            if (history.get(i).contains(username)) {
-                ///need to figure out how to grab entire (multiline) message
+
+    public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(new File(id + "-messageHistory.txt")))) {
+            ArrayList<HashMap<String, String>> history = new ArrayList<HashMap<String, String>>();
+            String line;
+            String sender = id;
+            String recipient = "";
+            while ((line = bfr.readLine()) != null) {
+                if (!line.contains("#####")) {
+                    recipient = line;
+                } else {
+                    HashMap<String, String> message = new HashMap<String, String>();
+                    message.put("message", line.split("\\|\\|\\|\\|\\|")[0]);
+                    line = line.split("\\|\\|\\|\\|\\|")[1];
+                    message.put("messageNumber", line.split("#####")[0]);
+                    line = line.split("#####")[1];
+                    message.put("timeStamp", line.split("-----")[0]);
+                    message.put("recipient", recipient);
+                    history.add(message);
+                }
             }
+            return history;
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
+    
     public void messageUser(String sender, String recipient, String message) throws IOException {
         //TODO: Implement messageUser
         int messageCount;
@@ -197,6 +213,49 @@ public class MessageManager {
                 pw.println("Message deleted");
             }
         }
+        pw.close();
+    }
+
+    public String readTextFromFile(String path) throws FileNotFoundException {
+        String text = "";
+        try (BufferedReader bfr = new BufferedReader(new FileReader(new File(path)))) {
+            ArrayList<String> list = new ArrayList<String>();
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                list.add(line);
+            }
+            text = String.join("\n", list);
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return text;
+    }
+
+    public void messagesToCSV(String id, String[] idsOfConversationsToRetrieve) throws IOException {
+        ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
+        String text = "Message Number,Recipient,Time Stamp,Message Contents\n";
+        for (HashMap<String, String> message : history) {
+            String recipient = db.get("id", message.get("recipient")).get("email");
+            if (Arrays.asList(idsOfConversationsToRetrieve).contains(message.get("recipient"))) {
+                Instant time = Instant.parse(message.get("timeStamp"));
+                String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
+                text += String.join(",", message.get("messageNumber"), recipient, timeStamp, message.get("message")) + "\n";
+            }
+        }
+        int count = 1;
+        Path path = Path.of("csv");
+        List<Path> filesInDir = Files.list(path).toList();
+        File file = new File("csv/" + id + "-historyCSV.csv");
+        if (!file.createNewFile()) {
+            while (!(file = new File("csv/" + id + "-historyCSV-" + count + ".csv")).createNewFile()) {
+                count++;
+            }
+        }
+        PrintWriter pw = new PrintWriter(file);
+        pw.write(text.strip());
+        pw.flush();
         pw.close();
     }
 

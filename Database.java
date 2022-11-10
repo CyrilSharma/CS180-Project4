@@ -79,8 +79,14 @@ public class Database {
         String id = "";
         do {
             for (int i = 0; i < 14; i++) {
-                int num = random.nextInt(50);
-                id += (char)('0' + num);
+                int num = random.nextInt(62);
+                if (num < 26) {
+                    id += (char)(num + 'A');
+                } else if (num < 52) {
+                    id += (char)(num - 26 + 'a');
+                } else {
+                    id += (char)(num - 52 + '0');
+                }
             }
         } while (get("id", id) != null);
         String[] tokens = {id, name, password, role.toString(), Instant.now().toString(), "null"};
