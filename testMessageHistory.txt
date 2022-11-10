@@ -1,21 +1,21 @@
-John-Thomas
+John-Thomas-Amazon
 (MessageNumber)<TimeStamp>John: "Hi"
 (MessageNumber)<TimeStamp>Thomas: "Hi"
 (MessageNumber)<TimeStamp>John: "Can I buy a new computer?"
 -
-Jacob@gmail.com-Alex@gmail.com
+Jacob@gmail.com-Alex@gmail.com-Google
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
 (MessageNumber)<TimeStamp>Alex@gmail.com: "Yes it?"
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "How much is it?"
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "it is a thousand dollars"
 (MessageNumber)<TimeStamp>Alex@gmail.com: "okay it"
 -
-Jacob@gmail.com-Rick
+Jacob@gmail.com-Rick-Costco
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "I need a new one"
 (MessageNumber)<TimeStamp>Rick: "no sorry"
 -
-Jacob@gmail.com-Sasha
+Jacob@gmail.com-Sasha-Best Buy
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
 (MessageNumber)<TimeStamp>Sasha: "Yes"
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "How much is it?"
@@ -24,10 +24,10 @@ Jacob@gmail.com-Sasha
 (MessageNumber)<TimeStamp>Sasha: "Yes"
 (MessageNumber)<TimeStamp>Sasha: "It's 500 dollars"
 -
-Jacob@gmail.com-Bill
+Jacob@gmail.com-Bill-Walmart
 (MessageNumber)<TimeStamp>Jacob@gmail.com: "Is there new microwave?"
 -
-Elon-Alex@gmail.com
-(MessageNumber)<TimeStamp>Jacob@gmail.com: "Hello?"
+Elon-Alex@gmail.com-Gamestop
+(MessageNumber)<TimeStamp>Elon: "Hello?"
 (MessageNumber)<TimeStamp>Alex@gmail.com: "What do you want?"
-(MessageNumber)<TimeStamp>Jacob@gmail.com: "Mars"
+(MessageNumber)<TimeStamp>Elon: "Mars"
