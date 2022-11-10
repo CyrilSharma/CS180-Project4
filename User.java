@@ -39,7 +39,7 @@ public class User {
         this.password = password;
         this.role = role;
     }
-
+    //checks if the account exists
     public boolean accountExists() {
         return this.hasAccount;
     }
@@ -54,7 +54,7 @@ public class User {
             }
         }
     }
-
+    //Customer can select a store and then send a message to the associated seller
     public void selectStore(String store, String message) throws InvalidUserException, IOException {
         if (this.role.toLowerCase().equals("customer")) {
             ArrayList<String> stores = new ArrayList<String>();
@@ -88,7 +88,7 @@ public class User {
             }
         }
     }
-
+    //Seller views list of customers that they can send messages to
     public void viewCustomers() throws InvalidUserException {
         if (this.role.toLowerCase().equals("seller")) {
             ArrayList<String> customers = manager.getNames("Customer");
@@ -97,11 +97,12 @@ public class User {
             }
         }
     }
-
+    //get list of stores
     public ArrayList<String> getStores() {
         return stores;
     }
 
+    //Seller can choose a customer to send a message to
     public void selectCustomer(String recipient, String message) throws InvalidUserException, IOException {
         if (this.role.toLowerCase().equals("seller")) {
             ArrayList<String> customers = manager.getNames("Customer");
