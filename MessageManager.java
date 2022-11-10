@@ -11,6 +11,7 @@ public class MessageManager {
     String tokenSep = "|||||";
     String messageSplit = "-----";
     String conversationSplit = "\n#####";
+    private Random random;
     private Database db;
 
     public MessageManager(String path) {
@@ -51,7 +52,7 @@ public class MessageManager {
         }
     }
 
-    public void editMessage(String senderID, String recipientID, String message, int messageId) {
+    public void editMessage(String senderID, String recipientID, String message, String messageId) {
         try {
             generalMessage(senderID, recipientID, message, "edit", messageId);
         } catch (Exception e) {
@@ -59,7 +60,7 @@ public class MessageManager {
         }
     }
 
-    public void deleteMessage(String senderID, String recipientID, int messageId) {
+    public void deleteMessage(String senderID, String recipientID, String messageId) {
         try {
             generalMessage(senderID, recipientID, "", "delete", messageId);
         } catch (Exception e) {
@@ -68,16 +69,16 @@ public class MessageManager {
     }
 
 
-    public void generalMessage(String senderID, String recipientID, String message, String action, int messageID) throws IOException {
+    public void generalMessage(String senderID, String recipientID, String message, String action, String messageID) throws IOException {
         File[] files = {new File(senderID + "-messageHistory.txt"),
             new File(recipientID + "-messageHistory.txt")};
 
-        for (int i = 0; i < files.length; i++) {
+        for (int fileInd = 0; fileInd < files.length; fileInd++) {
             // don't update recipient file on delete.
-            if (action.equals("delete") && i == 1) {
+            if (action.equals("delete") && fileInd == 1) {
                 continue;
             }
-            File f = files[i];
+            File f = files[fileInd];
             ArrayList<String> history = new ArrayList<String>();
             if (f.createNewFile()) {
                 history.add(senderID + "-" + recipientID);
@@ -98,7 +99,7 @@ public class MessageManager {
                 }
 
                 boolean conversationOver = false;
-                HashMap<Long, Integer> hm = new HashMap<Long, Integer>();
+                HashSet<String> hm = new HashSet<String>();
                 while (scan.hasNextLine() && !conversationOver) {
                     // read potentially multiline string.
                     line = "";
@@ -115,17 +116,17 @@ public class MessageManager {
                     // also keep track of which ids exist.
                     history.add(line);
                     String[] tokens = line.split(tokenSep);
-                    Long id = Long.parseLong(tokens[tokens.length-1]);
+                    String id = tokens[tokens.length-1];
                     if (action.equals("message")) {
                         if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
                             messageLine = counter;
                         }
                     } else if (action.equals("modify") || action.equals("delete")) {
-                        if (Integer.parseInt(tokens[1]) == messageID) {
+                        if (id == messageID) {
                             messageLine = counter;
                         }
                     }
-                    hm.put(id, counter);
+                    hm.add(id);
                     counter++;
                 }
 
@@ -135,11 +136,14 @@ public class MessageManager {
                     history.add(curLine);
                 }
 
-                // find smallest unused ID.
-                Long newId = (long) 1;
-                while (!hm.containsKey(newId)) {
-                    newId++;
-                }
+                // find valid new message ID.
+                String newId = "";
+                do {
+                    for (int i = 0; i < 14; i++) {
+                        int num = random.nextInt(50);
+                        newId += (char)('0' + num);
+                    }
+                } while (hm.contains(newId));
 
                 // add new message along with associated information
                 if (action.equals("message")) {
