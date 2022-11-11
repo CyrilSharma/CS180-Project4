@@ -8,12 +8,8 @@ public class Dashboard {
     private final String DATABASE_SECTION_STRING = ":";
     private final String USER_SPLIT_STRING = "-";
     private final String ARRAY_SPLITTER = ":::";
-    private ArrayList<Seller> sellers;
-    private ArrayList<Customer> customers;
     private ArrayList<ArrayList<String[]>> allConversations;
     private ArrayList<ArrayList<String[]>> myConversations;
-    private Seller userSeller;
-    private Customer userCustomer;
     private Role role;
     private String email;
     private HashMap<String, String> userdata;
