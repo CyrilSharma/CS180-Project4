@@ -44,5 +44,26 @@ public class Test {
         dashboard.readDatabase();
         dashboard.printMyStatistic();
         //dashboard.presentDashboard();
+
+        //Sample test for filter
+        //Filter f = new Filter("Jacob@gmail.com");
+        //        System.out.println(f.toString());
+        //        String line = "Freak, I hate you bro, you are such idiOt and DUMB, I will never buy anything from this freaking store!";
+        //        System.out.println(f.filter(line));
+        //        try {
+        //            f.add("never");
+        //            f.add("idiot");
+        //            f.remove("dumb");
+        //            System.out.println("------------");
+        //            System.out.println(f.toString());
+        //            System.out.println(f.filter(line));
+        //            f.remove("never");
+        //            f.remove("idiot");
+        //            f.add("dumb");
+        //        } catch (InvalidWordException e) {
+        //            e.printStackTrace();
+        //        }
+        //*
+
     }
 }

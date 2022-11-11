@@ -21,10 +21,10 @@ public class Filter {
             }
         }
         userWordList = new ArrayList<>();
-        readFile();
+        read();
     }
     //read UserFilter.txt and bring the content into the list
-    public void readFile() {
+    public void read() {
         String splitter = "::";
         FileReader fr;
         BufferedReader bfr;
@@ -46,7 +46,7 @@ public class Filter {
     }
 
     //get list of filtered words
-    public ArrayList<String> getFilteredWordList() {
+    public ArrayList<String> get() {
         String[] words = new String[0];
         for (String[] userData: userWordList) {
             if (userData[0].equals(map.get("id"))) {
@@ -69,22 +69,21 @@ public class Filter {
     }
 
     //checks the line and if the line has the filtered word, replace it with * and return the modified line
-    public String filterWords(String line) {
-        //TODO: FIX THIS METHOD
-        ArrayList<String> list = getFilteredWordList();
+    public String filter(String line) {
+        ArrayList<String> list = get();
         for (String word: list) {
-            int index = line.toLowerCase().indexOf(word.toLowerCase());
-            Character c = ' ';
-            System.out.println(index);
-            System.out.println(index);
-            if (index != -1 && (index == 0 || line.charAt(index-1) == 32) &&
-                    (index == line.length() - word.length()) || line.charAt(index+word.length()) == 32) {
-                line = line.replaceAll(word, createFilteredWord(word.length()));
+            String temp = "";
+            while(line.toLowerCase().indexOf(word) != -1) {
+                temp = line.substring(0, line.toLowerCase().indexOf(word));
+                temp += createFilteredWord(word.length());
+                temp += line.substring(line.toLowerCase().indexOf(word) + word.length());
+                line = temp;
             }
         }
         return line;
     }
 
+    //get str composed of * based on length
     public String createFilteredWord(int size) {
         String word = "";
         for (int i = 0; i < size; i++) {
@@ -98,19 +97,22 @@ public class Filter {
         String str = "";
         for (int i = 0; i < words.size(); i++) {
             str += words.get(i);
-            if (i == words.size() - 1) {
+            if (i != words.size() - 1) {
                 str += ";";
             }
         }
         return str;
     }
 
-    //add word to the filter txt file
-    public void addWordToFilter(String word) {
-        ArrayList<String> words = getFilteredWordList();
-        words.add(word);
+    //remove word from filter and txt file
+    public void remove(String word) throws InvalidWordException{
+        ArrayList<String> words = get();
+        if (!words.contains(word)) {
+            throw new InvalidWordException("The word does not exist in the current filter!");
+        }
+        words.remove(word);
         String id = map.get("id");
-        String newLine = id + "::" + toTxtFileFormat(words);
+        String newLine = toTxtFileFormat(words);
         int index = 0;
         for (String[] user: userWordList) {
             if (user[0].equals(id)) {
@@ -119,10 +121,30 @@ public class Filter {
             }
             index++;
         }
-        writeToFile();
+        write();
     }
 
-    public void writeToFile() {
+    //add word to the filter and txt file
+    public void add(String word) throws InvalidWordException {
+        ArrayList<String> words = get();
+        if (words.contains(word)) {
+            throw new InvalidWordException("The word already exists in the filter");
+        }
+        words.add(word);
+        String id = map.get("id");
+        String newLine = toTxtFileFormat(words);
+        int index = 0;
+        for (String[] user: userWordList) {
+            if (user[0].equals(id)) {
+                user[1] = newLine;
+                userWordList.set(index, user);
+            }
+            index++;
+        }
+        write();
+    }
+
+    public void write() {
         FileOutputStream fos;
         PrintWriter pw;
         try {
@@ -143,8 +165,8 @@ public class Filter {
 
     public String toString() {
         String format = "id: %s\nwords: ";
-        String.format(format, map.get("id"));
-        ArrayList<String> list = getFilteredWordList();
+        format = String.format(format, map.get("id"));
+        ArrayList<String> list = get();
         int index = 0;
         for (String word: list) {
             format += word;
