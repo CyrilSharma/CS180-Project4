@@ -191,6 +191,7 @@ public class Filter {
             String option = sc.nextLine();
             switch (option) {
                 case "1":
+                    //TODO:FIX THIS
                     System.out.println(toString());
                     break;
                 case "2":
