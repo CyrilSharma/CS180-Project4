@@ -59,7 +59,9 @@ public class MainInterface {
                                     "\n3. Delete a message" +
                                     "\n4. Block a user" +
                                     "\n5. Add a store" +
-                                    "\n6. Exit\n" + "(1-6)\n";
+                                    "\n6. Dashboard" +
+                                    "\n7. Open Filter" +
+                                    "\n8. Exit\n" + "(1-8)\n";
                             System.out.println(MESSAGEPROMPT);
                             int userAction;
                             userAction = scan.nextInt();
@@ -225,6 +227,13 @@ public class MainInterface {
                                     System.out.println(storeName + "has been created!");
                                 }
                             } else if (userAction == 6) {
+                                Dashboard dashboard = new Dashboard(email, "");
+                                dashboard.readDatabase();
+                                dashboard.presentDashboard();
+                            } else if (userAction == 7) {
+                                Filter f = new Filter(email);
+                                f.presentFilterMenu();
+                            } else if (userAction == 8) {
                                 //Exit? (Could be a go back to start button, would need while around everything then)
                                 loop2 = false;
                             } else {
