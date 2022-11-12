@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class MainInterface {
 
     public static void main(String[] args) throws InvalidUserException, IOException {
-        Database db = new Database("Database.txt");
+        Database db = new Database("UserDatabase.txt");
         String PROMPT = "Would you like to..." +
                 "\n1. Login" +
                 "\n2. Create an account" +
@@ -45,34 +45,27 @@ public class MainInterface {
                 if (db.verify(email, password)) {
                     loggedIn = true;
                     System.out.println("Login successful!");
-                    HashMap<String, String> acct = db.get("role", email);
-                    User user = new User(email, password, acct.get("email"));
+                    HashMap<String, String> acct = db.get("email", email);
+                    User user = new User(email, password, acct.get("role"));
                     String MESSAGEPROMPT = "Would you like to..." +
                             "\n1. Message a user" +
                             "\n2. Edit a message" +
                             "\n3. Delete a message" +
                             "\n4. Block a user" +
                             "\n5. Add a store" +
-                            "\n6. Exit\n" + "(1-6)\n";
+                            "\n6. Dashboard" +
+                            "\n7. open filter" +
+                            "\n8. Exit" +
+                            "\n" + "(1-8)\n";
                     System.out.println(MESSAGEPROMPT);
                     int userAction;
                     userAction = scan.nextInt();
                     scan.nextLine();
-                    do {
-                        try {
-                            userAction = scan.nextInt();
-                            scan.nextLine();
-                            if (userAction < 1 || userAction > 4) {
-                                System.out.println("Input invalid, try again.");
-                                System.out.println(MESSAGEPROMPT);
-                                userAction = 0;
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Input invalid, try again.");
-                            System.out.println(MESSAGEPROMPT);
-                            userAction = 0;
-                        }
-                    } while (userAction == 0);
+                    while (userAction < 1 || userAction > 8 ) {
+                        System.out.println("INVALID INPUT");
+                        userAction = scan.nextInt();
+                        scan.nextLine();
+                    }
                     if (userAction == 1) {
                         //message user
                         String MESSAGEPROMPT2 = "";
@@ -202,7 +195,14 @@ public class MainInterface {
                             System.out.println("You cannot do this, you are a customer!");
                         }
                     } else if (userAction == 6) {
-                        //Exit? (Could be a go back to start button)
+                        Dashboard dashboard = new Dashboard(email, "");
+                        dashboard.readDatabase();
+                        dashboard.presentDashboard();
+                    } else if (userAction == 7) {
+                        Filter f = new Filter(email);
+                        f.presentFilterMenu();
+                    } else if (userAction == 8){
+                        //exit
                     }
                 } else {
                     System.out.println("Incorrect username or password. Please try again");
