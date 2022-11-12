@@ -26,7 +26,7 @@ public class MessageManager {
         ArrayList<HashMap<String, String>> results = db.getSelection("role", type);
         ArrayList<String> names = new ArrayList<String>();
         for (HashMap<String, String> result: results) {
-            names.add(result.get("username"));
+            names.add(result.get("email"));
         }
         return names;
     }
