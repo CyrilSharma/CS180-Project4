@@ -76,10 +76,13 @@ public class Dashboard {
     //get other user's name with conversation list
     public String getOtherName(ArrayList<String[]> conversation) {
         String name = "";
+
         if (conversation.get(0)[0].equals(id)) {
             name = conversation.get(0)[1];
+            name = getEmail(name);
         } else {
             name = conversation.get(0)[0];
+            name = getEmail(name);
         }
         return name;
     }
@@ -122,6 +125,7 @@ public class Dashboard {
     //print the statistics of the current user
     public void printMyStatistic() {
         //System.out.println(myConversations.size());
+        System.out.println(myConversations.size());
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
@@ -332,6 +336,18 @@ public class Dashboard {
     }
 
 
+    public String getEmail(String ID) {
+        Database database = new Database("UserDatabase.txt");
+        HashMap<String, String> map = database.get("id", ID);
+        return map.get("email");
+    }
+
+    public String getID(String email) {
+        Database database = new Database("UserDatabase.txt");
+        HashMap<String, String> map = database.get("email", email);
+        return map.get("id");
+    }
+
     public void printConversation() {
         for (ArrayList<String[]> conversation: allConversations) {
             for (int i = 0; i < conversation.size(); i++) {
@@ -432,6 +448,8 @@ public class Dashboard {
         }
         ArrayList<ArrayList<String[]>> temp = new ArrayList<>();
         for (String user: users) {
+            System.out.println(user);
+            user = getID(user);
             for (ArrayList<String[]> conversation: myConversations) {
                 if (role == Role.Seller) {
                     if (conversation.get(0)[0].equals(user)) {
