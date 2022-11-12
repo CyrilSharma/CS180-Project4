@@ -19,7 +19,7 @@ public class Database {
     private String databasePath;
     private ArrayList<HashMap<String, String>> database;
     private final String DATABASE_SPLIT = "###";
-    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked"};
+    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
     private final String BLOCKED_SPLIT_STRING = ",";
     private Random random;
 
@@ -90,7 +90,7 @@ public class Database {
                 }
             }
         } while (get("id", id) != null);
-        String[] tokens = {id, name, password, role.toString(), Instant.now().toString(), "null"};
+        String[] tokens = {id, name, password, role.toString(), Instant.now().toString(), "null", "null"};
         String line = String.join(DATABASE_SPLIT, tokens);
         database.add(getDatabaseEntry(line));
     }
@@ -103,7 +103,7 @@ public class Database {
         database.remove(toBeRemoved);
     }
 
-    public void block(String name, String emailToBlock) throws InvalidUserException {
+    public void block(String name, String emailToBlock, boolean invisible) throws InvalidUserException {
         HashMap<String, String> changeInfo = get("email", name);
         if (changeInfo == null) {
             throw new InvalidUserException("That email does not exist");
@@ -112,9 +112,16 @@ public class Database {
         if (blockedUser == null) {
             throw new InvalidUserException("The user you want to block does not exist");
         }
-        ArrayList<String> blockedUsers = new ArrayList<String>(
-            Arrays.asList(blockedUser.get("blocked").split(","))
-        );
+        ArrayList<String> blockedUsers;
+        if (invisible) {
+            blockedUsers = new ArrayList<String>(
+                Arrays.asList(blockedUser.get("invisible").split(","))
+            );
+        } else {
+            blockedUsers = new ArrayList<String>(
+                Arrays.asList(blockedUser.get("blocked").split(","))
+            );
+        }
 
         if (blockedUsers.size() == 1 && blockedUsers.get(0).equals("null")) {
             blockedUsers = new ArrayList<String>();
@@ -123,25 +130,40 @@ public class Database {
             throw new InvalidUserException("You already blocked that user");
         }
         blockedUsers.add(blockedUser.get("id"));
-        changeInfo.put("blocked", String.join(",", blockedUsers));
+        if (invisible) {
+            changeInfo.put("invisible", String.join(",", blockedUsers));
+        } else {
+            changeInfo.put("blocked", String.join(",", blockedUsers));
+        }
     }
 
-    public void unblock(String name, String emailToUnblock) throws InvalidUserException {
+    public void unblock(String name, String emailToUnblock, boolean invisible) throws InvalidUserException {
         HashMap<String, String> blocker = get("email", name);
         HashMap<String, String> blocked = get("email", emailToUnblock);
         if (blocker == null || blocked == null) {
             throw new InvalidUserException("That email does not exist");
         }
-        ArrayList<String> blockedUsers = new ArrayList<String>(
-            Arrays.asList(blocker.get("blocked").split(","))
-        );
+        ArrayList<String> blockedUsers;
+        if (invisible) {
+            blockedUsers = new ArrayList<String>(
+                Arrays.asList(blocker.get("invisible").split(","))
+            );
+        } else {
+            blockedUsers = new ArrayList<String>(
+                Arrays.asList(blocker.get("blocked").split(","))
+            );
+        }
         boolean removed = blockedUsers.remove(blocked.get("id"));
         if (removed) {
             try {
                 if (blockedUsers.isEmpty()) {
                     blockedUsers = null;
                 }
-                modify(name, "blocked", String.join(",", blockedUsers));
+                if (invisible) {
+                    modify(name, "invisible", String.join(",", blockedUsers));
+                } else {
+                    modify(name, "blocked", String.join(",", blockedUsers));
+                }
             } catch (InvalidKeyException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
