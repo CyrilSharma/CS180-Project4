@@ -164,8 +164,7 @@ public class Filter {
     }
 
     public String toString() {
-        String format = "id: %s\nwords: ";
-        format = String.format(format, map.get("id"));
+        String format = "words: ";
         ArrayList<String> list = get();
         int index = 0;
         for (String word: list) {
@@ -178,5 +177,55 @@ public class Filter {
             index++;
         }
         return format;
+    }
+    public void presentFilterMenu() {
+        String menu = "what do you want to do?\n" +
+                    "1. see filtered words\n" +
+                    "2. add word to the filter\n" +
+                    "3. remove the word from filter\n" +
+                    "4. quit";
+        System.out.println(menu);
+        boolean ongoing = true;
+        Scanner sc = new Scanner(System.in);
+        while(ongoing) {
+            String option = sc.nextLine();
+            switch (option) {
+                case "1":
+                    //TODO:FIX THIS
+                    System.out.println(toString());
+                    break;
+                case "2":
+                    System.out.println("please enter a word to be filtered");
+                    String word = sc.nextLine();
+                    try {
+                        add(word);
+                        System.out.println("Successfully added a word!");
+                        System.out.println(toString());
+                    } catch (Exception e) {
+                        System.out.println("Error while trying to add a word");
+                        e.printStackTrace();
+
+                    }
+                    break;
+                case "3":
+                    System.out.println("please enter a word to remove from filter");
+                    String wor = sc.nextLine();
+                    try {
+                        remove(wor);
+                        System.out.println("Successfully removed a word!");
+                        System.out.println(toString());
+                    } catch (Exception e) {
+                        System.out.println("Error while trying to remove a word");
+                        e.printStackTrace();
+                    }
+                    break;
+                case "4":
+                    ongoing = false;
+                    break;
+                default:
+                    System.out.println("Invalid input");
+                    break;
+            }
+        }
     }
 }
