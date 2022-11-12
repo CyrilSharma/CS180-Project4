@@ -12,7 +12,7 @@ import java.time.Instant;
 public class MessageManager {
     String tokenSep = "|||||";
     String messageSplit = "-----";
-    String conversationSplit = "\n#####";
+    String conversationSplit = "#####";
     private Random random;
     private Database db;
 
@@ -38,25 +38,26 @@ public class MessageManager {
             String recipient = "";
             String sender = "";
             while ((line = bfr.readLine()) != null) {
-                if (!line.contains(tokenSep)) {
-                    String[] senderRecipient = line.split("-");
-                    sender = senderRecipient[0];
-                    recipient = senderRecipient[1];
+                HashMap<String, String> message = new HashMap<String, String>();
+                if (!line.contains(tokenSep) && !line.contains(conversationSplit)) {
+                    recipient = line;
+                    message.put("recipient", recipient);
+                } else if (line.contains(conversationSplit)) {
+                    message.put("messageBreak", line);
                 } else {
-                    HashMap<String, String> message = new HashMap<String, String>();
-                    String[] lineArray = line.split(tokenSep);
+                    String[] lineArray = line.split("\\|\\|\\|\\|\\|");
                     message.put("message", lineArray[0]);
-                    message.put("messageNumber", lineArray[1]);
-                    message.put("recipient", lineArray[2]);
+                    message.put("messageNum", lineArray[2]);
+                    message.put("recipient", lineArray[1]);
                     //checks whether the person the text file is contacting sent or recieved the message
-                    if (message.get("recipient").equals(sender)) {
+                    if (message.get("recipient").equals(id)) {
                         message.put("sender", recipient);
                     } else {
-                        message.put("sender", sender);
+                        message.put("sender", id);
                     }
                     message.put("timeStamp", lineArray[3].split("-----")[0]);
-                    history.add(message);
                 }
+                history.add(message);
             }
             return history;
         } catch (FileNotFoundException e) {
@@ -95,103 +96,108 @@ public class MessageManager {
     public void generalMessage(String senderID, String recipientID, String message, String action, String messageID) throws IOException {
         File[] files = {new File("history/" + senderID + "-messageHistory.txt"),
             new File("history/" + recipientID + "-messageHistory.txt")};
-
-        for (int fileInd = 0; fileInd < files.length; fileInd++) {
-            // don't update recipient file on delete.
-            if (action.equals("delete") && fileInd == 1) {
-                continue;
-            }
-            File f = files[fileInd];
-            ArrayList<String> history = new ArrayList<String>();
-            if (f.createNewFile()) {
-                history.add(senderID + "-" + recipientID);
-            } else {
-                Scanner scan = new Scanner(f);
-                PrintWriter pw = new PrintWriter(new FileWriter(f), false);
-                String line;
-                int messageLine = 0;
-                int counter = 0;
-
-                // read until you find the conversation.
-                String curLine = "";
-                boolean hasConversation = false;
-                while (scan.hasNextLine() && (curLine = scan.nextLine()) != null) {
-                    history.add(curLine);
-                    if (!curLine.equals(senderID + "-" + recipientID)) {
-                        break;
-                    }
-                }
-
-                boolean conversationOver = false;
-                HashSet<String> hm = new HashSet<String>();
-                while (scan.hasNextLine() && !conversationOver) {
-                    // read potentially multiline string.
-                    line = "";
-                    String diff;
-                    while (!(diff = scan.nextLine()).contains(messageSplit)) {
-                        line += diff;
-                        if (diff.equals(conversationSplit)) {
-                            conversationOver = true;
-                            break;
-                        }
-                    }
-
-                    // read lines in conversation, and determine postion to insert | delete
-                    // also keep track of which ids exist.
-                    history.add(line);
-                    String[] tokens = line.split(tokenSep);
-                    String id = tokens[tokens.length-1];
-                    if (action.equals("message")) {
-                        if (line.equals(senderID + "-" + recipientID) || line.equals(recipientID + "-" + senderID)) {
-                            messageLine = counter;
-                        }
-                    } else if (action.equals("modify") || action.equals("delete")) {
-                        if (id == messageID) {
-                            messageLine = counter;
-                        }
-                    }
-                    hm.add(id);
-                    counter++;
-                }
-
-                // finish reading the file.
-                curLine = "";
-                while (scan.hasNextLine() && (curLine = scan.nextLine()) != null) {
-                    history.add(curLine);
-                }
-
-                // find valid new message ID.
-                String newId = "";
-                do {
+        files[0].createNewFile();
+        files[1].createNewFile();
+        ArrayList<HashMap<String, String>> senderHistory = getPersonalHistory(senderID);
+        ArrayList<HashMap<String, String>> recipientHistory = getPersonalHistory(recipientID);
+        if (action.equals("message")) {
+            if (messageID == null || messageID.equals("")) {
+                messageID = "";
+                //TODO: Add do-while loop to this
                     for (int i = 0; i < 14; i++) {
                         int num = random.nextInt(50);
-                        newId += (char)('0' + num);
+                        messageID += (char)('0' + num);
                     }
-                } while (hm.contains(newId));
-
-                // add new message along with associated information
-                if (action.equals("message") || action.equals("modify")) {
-                    String time = Instant.now().toString();
-                    history.add(messageLine, message + tokenSep + senderID + tokenSep 
-                        + newId + tokenSep + time + messageSplit);
-                } else if (action.equals("delete")) {
-                    history.remove(messageLine);
+            }
+            HashMap<String, String> historyLoc = new HashMap<String, String>();
+            historyLoc.put("recipient", recipientID);
+            int startLocation = senderHistory.indexOf(historyLoc);
+            historyLoc = new HashMap<String, String>();
+            historyLoc.put("recipient", senderID);
+            int startLocation2 = recipientHistory.indexOf(historyLoc);
+            HashMap<String, String> newEntry = new HashMap<String, String>();
+            newEntry.put("message", message);
+            newEntry.put("recipient", recipientID);
+            newEntry.put("messageNum", messageID);
+            newEntry.put("timeStamp", Instant.now().toString());
+            int i = startLocation;
+            int i2 = startLocation2;
+            if (startLocation == -1 || startLocation2 == -1) {
+                if (startLocation == -1) {
+                    HashMap<String, String> temp = new HashMap<String, String>();
+                    temp.put("recipient", recipientID);
+                    senderHistory.add(temp);
+                    HashMap<String, String> temp2 = new HashMap<String, String>();
+                    temp2.put("messageBreak", conversationSplit);
+                    senderHistory.add(temp2);
+                    i = senderHistory.size() - 1;
                 }
-                
-                // add conversation delimiter if it does not exist.
-                if (!history.get(history.size() - 1).equals(conversationSplit)) {
-                    history.add(conversationSplit);
+                if (startLocation2 == -1) {
+                    HashMap<String, String> temp = new HashMap<String, String>();
+                    temp.put("recipient", senderID);
+                    recipientHistory.add(temp);
+                    HashMap<String, String> temp2 = new HashMap<String, String>();
+                    temp2.put("messageBreak", conversationSplit);
+                    recipientHistory.add(temp2);
+                    i2 = recipientHistory.size() - 1;
                 }
-                System.out.println(history.toString());
-                String historyString = "";
-                for (String str : history) {
-                    historyString += str;
+            } else {
+                HashMap<String, String> line = senderHistory.get(i);
+                while (!line.containsKey("messageBreak")) {
+                    i++;
+                    line = senderHistory.get(i);
                 }
-                pw.write(historyString);
-                pw.close();
-                scan.close();
+                line = recipientHistory.get(i2);
+                while (!line.containsKey("messageBreak")) {
+                    i2++;
+                    line = recipientHistory.get(i2);
+                }
+            }
+            senderHistory.add(i, newEntry);
+            recipientHistory.add(i2, newEntry);
+        } else if (action.equals("edit")) {
+            for (HashMap<String, String> sendHist : senderHistory) {
+                if (sendHist.containsKey("messageNum") && sendHist.get("messageNum").equals(messageID)) {
+                    sendHist.put("message", message);
+                    break;
+                }
+            }
+            for (HashMap<String, String> recipHist : recipientHistory) {
+                if (recipHist.containsKey("messageNum") && recipHist.get("messageNum").equals(messageID)) {
+                    recipHist.put("message", message);
+                    break;
+                }
+            }
+        } else if (action.equals("delete")){
+            for (HashMap<String, String> sendHist : senderHistory) {
+                if (sendHist.containsKey("messageNum") && sendHist.get("messageNum").equals(messageID)) {
+                    senderHistory.remove(sendHist);
+                    break;
+                }
             }
         }
+        PrintWriter pw = new PrintWriter(files[0]);
+        pw.write(formatMessages(senderHistory));
+        pw.flush();
+        pw.close();
+        pw = new PrintWriter(files[1]);
+        pw.write(formatMessages(recipientHistory));
+        pw.flush();
+        pw.close();
+    }
+
+    private String formatMessages(ArrayList<HashMap<String, String>> messages) {
+        String messageString = "";
+        for (HashMap<String, String> things : messages) {
+            if (things.size() > 1) {
+                messageString += String.join(tokenSep, things.get("message"), things.get("recipient"), things.get("messageNum"), things.get("timeStamp") + messageSplit + "\n");
+            } else if (things.containsKey("recipient")) {
+                messageString += things.get("recipient") + "\n";
+            } else {
+                messageString += things.get("messageBreak") + "\n";
+            }
+        }
+        return messageString.strip();
     }
 
     public String readTextFromFile(String path) throws FileNotFoundException {
@@ -215,12 +221,14 @@ public class MessageManager {
         ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
         String text = "Message ID, Sender,Recipient,Time Stamp,Message Contents\n";
         for (HashMap<String, String> message : history) {
-            String recipient = db.get("id", message.get("recipient")).get("email");
-            String sender = db.get("id", message.get("sender")).get("email");
-            if (Arrays.asList(idsOfConversationsToRetrieve).contains(message.get("recipient"))) {
-                Instant time = Instant.parse(message.get("timeStamp"));
-                String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
-                text += String.join(",", message.get("messageNumber"), sender, recipient, timeStamp, message.get("message")) + "\n";
+            if (message.size() > 1){
+                String recipient = db.get("id", message.get("recipient")).get("email");
+                String sender = db.get("id", message.get("sender")).get("email");
+                if (Arrays.asList(idsOfConversationsToRetrieve).contains(message.get("recipient"))) {
+                    Instant time = Instant.parse(message.get("timeStamp"));
+                    String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
+                    text += String.join(",", message.get("messageNum"), sender, recipient, timeStamp, message.get("message")) + "\n";
+                }
             }
         }
         int count = 1;
