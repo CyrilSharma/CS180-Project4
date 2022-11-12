@@ -30,7 +30,7 @@ public class MainInterface {
             }
         } while (resp == -1);
 
-        MessageManager messageManager = new MessageManager("UserDatabase.txt");
+        MessageManager messageManager = new MessageManager("UserDatabase.txt", "history");
         if (resp == 1) { //Login
             boolean loggedIn = false;
             String email = "";

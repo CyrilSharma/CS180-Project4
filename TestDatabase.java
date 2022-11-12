@@ -1,8 +1,6 @@
 import java.io.File;
 import java.util.HashMap;
-/**
- * This class contains tests and some utility functions for making test data.
- */
+
 public class TestDatabase {
     public static void main(String[] args) {
         System.out.println("Test " + (test1() ? "Passed" : "Failed"));

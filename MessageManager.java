@@ -34,8 +34,9 @@ public class MessageManager {
     }
 
     public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
-        try (BufferedReader bfr = new BufferedReader(new FileReader(
-                new File(historyDir + "/" + id + "-messageHistory.txt")))) {
+        File f = new File(historyDir + "/" + id + "-messageHistory.txt");
+        f.createNewFile();
+        try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             ArrayList<HashMap<String, String>> history = new ArrayList<HashMap<String, String>>();
             String line;
             String recipient = "";
@@ -160,8 +161,7 @@ public class MessageManager {
                     }
                 }
             }
-            File f = new File("history/" + id + "-messageHistory.txt");
-            f.createNewFile();
+            File f = new File(historyDir + "/" + id + "-messageHistory.txt");
             PrintWriter pw = new PrintWriter(f);
             pw.write(formatMessages(history));
             pw.flush();
