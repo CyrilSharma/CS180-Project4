@@ -15,9 +15,11 @@ public class MessageManager {
     String conversationSplit = "#####";
     private Random random;
     private Database db;
+    private String historyDir;
 
-    public MessageManager(String path) {
-        db = new Database(path);
+    public MessageManager(String dbPath, String historyPath) {
+        db = new Database(dbPath);
+        historyDir = historyPath;
         random = new Random();
     }
 
@@ -32,11 +34,11 @@ public class MessageManager {
     }
 
     public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
-        try (BufferedReader bfr = new BufferedReader(new FileReader(new File("history/" + id + "-messageHistory.txt")))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(
+                new File(historyDir + "/" + id + "-messageHistory.txt")))) {
             ArrayList<HashMap<String, String>> history = new ArrayList<HashMap<String, String>>();
             String line;
             String recipient = "";
-            String sender = "";
             while ((line = bfr.readLine()) != null) {
                 HashMap<String, String> message = new HashMap<String, String>();
                 if (!line.contains(tokenSep) && !line.contains(conversationSplit)) {
@@ -94,96 +96,77 @@ public class MessageManager {
 
 
     public void generalMessage(String senderID, String recipientID, String message, String action, String messageID) throws IOException {
-        File[] files = {new File("history/" + senderID + "-messageHistory.txt"),
-            new File("history/" + recipientID + "-messageHistory.txt")};
-        files[0].createNewFile();
-        files[1].createNewFile();
-        ArrayList<HashMap<String, String>> senderHistory = getPersonalHistory(senderID);
-        ArrayList<HashMap<String, String>> recipientHistory = getPersonalHistory(recipientID);
-        if (action.equals("message")) {
-            if (messageID == null || messageID.equals("")) {
-                messageID = "";
-                //TODO: Add do-while loop to this
-                    for (int i = 0; i < 14; i++) {
-                        int num = random.nextInt(50);
-                        messageID += (char)('0' + num);
-                    }
-            }
-            HashMap<String, String> historyLoc = new HashMap<String, String>();
-            historyLoc.put("recipient", recipientID);
-            int startLocation = senderHistory.indexOf(historyLoc);
-            historyLoc = new HashMap<String, String>();
-            historyLoc.put("recipient", senderID);
-            int startLocation2 = recipientHistory.indexOf(historyLoc);
-            HashMap<String, String> newEntry = new HashMap<String, String>();
-            newEntry.put("message", message);
-            newEntry.put("recipient", recipientID);
-            newEntry.put("messageNum", messageID);
-            newEntry.put("timeStamp", Instant.now().toString());
-            int i = startLocation;
-            int i2 = startLocation2;
-            if (startLocation == -1 || startLocation2 == -1) {
+        String[] ids = {senderID, recipientID};
+        for (String id: ids) {
+            ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
+            if (action.equals("message")) {
+                if (messageID == null || messageID.equals("")) {
+                    do {
+                        messageID = "";
+                        //TODO: Add do-while loop to this
+                        for (int i = 0; i < 14; i++) {
+                            int num = random.nextInt(50);
+                            messageID += (char)('0' + num);
+                        }
+                        // lookup ID efficiently.
+                    } while (false);
+                }
+                HashMap<String, String> historyLoc = new HashMap<String, String>();
+                historyLoc.put("recipient", recipientID);
+
+
+                int startLocation = history.indexOf(historyLoc);
+                historyLoc = new HashMap<String, String>();
+                historyLoc.put("recipient", senderID);
+
+
+                HashMap<String, String> newEntry = new HashMap<String, String>();
+                newEntry.put("message", message);
+                newEntry.put("recipient", recipientID);
+                newEntry.put("messageNum", messageID);
+                newEntry.put("timeStamp", Instant.now().toString());
+
+                int i = startLocation;
                 if (startLocation == -1) {
                     HashMap<String, String> temp = new HashMap<String, String>();
                     temp.put("recipient", recipientID);
-                    senderHistory.add(temp);
+                    history.add(temp);
                     HashMap<String, String> temp2 = new HashMap<String, String>();
                     temp2.put("messageBreak", conversationSplit);
-                    senderHistory.add(temp2);
-                    i = senderHistory.size() - 1;
+                    history.add(temp2);
+                    i = history.size() - 1;
+                } else {
+                    HashMap<String, String> line = history.get(i);
+                    while (!line.containsKey("messageBreak")) {
+                        i++;
+                        line = history.get(i);
+                    }
                 }
-                if (startLocation2 == -1) {
-                    HashMap<String, String> temp = new HashMap<String, String>();
-                    temp.put("recipient", senderID);
-                    recipientHistory.add(temp);
-                    HashMap<String, String> temp2 = new HashMap<String, String>();
-                    temp2.put("messageBreak", conversationSplit);
-                    recipientHistory.add(temp2);
-                    i2 = recipientHistory.size() - 1;
+                history.add(i, newEntry);
+            } else if (action.equals("edit")) {
+                for (HashMap<String, String> hist : history) {
+                    if (hist.containsKey("messageNum") && hist.get("messageNum").equals(messageID)) {
+                        hist.put("message", message);
+                        break;
+                    }
                 }
-            } else {
-                HashMap<String, String> line = senderHistory.get(i);
-                while (!line.containsKey("messageBreak")) {
-                    i++;
-                    line = senderHistory.get(i);
-                }
-                line = recipientHistory.get(i2);
-                while (!line.containsKey("messageBreak")) {
-                    i2++;
-                    line = recipientHistory.get(i2);
-                }
-            }
-            senderHistory.add(i, newEntry);
-            recipientHistory.add(i2, newEntry);
-        } else if (action.equals("edit")) {
-            for (HashMap<String, String> sendHist : senderHistory) {
-                if (sendHist.containsKey("messageNum") && sendHist.get("messageNum").equals(messageID)) {
-                    sendHist.put("message", message);
-                    break;
+            } else if (action.equals("delete")){
+                if (id.equals(senderID)) {
+                    for (HashMap<String, String> hist : history) {
+                        if (hist.containsKey("messageNum") && hist.get("messageNum").equals(messageID)) {
+                            history.remove(hist);
+                            break;
+                        }
+                    }
                 }
             }
-            for (HashMap<String, String> recipHist : recipientHistory) {
-                if (recipHist.containsKey("messageNum") && recipHist.get("messageNum").equals(messageID)) {
-                    recipHist.put("message", message);
-                    break;
-                }
-            }
-        } else if (action.equals("delete")){
-            for (HashMap<String, String> sendHist : senderHistory) {
-                if (sendHist.containsKey("messageNum") && sendHist.get("messageNum").equals(messageID)) {
-                    senderHistory.remove(sendHist);
-                    break;
-                }
-            }
+            File f = new File("history/" + id + "-messageHistory.txt");
+            f.createNewFile();
+            PrintWriter pw = new PrintWriter(f);
+            pw.write(formatMessages(history));
+            pw.flush();
+            pw.close();
         }
-        PrintWriter pw = new PrintWriter(files[0]);
-        pw.write(formatMessages(senderHistory));
-        pw.flush();
-        pw.close();
-        pw = new PrintWriter(files[1]);
-        pw.write(formatMessages(recipientHistory));
-        pw.flush();
-        pw.close();
     }
 
     private String formatMessages(ArrayList<HashMap<String, String>> messages) {
@@ -233,7 +216,6 @@ public class MessageManager {
         }
         int count = 1;
         Path path = Path.of("csv");
-        List<Path> filesInDir = Files.list(path).toList();
         File file = new File("csv/" + id + "-historyCSV.csv");
         if (!file.createNewFile()) {
             while (!(file = new File("csv/" + id + "-historyCSV-" + count + ".csv")).createNewFile()) {
@@ -245,5 +227,4 @@ public class MessageManager {
         pw.flush();
         pw.close();
     }
-
 }

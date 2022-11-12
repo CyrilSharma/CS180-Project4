@@ -32,6 +32,11 @@ public class Database {
     //Returns everything in the user database into an arraylist of HashMaps
     private ArrayList<HashMap<String, String>> readFromDatabase(String path) {
         File f = new File(path);
+        try {
+            f.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             ArrayList<HashMap<String, String>> userList = new ArrayList<HashMap<String, String>>();
             String line;

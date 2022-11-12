@@ -2,7 +2,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class MainInterface {
-
     public static void main(String[] args) throws InvalidUserException {
         Database db = new Database("Database.txt");
         String PROMPT = "Would you like to..." +
