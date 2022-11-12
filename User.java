@@ -22,7 +22,7 @@ public class User {
         this.password = password;
         this.role = role;
         this.hasAccount = true;
-        this.manager = new MessageManager("UserDatabase.txt");
+        this.manager = new MessageManager("UserDatabase.txt", "history");
         db = new Database("UserDatabase.txt");
         stores = new ArrayList<>();
         this.id = db.get("email", this.email).get("id");
