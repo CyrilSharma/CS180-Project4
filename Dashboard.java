@@ -11,6 +11,7 @@ public class Dashboard {
     private ArrayList<ArrayList<String[]>> allConversations;
     private ArrayList<ArrayList<String[]>> myConversations;
     private Role role;
+    private String id;
     private String email;
     private HashMap<String, String> userdata;
 
@@ -20,7 +21,6 @@ public class Dashboard {
         this.email = email;
         Database database = new Database("UserDatabase.txt");
         loadUserFromDatabase(email, database);
-        textDatabase = new File(msgDatabaseLocation);
         allConversations = new ArrayList<>();
         myConversations = new ArrayList<>();
     }
@@ -37,6 +37,8 @@ public class Dashboard {
         } else {
             System.out.println("DATABASE ERROR");
         }
+        id = map.get("id");
+        textDatabase = new File("history/"+ id + "-messageHistory.txt");
         userdata = map;
         System.out.println("Successfully loaded!");
     }
@@ -47,8 +49,12 @@ public class Dashboard {
         int[] messageData = new int[2];
         int customerSent = 0;
         int sellerSent = 0;
-        for (String[] msg: conversation) {
-            if (msg[0].equals(email)) {
+        for (int i = 0 ; i < conversation.size(); i++) {
+            String[] msg = conversation.get(i);
+            if (i == 0) {
+                continue;
+            }
+            if (msg[0].equals(id)) {
                 if (role == Role.Customer) {
                     customerSent++;
                 } else {
@@ -70,7 +76,7 @@ public class Dashboard {
     //get other user's name with conversation list
     public String getOtherName(ArrayList<String[]> conversation) {
         String name = "";
-        if (conversation.get(0)[0].equals(email)) {
+        if (conversation.get(0)[0].equals(id)) {
             name = conversation.get(0)[1];
         } else {
             name = conversation.get(0)[0];
@@ -115,10 +121,11 @@ public class Dashboard {
 
     //print the statistics of the current user
     public void printMyStatistic() {
+        //System.out.println(myConversations.size());
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", conv.get(0)[2]);
+                System.out.printf("Store name: %s\n", "placeholder");
                 System.out.printf("Seller name: %s\n", getOtherName(conv));
                 System.out.printf("Message Sent: %d\n", data[0]);
                 System.out.printf("Message Received: %d\n\n", data[1]);
@@ -126,7 +133,7 @@ public class Dashboard {
         } else {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", conv.get(0)[2]);
+                System.out.printf("Store name: %s\n", "placeholder");
                 System.out.printf("Customer name: %s\n", getOtherName(conv));
                 System.out.printf("Message Received: %d\n", data[0]);
                 System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
@@ -148,50 +155,99 @@ public class Dashboard {
                     break;
                 }
                 ArrayList<String[]> conversation = new ArrayList<>();
-                String[] users = line.split(USER_SPLIT_STRING);
+                String path = "history/"+ line + "-messageHistory.txt";
+                String[] users = new String[2];
+                if (role == Role.Seller) {
+                    users[0] = line;
+                    users[1] = id;
+                } else {
+                    users[0] = id;
+                    users[1] = line;
+                }
                 conversation.add(users);
                 line = bfr.readLine();
                 if (line == null) {
                     break;
                 }
-                while (!line.equals("-")) {
-                    String[] chart = line.split(DATABASE_SECTION_STRING);
+                while (!line.equals("#####")) {
+                    String[] chart = line.split("\\|\\|\\|\\|\\|");
                     //System.out.println(line);
                     String[] message = new String[2];
-                    String name = chart[0].substring(chart[0].indexOf(">") + 1);
-                    String msg = chart[1].substring(1);
+                    String name = chart[1];
+                    String msg = chart[0];
                     message[0] = name;
                     message[1] = msg;
-
                     conversation.add(message);
                     line = bfr.readLine();
                     if (line == null) {
                         break;
                     }
                 }
-                allConversations.add(conversation);
-                if (users[0].equals(email) || users[1].equals(email)) {
-                    myConversations.add(conversation);
+                ArrayList<String> messages = readDatabaseOther(path);
+                String recipient = "";
+                for (String msg: messages) {
+                    String[] message = new String[2];
+                    message[0] = recipient;
+                    message[1] = msg;
+                    conversation.add(message);
                 }
+                myConversations.add(conversation);
             }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Database Error!");
         }
     }
+    public ArrayList<String> readDatabaseOther(String path) {
+        File f = new File(path);
+        FileReader fr;
+        BufferedReader bfr;
+        try {
+            fr = new FileReader(f);
+            bfr = new BufferedReader(fr);
+            ArrayList<String> messages = new ArrayList<>();
+            while(true) {
+                String line = bfr.readLine();
+                if (line == null) {
+                    break;
+                }
+                String[] users = new String[2];
+                if (line.equals(id)) {
+                    line = bfr.readLine();
+                    while (!line.equals("#####")) {
+                        String[] chart = line.split("\\|\\|\\|\\|\\|");
+                        messages.add(chart[0]);
+                        line = bfr.readLine();
+                        if (line == null) {
+                            break;
+                        }
+                    }
+                }
+                line = bfr.readLine();
+                if (line == null) {
+                    break;
+                }
+            }
+            return messages;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Database Error!");
+        }
+        return null;
+    }
 
     //dashboard menu
 
     public void presentDashboard() {
         String MENU_MESSAGE = "what do you want to do? " +
-                              "\n1. sort stores";
+                "\n1. sort stores";
 
         if (role == Role.Seller) {
             MENU_MESSAGE += "\n2. sort customers" +
-                            "\n3. quit";
+                    "\n3. quit";
         } else {
             MENU_MESSAGE += "\n2. sort sellers" +
-                            "\n3. quit";
+                    "\n3. quit";
         }
 
         String SORT_MESSAGE = "How do you want to sort? " +
@@ -291,12 +347,11 @@ public class Dashboard {
     //option 1 = sort store, 2 = sort other users
     //set myConversation list that sorted store/customers in alphabetical order
     public void sortByAlphabet(int option) {
-        //TODO ADD IMPLEMENTATION FOR STORE
         ArrayList<String> sortedList = new ArrayList<>();
         if (option == 1) {
-                for (ArrayList<String[]> conversation: myConversations) {
-                    sortedList.add(conversation.get(0)[2]);
-                }
+            for (ArrayList<String[]> conversation: myConversations) {
+                sortedList.add(conversation.get(0)[2]);
+            }
         } else {
             if (role == Role.Seller) {
                 for (ArrayList<String[]> conversation: myConversations) {
@@ -398,8 +453,4 @@ public class Dashboard {
         sortByHighestReceived();
         Collections.reverse(myConversations);
     }
-
-
-
-
 }
