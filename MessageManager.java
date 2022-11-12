@@ -18,6 +18,7 @@ public class MessageManager {
 
     public MessageManager(String path) {
         db = new Database(path);
+        random = new Random();
     }
 
     //Returns the names of all the customers a user can talk to
@@ -31,22 +32,29 @@ public class MessageManager {
     }
 
     public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
-        try (BufferedReader bfr = new BufferedReader(new FileReader(new File(id + "-messageHistory.txt")))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(new File("history/" + id + "-messageHistory.txt")))) {
             ArrayList<HashMap<String, String>> history = new ArrayList<HashMap<String, String>>();
             String line;
-            String sender = id;
             String recipient = "";
+            String sender = "";
             while ((line = bfr.readLine()) != null) {
-                if (!line.contains("#####")) {
-                    recipient = line;
+                if (!line.contains(tokenSep)) {
+                    String[] senderRecipient = line.split("-");
+                    sender = senderRecipient[0];
+                    recipient = senderRecipient[1];
                 } else {
                     HashMap<String, String> message = new HashMap<String, String>();
-                    message.put("message", line.split("\\|\\|\\|\\|\\|")[0]);
-                    line = line.split("\\|\\|\\|\\|\\|")[1];
-                    message.put("messageNumber", line.split("#####")[0]);
-                    line = line.split("#####")[1];
-                    message.put("timeStamp", line.split("-----")[0]);
-                    message.put("recipient", recipient);
+                    String[] lineArray = line.split(tokenSep);
+                    message.put("message", lineArray[0]);
+                    message.put("messageNumber", lineArray[1]);
+                    message.put("recipient", lineArray[2]);
+                    //checks whether the person the text file is contacting sent or recieved the message
+                    if (message.get("recipient").equals(sender)) {
+                        message.put("sender", recipient);
+                    } else {
+                        message.put("sender", sender);
+                    }
+                    message.put("timeStamp", lineArray[3].split("-----")[0]);
                     history.add(message);
                 }
             }
@@ -85,8 +93,8 @@ public class MessageManager {
 
 
     public void generalMessage(String senderID, String recipientID, String message, String action, String messageID) throws IOException {
-        File[] files = {new File(senderID + "-messageHistory.txt"),
-            new File(recipientID + "-messageHistory.txt")};
+        File[] files = {new File("history/" + senderID + "-messageHistory.txt"),
+            new File("history/" + recipientID + "-messageHistory.txt")};
 
         for (int fileInd = 0; fileInd < files.length; fileInd++) {
             // don't update recipient file on delete.
@@ -106,7 +114,8 @@ public class MessageManager {
 
                 // read until you find the conversation.
                 String curLine = "";
-                while ((curLine = scan.nextLine()) != null) {
+                boolean hasConversation = false;
+                while (scan.hasNextLine() && (curLine = scan.nextLine()) != null) {
                     history.add(curLine);
                     if (!curLine.equals(senderID + "-" + recipientID)) {
                         break;
@@ -147,7 +156,7 @@ public class MessageManager {
 
                 // finish reading the file.
                 curLine = "";
-                while ((curLine = scan.nextLine()) != null) {
+                while (scan.hasNextLine() && (curLine = scan.nextLine()) != null) {
                     history.add(curLine);
                 }
 
@@ -161,11 +170,7 @@ public class MessageManager {
                 } while (hm.contains(newId));
 
                 // add new message along with associated information
-                if (action.equals("message")) {
-                    String time = Instant.now().toString();
-                    history.add(messageLine, message + tokenSep + senderID + tokenSep 
-                        + newId + tokenSep + time + messageSplit);
-                } else if (action.equals("modify")) {
+                if (action.equals("message") || action.equals("modify")) {
                     String time = Instant.now().toString();
                     history.add(messageLine, message + tokenSep + senderID + tokenSep 
                         + newId + tokenSep + time + messageSplit);
@@ -177,6 +182,12 @@ public class MessageManager {
                 if (!history.get(history.size() - 1).equals(conversationSplit)) {
                     history.add(conversationSplit);
                 }
+                System.out.println(history.toString());
+                String historyString = "";
+                for (String str : history) {
+                    historyString += str;
+                }
+                pw.write(historyString);
                 pw.close();
                 scan.close();
             }
@@ -202,13 +213,14 @@ public class MessageManager {
 
     public void messagesToCSV(String id, String[] idsOfConversationsToRetrieve) throws IOException {
         ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
-        String text = "Message Number,Recipient,Time Stamp,Message Contents\n";
+        String text = "Message ID, Sender,Recipient,Time Stamp,Message Contents\n";
         for (HashMap<String, String> message : history) {
             String recipient = db.get("id", message.get("recipient")).get("email");
+            String sender = db.get("id", message.get("sender")).get("email");
             if (Arrays.asList(idsOfConversationsToRetrieve).contains(message.get("recipient"))) {
                 Instant time = Instant.parse(message.get("timeStamp"));
                 String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
-                text += String.join(",", message.get("messageNumber"), recipient, timeStamp, message.get("message")) + "\n";
+                text += String.join(",", message.get("messageNumber"), sender, recipient, timeStamp, message.get("message")) + "\n";
             }
         }
         int count = 1;

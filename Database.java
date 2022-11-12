@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.InvalidAlgorithmParameterException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,6 +126,32 @@ public class Database {
         changeInfo.put("blocked", String.join(",", blockedUsers));
     }
 
+    public void unblock(String name, String emailToUnblock) throws InvalidUserException {
+        HashMap<String, String> blocker = get("email", name);
+        HashMap<String, String> blocked = get("email", emailToUnblock);
+        if (blocker == null || blocked == null) {
+            throw new InvalidUserException("That email does not exist");
+        }
+        ArrayList<String> blockedUsers = new ArrayList<String>(
+            Arrays.asList(blocker.get("blocked").split(","))
+        );
+        boolean removed = blockedUsers.remove(blocked.get("id"));
+        if (removed) {
+            try {
+                if (blockedUsers.isEmpty()) {
+                    blockedUsers = null;
+                }
+                modify(name, "blocked", String.join(",", blockedUsers));
+            } catch (InvalidKeyException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        else {
+            throw new InvalidUserException("You are not blocking that user");
+        }
+    }
+
     // Returns whether the password given for a user was the correct password
     public boolean verify(String name, String password) {
         HashMap<String, String> user = get("email", name);
@@ -153,7 +180,9 @@ public class Database {
         if (!validateKey(key)) {
             throw new InvalidKeyException(String.format("Invalid Key: {%s}", key));
         }
-
+        if (!validate(val, key)) {
+            throw new InvalidUserException("That is not a valid email");
+        }
         for (int i = 0; i < database.size(); i++) {
             HashMap<String, String> user = database.get(i);
             if (user.get("email").equals(email)) {
