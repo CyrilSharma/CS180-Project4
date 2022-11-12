@@ -19,7 +19,7 @@ public class Database {
     private String databasePath;
     private ArrayList<HashMap<String, String>> database;
     private final String DATABASE_SPLIT = "###";
-    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked"};
+    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
     private final String BLOCKED_SPLIT_STRING = ",";
     private Random random;
 
