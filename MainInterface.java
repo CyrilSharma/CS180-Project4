@@ -58,21 +58,12 @@ public class MainInterface {
                     int userAction;
                     userAction = scan.nextInt();
                     scan.nextLine();
-                    do {
-                        try {
-                            userAction = scan.nextInt();
-                            scan.nextLine();
-                            if (userAction < 1 || userAction > 4) {
-                                System.out.println("Input invalid, try again.");
-                                System.out.println(MESSAGEPROMPT);
-                                userAction = 0;
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Input invalid, try again.");
-                            System.out.println(MESSAGEPROMPT);
-                            userAction = 0;
-                        }
-                    } while (userAction == 0);
+                    while (userAction > 1 || userAction > 8) {
+                        System.out.println("Input invalid, try again.");
+                        System.out.println(PROMPT);
+                        userAction = scan.nextInt();
+                        scan.nextLine();
+                    }
                     if (userAction == 1) {
                         //message user
                         String MESSAGEPROMPT2 = "";
@@ -181,7 +172,22 @@ public class MainInterface {
                         //block user
                         //option to see list of customers or stores (dep on role) to see who to block
                         if (acct.get("role").toLowerCase() == "customer") {
-                            System.out.println("Would you like to view a list of stores?");
+                            System.out.println("Would you like to view a list of the available stores? (Y/N)");
+                            String storeList = "";
+                            storeList = scan.nextLine();
+                            while (!storeList.equals("Y") && !storeList.equals("N")) {
+                                System.out.println("Invalid input, try again.");
+                                System.out.println("Would you like to view a list of the available stores? (Y/N)");
+                                storeList = scan.nextLine();
+                            }
+                            if (storeList.equals("Y")) {
+                                try {
+                                    user.viewStores();
+                                } catch (IOException e) {
+                                    System.out.println("Could not perform action");
+                                }
+                            }
+                        } else {
                             System.out.println("Would you like to view a list of customers? (Y/N)");
                             String storeList = "";
                             storeList = scan.nextLine();
@@ -193,13 +199,23 @@ public class MainInterface {
                             if (storeList.equals("Y")) {
                                 user.viewCustomers();
                             }
-                        } else {
-                            System.out.println("Would you like to view a list of customers?");
                         }
-
+                        System.out.println("Who would you like to block?");
+                        String userToBlock = "";
+                        userToBlock = scan.nextLine();
+                        boolean invisible;
+                        System.out.println("Would you like to be invisble?");
+                        invisible = Boolean.parseBoolean(scan.nextLine());
+                        db.block(email, userToBlock, invisible);
                     } else if (userAction == 5) {
                         if (acct.get("role").toLowerCase() == "customer") {
                             System.out.println("You cannot do this, you are a customer!");
+                        } else {
+                            String storeName = "";
+                            System.out.println("What is the name of the store you would like to add?");
+                            storeName = scan.nextLine();
+                            user.addStores(storeName);
+                            System.out.println(storeName + "has been created!");
                         }
                     } else if (userAction == 6) {
                         //Exit? (Could be a go back to start button)
