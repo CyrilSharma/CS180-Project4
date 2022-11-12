@@ -200,15 +200,16 @@ public class MessageManager {
         return messageString.strip();
     }
 
-    public String readTextFromFile(String path) throws FileNotFoundException {
-        String text = "";
+    public String[] readTextFromFile(String path) throws FileNotFoundException {
+        String[] text = null;
         try (BufferedReader bfr = new BufferedReader(new FileReader(new File(path)))) {
             ArrayList<String> list = new ArrayList<String>();
             String line;
             while ((line = bfr.readLine()) != null) {
                 list.add(line);
             }
-            text = String.join("\n", list);
+            text = new String[list.size()];
+            text = list.toArray(text);
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
