@@ -31,7 +31,7 @@ public class Seller {
     }
     //Sellers can see who they can send messages to
     public void viewCustomers() throws InvalidUserException {
-        MessageManager manager = new MessageManager();
+        MessageManager manager = new MessageManager("UserDatabase.txt");
         ArrayList<String> customers = manager.getNames("Customer");
         for(String customer: customers) {
             System.out.println(customer);
@@ -43,7 +43,7 @@ public class Seller {
     }
 // Sellers can choose a customer to send a message to
     public void selectCustomer(String username, String message) throws InvalidUserException, IOException {
-        MessageManager manager = new MessageManager();
+        MessageManager manager = new MessageManager("UserDatabase.txt");
         ArrayList<String> customers = manager.getNames("Customer");
         for (String customer : customers) {
             if (username.equals(customer)) {

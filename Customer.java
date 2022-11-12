@@ -13,7 +13,7 @@ public class Customer {
     //Customer can see who they can send messages to (list of stores)
     public void viewStores() throws InvalidUserException, IOException {
         //Will print store and seller
-        MessageManager manager = new MessageManager();
+        MessageManager manager = new MessageManager("UserDatabase.txt");
         BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
         String line = br.readLine();
         while(line != null) {
@@ -23,7 +23,7 @@ public class Customer {
     }
     //Customer can choose a store and send a message to the seller
     public void selectSeller(String store, String message) throws InvalidUserException, IOException {
-        MessageManager manager = new MessageManager();
+        MessageManager manager = new MessageManager("UserDatabase.txt");
         ArrayList<String> stores = new ArrayList<String>();
         BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
         String line = br.readLine();
