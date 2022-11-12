@@ -215,7 +215,6 @@ public class MessageManager {
             }
         }
         int count = 1;
-        Path path = Path.of("csv");
         File file = new File("csv/" + id + "-historyCSV.csv");
         if (!file.createNewFile()) {
             while (!(file = new File("csv/" + id + "-historyCSV-" + count + ".csv")).createNewFile()) {
