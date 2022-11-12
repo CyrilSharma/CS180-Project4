@@ -90,7 +90,7 @@ public class User {
             for (int i = 0; i < stores.size(); i++) {
                 if (stores.get(i).contains(store)) {
                     String seller = stores.get(i).split("-")[1];
-                    manager.messageUser(this.email, seller, message);
+                    manager.messageUser(db.get("email", this.email).get("id"), db.get("email", seller).get("id"), message);
                 }
             }
         } else if (blocked) {
@@ -166,7 +166,7 @@ public class User {
             ArrayList<String> customers = manager.getNames("Customer");
             for (String customer : customers) {
                 if (email.equals(customer)) {
-                    manager.messageUser(this.email, recipient, message);
+                    manager.messageUser(db.get("email", this.email).get("id"), db.get("email", recipient).get("id"), message);
                 }
             }
         } else if (blocked) {
