@@ -38,11 +38,7 @@ public class MessageManager {
             while ((line = bfr.readLine()) != null) {
                 HashMap<String, String> message = new HashMap<String, String>();
                 if (!line.contains(tokenSep) && !line.contains(conversationSplit)) {
-                    recipient = line.split("-")[0];
-                    message.put("recipient", recipient);
-                    if (line.contains("-")) {
-                        message.put("store", line.split("-")[0]);
-                    }
+                    message.put("recipient", line);
                 } else if (line.contains(conversationSplit)) {
                     message.put("messageBreak", line);
                 } else {
@@ -56,7 +52,8 @@ public class MessageManager {
                     } else {
                         message.put("sender", id);
                     }
-                    message.put("timeStamp", lineArray[3].split("-----")[0]);
+                    message.put("timeStamp", lineArray[3]);
+                    message.put("store", lineArray[4].split("-----")[0]);
                 }
                 history.add(message);
             }
@@ -69,9 +66,9 @@ public class MessageManager {
         return null;
     }
 
-    public void messageUser(String senderID, String recipientID, String message) {
+    public void messageUser(String senderID, String recipientID, String message, String store) {
         try {
-            generalMessage(senderID, recipientID, message, "message", "");
+            generalMessage(senderID, recipientID, message, "message", "", store);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +76,7 @@ public class MessageManager {
 
     public void editMessage(String senderID, String recipientID, String message, String messageId) {
         try {
-            generalMessage(senderID, recipientID, message, "edit", messageId);
+            generalMessage(senderID, recipientID, message, "edit", messageId, "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,14 +84,14 @@ public class MessageManager {
 
     public void deleteMessage(String senderID, String recipientID, String messageId) {
         try {
-            generalMessage(senderID, recipientID, "", "delete", messageId);
+            generalMessage(senderID, recipientID, "", "delete", messageId, "");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public void generalMessage(String senderID, String recipientID, String message, String action, String messageID) throws IOException {
+    public void generalMessage(String senderID, String recipientID, String message, String action, String messageID, String store) throws IOException {
         String[] ids = {senderID, recipientID};
         for (String id: ids) {
             ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
@@ -120,6 +117,7 @@ public class MessageManager {
                 newEntry.put("recipient", recipientID);
                 newEntry.put("messageNum", messageID);
                 newEntry.put("timeStamp", Instant.now().toString());
+                newEntry.put("store", store);
 
                 int i = startLocation;
                 if (startLocation == -1) {
@@ -167,7 +165,7 @@ public class MessageManager {
         String messageString = "";
         for (HashMap<String, String> things : messages) {
             if (things.size() > 1) {
-                messageString += String.join(tokenSep, things.get("message"), things.get("recipient"), things.get("messageNum"), things.get("timeStamp") + messageSplit + "\n");
+                messageString += String.join(tokenSep, things.get("message"), things.get("recipient"), things.get("messageNum"), things.get("timeStamp"), things.get("store") + messageSplit + "\n");
             } else if (things.containsKey("recipient")) {
                 messageString += things.get("recipient") + "\n";
             } else {
@@ -197,7 +195,7 @@ public class MessageManager {
 
     public void messagesToCSV(String id, String[] idsOfConversationsToRetrieve) throws IOException {
         ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
-        String text = "Message ID, Sender,Recipient,Time Stamp,Message Contents\n";
+        String text = "Message ID, Sender,Recipient,Store,Time Stamp,Message Contents\n";
         for (HashMap<String, String> message : history) {
             if (message.size() > 1){
                 String recipient = db.get("id", message.get("recipient")).get("email");
@@ -205,7 +203,7 @@ public class MessageManager {
                 if (Arrays.asList(idsOfConversationsToRetrieve).contains(message.get("recipient"))) {
                     Instant time = Instant.parse(message.get("timeStamp"));
                     String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
-                    text += String.join(",", message.get("messageNum"), sender, recipient, timeStamp, message.get("message")) + "\n";
+                    text += String.join(",", message.get("messageNum"), sender, recipient, message.get("store"), timeStamp, message.get("message")) + "\n";
                 }
             }
         }

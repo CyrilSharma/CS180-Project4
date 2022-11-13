@@ -7,8 +7,22 @@ public class MessageInterface {
     public static void message(Scanner scanner, MessageManager mm, Database db, String id) {
         HashMap<String, String> h = db.get("id", id);
         HashMap<String, String> recipient;
-        System.out.println("Who would you like to send a message to?");
-        recipient = db.get("email", scanner.nextLine());
+        String email;
+        String store;
+        if (h.get("role").equals(Role.Customer.toString())) {
+            System.out.println("Which store you like to send a message to?");
+            store = scanner.nextLine();
+            email = User.getEmailFromStore(store);
+            if (email == null) {
+                System.out.println("That is not a valid store");
+                return;
+            }
+        } else {
+            System.out.println("Who do you want to message:");
+            email = scanner.nextLine();
+            store = "";
+        }
+        recipient = db.get("email", email);
         if (recipient == null || !recipient.containsKey("blocked") || recipient.get("role").equals(h.get("role")) || recipient.get("blocked").contains(id) || h.get("blocked").contains(recipient.get("id"))) {
             recipient = null;
             System.out.println("You do not have permission to message that user");
@@ -46,7 +60,7 @@ public class MessageInterface {
             } while (message == null);
         }
         for (String messages : message) {
-            mm.messageUser(h.get("id"), recipient.get("id"), messages);
+            mm.messageUser(h.get("id"), recipient.get("id"), messages, store);
         }
         System.out.println("Message sent");
     }
@@ -102,9 +116,15 @@ public class MessageInterface {
             if (message.get("recipient").equals(otherUser.get("id"))) {
                 sender = userEmail;
                 recipient = otherUserEmail;
+                if (!otherUser.get("role").equals(Role.Customer.toString())) {
+                    recipient += " (" + message.get("store") + ")";
+                }
             } else {
                 sender = otherUserEmail;
                 recipient = userEmail;
+                if (otherUser.get("role").equals(Role.Customer.toString())) {
+                    recipient += " (" + message.get("store") + ")";
+                }
             }
             String timeString = message.get("timeStamp");
             conversations = String.format("%s->%s at %s: %s\n", sender, recipient, timeString, content) + conversations;

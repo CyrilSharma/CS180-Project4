@@ -1,3 +1,4 @@
+import java.time.Instant;
 import java.util.*;
 
 public class MainInterface {
@@ -81,7 +82,7 @@ public class MainInterface {
                             } while (userAction < 1 || userAction > 14);
                             if (userAction == 1) {
                                 //message user
-                                if (acct.get("role").toLowerCase() == "customer") {
+                                if (acct.get("role").toLowerCase().equals("customer")) {
                                     //option to view available stores
                                     System.out.println("Would you like to view a list of the available stores? (Y/N)");
                                     String storeList = "";
@@ -301,6 +302,12 @@ public class MainInterface {
                                 loop2 = false;
                             } else {
                                 System.out.println("Incorrect username or password. Please try again");
+                            }
+                            try {
+                                db.modify(email, "lastOnline", Instant.now().toString());
+                            } catch (InvalidUserException | InvalidKeyException e) {
+                                // TODO Auto-generated catch block
+                                System.out.println("Something went wrong trying to log you out");
                             }
                         }
                     } else {

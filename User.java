@@ -9,7 +9,6 @@ public class User {
     private String role;
     private Database db;
     private ArrayList<String> stores;
-    private MessageManager manager;
 
     private String id; //user's personal ID
     private String splitter = "-----";
@@ -20,7 +19,6 @@ public class User {
         this.email = email;
         this.role = role;
         this.hasAccount = true;
-        this.manager = manager;
         this.db = db;
         stores = new ArrayList<>();
         this.id = db.get("email", this.email).get("id");
@@ -38,44 +36,20 @@ public class User {
         if (this.role.toLowerCase().equals(Role.Customer.toString().toLowerCase())) {
             System.out.println("Stores:");
             for (HashMap<String, String> sellerBlocked : getSellers) {
+                ArrayList<String> stores = User.readStoresFromFile(sellerBlocked.get("email"));
+                String storeString = "";
+                for (String store : stores) {
+                    storeString += store + ", ";
+                }
+                storeString = storeString.substring(0, storeString.length() - 2);
                 if (!sellerBlocked.get("blocked").contains(id) && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
-                    System.out.println(sellerBlocked.get("email"));
+                    System.out.println(sellerBlocked.get("email") + ": " + storeString);
                 } else if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)){
-                    System.out.println(sellerBlocked.get("email") + " (blocked)");
+                    System.out.println(sellerBlocked.get("email") + " (blocked): " + storeString);
                 } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)) {
-                    System.out.println(sellerBlocked.get("email") + " (invisible)");
+                    System.out.println(sellerBlocked.get("email") + " (invisible): " + storeString);
                 }
             }
-        }
-    }
-    //Customer can select a store and then send a message to the associated seller
-    //the customer can go ahead and select the stores if they are not blocked
-    //an InvalidUser message will be thrown if the user is blocked
-    public void selectStore(String store, String message) throws InvalidUserException, IOException {
-        boolean blocked = false;
-        ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", "customer");
-        for (HashMap<String, String> sellerBlocked : getSellers) {
-            if (sellerBlocked.get("blocked").contains(id)) {
-                blocked = true;
-            }
-        }
-        if (this.role.toLowerCase().equals("customer") && !blocked) {
-            ArrayList<String> stores = new ArrayList<String>();
-            BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
-            String line = br.readLine();
-            while (line != null) {
-                stores.add(line);
-                line = br.readLine();
-            }
-            for (int i = 0; i < stores.size(); i++) {
-                if (stores.get(i).contains(store)) {
-                    String seller = stores.get(i).split("-")[1];
-                    manager.messageUser(db.get("email", this.email).get("id"), db.get("email", seller).get("id"), message);
-                }
-            }
-            br.close();
-        } else if (blocked) {
-            throw new InvalidUserException(this.id + "has been blocked");
         }
     }
 
@@ -124,27 +98,6 @@ public class User {
     //get list of stores
     public ArrayList<String> getStores() {
         return stores;
-    }
-
-    //Seller can choose a customer to send a message to
-    public void selectCustomer(String recipient, String message) throws InvalidUserException, IOException {
-        boolean blocked = false;
-        ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", "seller");
-        for (HashMap<String, String> sellerBlocked : getSellers) {
-            if (sellerBlocked.get("blocked").contains(id)) {
-                blocked = true;
-            }
-        }
-        if (this.role.toLowerCase().equals("seller") && !blocked) {
-            ArrayList<String> customers = manager.getNames("Customer");
-            for (String customer : customers) {
-                if (email.equals(customer)) {
-                    manager.messageUser(db.get("email", this.email).get("id"), db.get("email", recipient).get("id"), message);
-                }
-            }
-        } else if (blocked) {
-            throw new InvalidUserException(this.id + "has been blocked");
-        }
     }
 
     public static ArrayList<String> readStoresFromFile(String email) {

@@ -31,7 +31,7 @@ public class TestMessageManager {
             MessageManager mm1 = new MessageManager(new Database(dbPath), histPath);
             for (int i = 0; i < 10; i++) {
                 String message = String.format("%d - %d - %d", i, i + 1, i + 2);
-                mm1.messageUser(ids[0], ids[1], message);
+                mm1.messageUser(ids[0], ids[1], message, "");
             }
             return true;
         } catch (Exception e) {
