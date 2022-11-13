@@ -114,6 +114,10 @@ public class Dashboard {
         return word;
     }
 
+    public String getStoreName(ArrayList<String[]> conv) {
+        return conv.get(0)[2];
+    }
+
     //print the statistics of the current user
     public void printMyStatistic() {
         //System.out.println(myConversations.size());
@@ -121,7 +125,7 @@ public class Dashboard {
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", "placeholder");
+                System.out.printf("Store name: %s\n", getStoreName(conv));
                 System.out.printf("Seller name: %s\n", getOtherName(conv));
                 System.out.printf("Message Sent: %d\n", data[0]);
                 System.out.printf("Message Received: %d\n\n", data[1]);
@@ -129,7 +133,7 @@ public class Dashboard {
         } else {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", "placeholder");
+                System.out.printf("Store name: %s\n", getStoreName(conv));
                 System.out.printf("Customer name: %s\n", getOtherName(conv));
                 System.out.printf("Message Received: %d\n", data[0]);
                 System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
@@ -152,7 +156,8 @@ public class Dashboard {
                 }
                 ArrayList<String[]> conversation = new ArrayList<>();
                 String path = "history/"+ line + "-messageHistory.txt";
-                String[] users = new String[2];
+                String[] users = new String[3];
+                users[2] = "";
                 if (role == Role.Seller) {
                     users[0] = line;
                     users[1] = id;
@@ -173,6 +178,11 @@ public class Dashboard {
                     String msg = chart[0];
                     message[0] = name;
                     message[1] = msg;
+                    if (conversation.get(0)[2].equals("")) {
+                        String[] conv = conversation.get(0);
+                        conv[2] = chart[4].substring(0, chart[4].indexOf("-----"));
+                        conversation.set(0, conv);
+                    }
                     conversation.add(message);
                     line = bfr.readLine();
                     if (line == null) {
