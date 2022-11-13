@@ -8,6 +8,7 @@ public class MainInterface {
         Scanner scan = new Scanner(System.in);
         boolean loop1 = true;
         boolean loop2 = false;
+        boolean filter = false;
         while (loop1) {
 
             String PROMPT = "Would you like to..." +
@@ -52,6 +53,7 @@ public class MainInterface {
                         HashMap<String, String> acct = db.get("email", email);
                         User user = new User(email, password, acct.get("role"), messageManager, db);
                         MessageInterface.missedMessages(scan, acct.get("id"), db, messageManager);
+                        Filter f = new Filter(email);
                         while (loop2) {
                             String MESSAGEPROMPT = "Would you like to..." +
                                     "\n1. Message a user" +
@@ -69,6 +71,7 @@ public class MainInterface {
                                     "\n13. Delete your account" +
                                     "\n14. Exit";
                             System.out.println(MESSAGEPROMPT);
+                            filter = f.getStatus();
                             int userAction = -1;
                             do {
                                 try {
@@ -91,10 +94,10 @@ public class MainInterface {
                                 MessageInterface.message(scan, messageManager, db, acct.get("id"));
                             } else if (userAction == 2){
                                 //view message history
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
                             } else if (userAction == 3) {
                                 //edit a message
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
                                 String recipient = "";
                                 //Should this be changed to somehow take seller name and get convo?
                                 //message recipient email
@@ -112,7 +115,7 @@ public class MainInterface {
                                 messageManager.editMessage(acct.get("ID"), db.get("role", recipient).get("email"), newMessage, String.valueOf(messageNum));
                             } else if (userAction == 4) {
                                 //delete message
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
                                 String recipient = "";
                                 //message recipient email
                                 System.out.println("Who did you send the message to?");
@@ -215,10 +218,10 @@ public class MainInterface {
                                 //view statistics
                                 Dashboard dashboard = new Dashboard(email, "");
                                 dashboard.readDatabase();
+                                dashboard.printMyStatistic();
                                 dashboard.presentDashboard(scan);
                             } else if (userAction == 12) {
-                                Filter f = new Filter(email);
-                                f.presentFilterMenu(scan);
+                                f.presentFilterMenu(scan, filter);
                             } else if (userAction == 13) {
                                 //delete account
                                 System.out.println("Are you sure you want to delete your account (Y/N)");
