@@ -205,6 +205,7 @@ public class MainInterface {
                                     try {
                                         user.addStores(storeName);
                                     } catch (InvalidUserException e) {
+                                        e.printStackTrace();
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
@@ -216,7 +217,6 @@ public class MainInterface {
                                 dashboard.readDatabase();
                                 dashboard.presentDashboard(scan);
                             } else if (userAction == 12) {
-                                //TODO: Not sure if we can keep this feature
                                 Filter f = new Filter(email);
                                 f.presentFilterMenu(scan);
                             } else if (userAction == 13) {
@@ -289,6 +289,7 @@ public class MainInterface {
                 if (role.toLowerCase().equals("seller")) {
                     System.out.println("How many stores would you like to create?");
                     int numStores = scan.nextInt();
+                    scan.nextLine();
                     for (int i = 0; i < numStores; i++) {
                         String storeName = "";
                         System.out.println("What is the name of store " + i + "?");
