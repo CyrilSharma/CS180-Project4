@@ -7,9 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
-
 /**
- * This class handles all database manipulations.
+ * Project 4 -> Database
+ *
+ * class handles all the database manipulations
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
  */
 public class Database {
     private String databasePath;
@@ -18,13 +24,23 @@ public class Database {
     private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
     private Random random;
 
+    /**
+     * initializes the instance field variables
+     *
+     * @param path of the database
+     */
     public Database(String path) {
         databasePath = path;
         database = readFromDatabase(path);
         random = new Random();
     }
 
-    //Returns everything in the user database into an arraylist of HashMaps
+    /**
+     * returns everything in the user database into an arraylist of HashMaps
+     *
+     * @param path of the fileName
+     * @return ArrayList<HashMap<String, String>> userlist
+     */
     private ArrayList<HashMap<String, String>> readFromDatabase(String path) {
         File f = new File(path);
         try {

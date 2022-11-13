@@ -19,7 +19,7 @@ public class Dashboard {
     private File textDatabase;
 
     /**
-     * initializes the instnace field variables
+     * initializes the instance field variables
      *
      * @param email email of the user
      */

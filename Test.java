@@ -40,7 +40,7 @@ public class Test {
             System.out.println("Test 5 Failed.");
         } catch (Exception e) {}
 
-        Dashboard dashboard = new Dashboard("Alex@gmail.com", "testMessageHistory.txt");
+        Dashboard dashboard = new Dashboard("Alex@gmail.com");
         dashboard.readDatabase();
         dashboard.printMyStatistic();
         //dashboard.presentDashboard();

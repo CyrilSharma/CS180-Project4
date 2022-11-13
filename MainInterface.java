@@ -212,7 +212,7 @@ public class MainInterface {
                                 }
                             } else if (userAction == 11) {
                                 //view statistics
-                                Dashboard dashboard = new Dashboard(email, "");
+                                Dashboard dashboard = new Dashboard(email);
                                 dashboard.readDatabase();
                                 dashboard.presentDashboard(scan);
                             } else if (userAction == 12) {
