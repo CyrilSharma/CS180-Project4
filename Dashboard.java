@@ -18,7 +18,12 @@ public class Dashboard {
     private String email;
     private File textDatabase;
 
-    public Dashboard(String email, String msgDatabaseLocation) {
+    /**
+     * initializes the instnace field variables
+     *
+     * @param email email of the user
+     */
+    public Dashboard(String email) {
         this.email = email;
         Database database = new Database("UserDatabase.txt");
         loadUserFromDatabase(email, database);
@@ -26,7 +31,13 @@ public class Dashboard {
         myConversations = new ArrayList<>();
     }
 
-    //sets up role from the userDatabase
+    /**
+     * initializes the role field to the Role Enum:
+     * Seller or Customer
+     *
+     * @param email email of the user
+     * @param database object passed in
+     */
     private void loadUserFromDatabase(String email, Database database) {
         HashMap<String, String> map = database.get("email", email);
         if (map.get("role").equals("Seller")) {
@@ -43,16 +54,23 @@ public class Dashboard {
         System.out.println("Successfully loaded!");
     }
 
-    //return int[2] data where data[0] = message customer sent and data[1] = message seller sent from history txt file
+    /**
+     * creates a messageData integer array that contains the number of messages
+     * givesn from the customer and seller and sotres it
+     * messageData[0] is the customer messages and messageData[1]
+     * is the seller messages.
+     *
+     * @param conversation ArrayList of the message conversation
+     * @return returns the messageData integer array
+     */
     public int[] getMessageData(ArrayList<String[]> conversation) {
-        //messageData[0] = # customer sent && messageData[1] = # seller sent
         int[] messageData = new int[2];
         int customerSent = 0;
         int sellerSent = 0;
         for (int i = 0 ; i < conversation.size(); i++) {
             String[] msg = conversation.get(i);
             if (i == 0) {
-                continue;
+                continue ;
             }
             if (msg[0].equals(id)) {
                 if (role == Role.Customer) {
@@ -74,6 +92,12 @@ public class Dashboard {
     }
 
     //get other user's name with conversation list
+    /**
+     * retrieves another user's name that is provided in the conversation list
+     *
+     * @param conversation ArrayList of the message conversation
+     * @return returns name
+     */
     public String getOtherName(ArrayList<String[]> conversation) {
         String name = "";
 
@@ -88,6 +112,7 @@ public class Dashboard {
     }
 
     //remove special characters from word
+
     public String removeSpecialChar(String word) {
         String result = "";
         for (int i = 0; i < word.length(); i++) {
@@ -419,6 +444,7 @@ public class Dashboard {
         return count;
     }
     //sort myConversation list in a way from # highest message received to lowest.
+
     public void sortByHighestReceived() {
         ArrayList<String> users = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
@@ -465,7 +491,10 @@ public class Dashboard {
         }
         myConversations = temp;
     }
-    //reverse previous method
+
+    /**
+     * reverses the myConversations array that is modified from sortByHighestReceived() method
+     */
     public void sortByLowestReceived() {
         sortByHighestReceived();
         Collections.reverse(myConversations);
