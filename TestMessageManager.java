@@ -1,7 +1,16 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
+ * Project 4 -> TestMessageManager
+ *
+ * class handles all the testing of MessageManager
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class TestMessageManager {
     // Useful constants.
     private static final String[] ids = {"PYzww08h9X985c", "ysJKgy0v2hyVY3"};

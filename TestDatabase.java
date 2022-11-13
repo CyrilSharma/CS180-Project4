@@ -1,6 +1,15 @@
 import java.io.File;
 import java.util.HashMap;
-
+/**
+ * Project 4 -> TestDatabase
+ *
+ * class handles the testing of database
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class TestDatabase {
     private static final String filepath = "testDatabase/testDatabase1.txt";
     private static File f = new File(filepath);
