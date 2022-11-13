@@ -3,7 +3,8 @@ import java.io.*;
 /**
  * Project 4 -> Dashboard
  *
- * brief description of the program
+ * Allows for user to access statistics related to user's messaging as well as unique statistics for sellers
+ * and customers respectively, such as the most common word used.
  *
  * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
  *
@@ -111,8 +112,12 @@ public class Dashboard {
         return name;
     }
 
-    //remove special characters from word
-
+    /**
+     * removes special characters from a word
+     *
+     * @param word String
+     * @return returns result, word without special characters
+     */
     public String removeSpecialChar(String word) {
         String result = "";
         for (int i = 0; i < word.length(); i++) {
@@ -122,7 +127,12 @@ public class Dashboard {
         }
         return result;
     }
-    //finds the most common word from conversation(excluding special characters)
+    /**
+     * finds the most common word from conversation(excluding special characters)
+     *
+     * @param conversation ArrayList String[] containing conversation split by lines in a String array
+     * @return returns word that occurs most often
+     */
     public String findMostCommonWord(ArrayList<String[]> conversation) {
         HashMap<String, Integer> map = new HashMap<>();
         for (String[] msg: conversation) {
@@ -146,8 +156,9 @@ public class Dashboard {
         }
         return word;
     }
-
-    //print the statistics of the current user
+    /**
+     * print the statistics of the current user
+     */
     public void printMyStatistic() {
         //System.out.println(myConversations.size());
         System.out.println(myConversations.size());
@@ -170,8 +181,9 @@ public class Dashboard {
         }
 
     }
-
-    // read database and store conversation data
+    /**
+     * read database and store conversation data
+     */
     public void readDatabase() {
         FileReader fr;
         BufferedReader bfr;
@@ -227,6 +239,9 @@ public class Dashboard {
             System.out.println("Database Error!");
         }
     }
+    /**
+     * read the database of the other person (non-user) to store edits and new messages
+     */
     public ArrayList<String> readDatabaseOther(String path) {
         File f = new File(path);
         FileReader fr;
@@ -266,7 +281,9 @@ public class Dashboard {
     }
 
     //dashboard menu
-
+    /**
+     * dashboard menu, user interface to use dashboard
+     */
     public void presentDashboard(Scanner sc) {
         String MENU_MESSAGE = "what do you want to do? " +
                 "\n1. sort stores";
@@ -359,19 +376,29 @@ public class Dashboard {
         }
     }
 
-
+    /**
+     * get the email of a user from their ID
+     * @param ID
+     * @return email
+     */
     public String getEmail(String ID) {
         Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("id", ID);
         return map.get("email");
     }
-
+    /**
+     * get the ID of a user from their email
+     * @param email
+     * @return ID
+     */
     public String getID(String email) {
         Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("email", email);
         return map.get("id");
     }
-
+    /**
+     * print out a conversation between the user and someone else
+     */
     public void printConversation() {
         for (ArrayList<String[]> conversation: allConversations) {
             for (int i = 0; i < conversation.size(); i++) {
@@ -384,8 +411,10 @@ public class Dashboard {
             System.out.println("-----divider-----");
         }
     }
-    //option 1 = sort store, 2 = sort other users
-    //set myConversation list that sorted store/customers in alphabetical order
+    /**
+     * Set the myConversation list to store stores/customers in alphabetical order
+     * @param option int (1=store, 2=sort other users)
+     */
     public void sortByAlphabet(int option) {
         ArrayList<String> sortedList = new ArrayList<>();
         if (option == 1) {
@@ -428,12 +457,20 @@ public class Dashboard {
         }
         myConversations = temp;
     }
-    //reverse sortByAlphabet();
+    /**
+     * Set the myConversation list to store stores/customers in reverse alphabetical order
+     * @param option int (1=store, 2=sort other users)
+     */
     public void sortByAlphabetInverse(int option) {
         sortByAlphabet(option);
         Collections.reverse(myConversations);
     }
     //get number of message sent by users from history txt file
+    /**
+     * Set the myConversation list to store stores/customers in alphabetical order
+     * @param conversation (an arraylist of string arrays)
+     * @return count, # of messages sent
+     */
     public int getMessageSent(ArrayList<String[]> conversation) {
         int count = 0;
         for (int i = 1; i < conversation.size(); i++) {
@@ -444,7 +481,9 @@ public class Dashboard {
         return count;
     }
     //sort myConversation list in a way from # highest message received to lowest.
-
+    /**
+     * sort myConversation list in a way from highest # of messages received to lowest.
+     */
     public void sortByHighestReceived() {
         ArrayList<String> users = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
