@@ -11,7 +11,7 @@ public class MainInterface {
         while (loop1) {
 
             String PROMPT = "Would you like to..." +
-                    "\n1. Login" +
+                    "\n1. Login" +  
                     "\n2. Create an account" +
                     "\n3. Exit";
 
@@ -262,7 +262,7 @@ public class MainInterface {
                 } while (!db.validate(email, "email"));
                 String password;
                 do {
-                    System.out.println("Please enter your password: ");
+                    System.out.println("Please enter your password:");
                     password = scan.nextLine();
                     if (!db.validate(password, "password")) {
                         System.out.println("That password is not valid. Please do not use special characters");
@@ -271,7 +271,7 @@ public class MainInterface {
                 boolean roleValid = false;
                 String role = "";
                 while (!roleValid) {
-                    System.out.println("Please enter your role (Seller/Customer): ");
+                    System.out.println("Please enter your role (Seller/Customer):");
                     role = scan.nextLine();
 
                     if (role.toLowerCase().equals("seller") || role.toLowerCase().equals("customer")) {

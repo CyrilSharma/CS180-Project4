@@ -1,0 +1,33 @@
+Welcome to the Turkey Store!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+2
+Please enter your email:
+email@email.sksks
+Please enter a valid email
+Please enter your email:
+email@email.csd
+Please enter your password:
+password$&@&@
+That password is not valid. Please do not use special characters
+password123
+Please enter your role (Seller/Customer):
+Seller
+Account created!
+How many stores would you like to create?
+2
+What is the name of the store 1?
+Billy Bob's Ice Cream
+Billy Bob's Ice Cream has been created!
+What is the name of the store 2?
+Darth Vader's Respirators
+Darth Vader's Respirators has been created!
+Welcome to the Turkey Store!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+3
+Have a nice rest of your day!
