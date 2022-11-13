@@ -1,4 +1,8 @@
 Welcome to the Turkey Store!
+Here at the turkey store, we offer every variety of turkey imaginable!
+Feel free to contact any of our reputable sellers to learn about stores, 
+that you can buy our wonderful products from!
+
 Would you like to...
 1. Login
 2. Create an account

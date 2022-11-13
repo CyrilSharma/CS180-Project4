@@ -4,25 +4,31 @@ import java.util.*;
 public class MainInterface {
 
     public static void main(String[] args) {
-        Database db = new Database("UserDatabase.txt");
+        // Let's you switch out defaults with command line arguments.
+        // Testing purposes only.
+        String databasePath = "UserDatabase.txt";
+        String historyPath = "history";
+        if (args.length == 2) {
+            databasePath = args[0];
+            historyPath = args[1];
+        }
+
+        Database db = new Database(databasePath);
         Scanner scan = new Scanner(System.in);
         boolean loop1 = true;
         boolean loop2 = false;
         boolean filter = false;
         while (loop1) {
-
-            String PROMPT = "Would you like to..." +
-                    "\n1. Login" +  
-                    "\n2. Create an account" +
-                    "\n3. Exit";
-
-
             //Welcome message
             System.out.println("Welcome to the Turkey Store!\n" + 
                 "Here at the turkey store, we offer every variety of turkey imaginable!\n" +
                 "Feel free to contact any of our reputable sellers to learn about stores, \n" +
                 "that you can buy our wonderful products from!\n"
             );
+            String PROMPT = "Would you like to..." +
+                    "\n1. Login" +  
+                    "\n2. Create an account" +
+                    "\n3. Exit";
             System.out.println(PROMPT);
             int resp = -1;
             do {
@@ -40,7 +46,7 @@ public class MainInterface {
                 }
             } while (resp == -1);
 
-            MessageManager messageManager = new MessageManager(db, "history");
+            MessageManager messageManager = new MessageManager(db, historyPath);
             if (resp == 1) { //Login
                 boolean loggedIn = false;
                 String email = "";

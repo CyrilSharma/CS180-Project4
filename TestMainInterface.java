@@ -23,9 +23,9 @@ public class TestMainInterface {
         for (String name: filenames) {
             String[] commandArgs = null;
             if (System.getProperty("os.name").equals("Windows 10")) {
-                commandArgs = new String[] {"cmd.exe", "/c", "java MainInterface < testMainInterface/inputs/%s > testMainInterface/outputs/%s", "with", "args"};
+                commandArgs = new String[] {"cmd.exe", "/c", "java MainInterface testMainInterface/databases/db.txt testMainInterface/history < testMainInterface/inputs/%s > testMainInterface/outputs/%s", "with", "args"};
             } else {
-                commandArgs = new String[] {"/bin/bash", "-c", String.format("java MainInterface < testMainInterface/inputs/%s > testMainInterface/outputs/%s", name, name), "with", "args"};
+                commandArgs = new String[] {"/bin/bash", "-c", String.format("java MainInterface testMainInterface/databases/db.txt testMainInterface/history < testMainInterface/inputs/%s > testMainInterface/outputs/%s", name, name), "with", "args"};
             }
             Process proc = new ProcessBuilder(commandArgs).start();
             Path inputPath = new File(String.format("testMainInterface/outputs/%s", name)).toPath();
