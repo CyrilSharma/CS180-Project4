@@ -1,15 +1,11 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.InvalidAlgorithmParameterException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -20,7 +16,6 @@ public class Database {
     private ArrayList<HashMap<String, String>> database;
     private final String DATABASE_SPLIT = "###";
     private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
-    private final String BLOCKED_SPLIT_STRING = ",";
     private Random random;
 
     public Database(String path) {

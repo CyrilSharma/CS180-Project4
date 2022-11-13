@@ -1,9 +1,8 @@
-import java.io.IOException;
 import java.util.*;
 
 public class MainInterface {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Database db = new Database("UserDatabase.txt");
         Scanner scan = new Scanner(System.in);
         boolean loop1 = true;
@@ -276,11 +275,11 @@ public class MainInterface {
                             } else if (userAction == 11) {
                                 Dashboard dashboard = new Dashboard(email, "");
                                 dashboard.readDatabase();
-                                dashboard.presentDashboard();
+                                dashboard.presentDashboard(scan);
                             } else if (userAction == 12) {
                                 //TODO: Not sure if we can keep this feature
                                 Filter f = new Filter(email);
-                                f.presentFilterMenu();
+                                f.presentFilterMenu(scan);
                             } else if (userAction == 13) {
                                 System.out.println("Are you sure you want to delete your account (Y/N)");
                                 if (scan.nextLine().toUpperCase().equals("Y")) {

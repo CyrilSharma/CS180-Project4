@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,7 +6,6 @@ public class User {
     //Instance fields
     private String email;
     private boolean hasAccount;
-    private String password;
     private String role;
     private Database db;
     private ArrayList<String> stores;
@@ -16,10 +14,10 @@ public class User {
     private String id; //user's personal ID
     private String splitter = "-----";
     private int splitVal = 0;
+    
     //creating an account
     public User(String email, String password, String role, MessageManager manager, Database db) {
         this.email = email;
-        this.password = password;
         this.role = role;
         this.hasAccount = true;
         this.manager = manager;
@@ -28,20 +26,6 @@ public class User {
         this.id = db.get("email", this.email).get("id");
     }
 
-    //deleting an account
-    public void deleteAccount() {
-        this.email = null;
-        this.password = null;
-        this.role = null;
-        this.hasAccount = false;
-    }
-
-    //edit an account
-    public void editAccount(String username, String email, String password, String role) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
     //checks if the account exists
     public boolean accountExists() {
         return this.hasAccount;
@@ -89,6 +73,7 @@ public class User {
                     manager.messageUser(db.get("email", this.email).get("id"), db.get("email", seller).get("id"), message);
                 }
             }
+            br.close();
         } else if (blocked) {
             throw new InvalidUserException(this.id + "has been blocked");
         }
@@ -98,31 +83,23 @@ public class User {
     //contains the blocked functionality where the user cannot input the store if the seller is blocked
     public void addStores(String store) throws InvalidUserException {
         if (this.role.toLowerCase().equals("seller")) {
-            boolean blocked = false;
-            ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", "seller");
-            for (HashMap<String, String> sellerBlocked : getSellers) {
-                if (sellerBlocked.get("blocked").contains(id)) {
-                    blocked = true;
+            try {
+                if (User.getEmailFromStore(store) != null) {
+                    throw new InvalidUserException("That store name is not available");
                 }
-            }
-            if (!blocked) {
-                try {
-                    File f = new File("stores.txt");
-                    FileOutputStream fos = new FileOutputStream(f, false);
-                    PrintWriter pw = new PrintWriter(fos);
-                    String sellerID = db.get("email", this.email).get("id");
-                    if (splitVal == 0) {
-                        pw.write(sellerID + splitter + "\n");
-                        splitVal += 1;
-                    }
-                    pw.write(store + "\n");
-                    stores.add(store);
-                    pw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                File f = new File("stores.txt");
+                FileOutputStream fos = new FileOutputStream(f, false);
+                PrintWriter pw = new PrintWriter(fos);
+                String sellerID = db.get("email", this.email).get("id");
+                if (splitVal == 0) {
+                    pw.write(sellerID + splitter + "\n");
+                    splitVal += 1;
                 }
-            } else if (blocked) {
-                throw new InvalidUserException(this.id + "has been blocked");
+                pw.write(store + "\n");
+                stores.add(store);
+                pw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -143,6 +120,7 @@ public class User {
             }
         }
     }
+
     //get list of stores
     public ArrayList<String> getStores() {
         return stores;
@@ -167,5 +145,35 @@ public class User {
         } else if (blocked) {
             throw new InvalidUserException(this.id + "has been blocked");
         }
+    }
+
+    public static ArrayList<String> readStoresFromFile(String email) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(new File("Stores.txt")))) {
+            ArrayList<String> things = new ArrayList<String>();
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                if (line.contains(email)) {
+                    things.add(line.split("-")[0]);
+                }
+            }
+            return things;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static String getEmailFromStore(String store) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(new File("Stores.txt")))) {
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                if (line.contains(store)) {
+                    return line.split("-")[1];
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }

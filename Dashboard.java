@@ -1,20 +1,13 @@
-import java.lang.reflect.Array;
 import java.util.*;
 import java.io.*;
-import java.util.stream.Collectors;
 
 //dashboard class
 public class Dashboard {
-    private final String DATABASE_SECTION_STRING = ":";
-    private final String USER_SPLIT_STRING = "-";
-    private final String ARRAY_SPLITTER = ":::";
     private ArrayList<ArrayList<String[]>> allConversations;
     private ArrayList<ArrayList<String[]>> myConversations;
     private Role role;
     private String id;
     private String email;
-    private HashMap<String, String> userdata;
-
     private File textDatabase;
 
     public Dashboard(String email, String msgDatabaseLocation) {
@@ -39,7 +32,6 @@ public class Dashboard {
         }
         id = map.get("id");
         textDatabase = new File("history/"+ id + "-messageHistory.txt");
-        userdata = map;
         System.out.println("Successfully loaded!");
     }
 
@@ -215,7 +207,6 @@ public class Dashboard {
                 if (line == null) {
                     break;
                 }
-                String[] users = new String[2];
                 if (line.equals(id)) {
                     line = bfr.readLine();
                     while (!line.equals("#####")) {
@@ -232,6 +223,7 @@ public class Dashboard {
                     break;
                 }
             }
+            bfr.close();
             return messages;
         } catch (Exception e) {
             e.printStackTrace();
@@ -242,7 +234,7 @@ public class Dashboard {
 
     //dashboard menu
 
-    public void presentDashboard() {
+    public void presentDashboard(Scanner sc) {
         String MENU_MESSAGE = "what do you want to do? " +
                 "\n1. sort stores";
 
@@ -268,7 +260,6 @@ public class Dashboard {
         boolean ongoing = true;
         while (ongoing) {
             System.out.println(MENU_MESSAGE);
-            Scanner sc = new Scanner(System.in);
             String option = sc.nextLine();
             switch (option) {
                 case "1":

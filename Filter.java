@@ -151,7 +151,7 @@ public class Filter {
             fos = new FileOutputStream(f, false);
             pw = new PrintWriter(fos);
             for (String[] data: userWordList) {
-                ArrayList list = new ArrayList(Arrays.asList(data[1]));
+                ArrayList<String> list = new ArrayList<String>(Arrays.asList(data[1]));
                 String line = data[0] + "::" + toTxtFileFormat(list);
                 pw.println(line);
             }
@@ -178,7 +178,7 @@ public class Filter {
         }
         return format;
     }
-    public void presentFilterMenu() {
+    public void presentFilterMenu(Scanner sc) {
         String menu = "what do you want to do?\n" +
                     "1. see filtered words\n" +
                     "2. add word to the filter\n" +
@@ -186,7 +186,6 @@ public class Filter {
                     "4. quit";
         System.out.println(menu);
         boolean ongoing = true;
-        Scanner sc = new Scanner(System.in);
         while(ongoing) {
             String option = sc.nextLine();
             switch (option) {
