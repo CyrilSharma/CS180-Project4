@@ -18,7 +18,11 @@ public class MainInterface {
 
 
             //Welcome message
-            System.out.println("Welcome to the Turkey Store!");
+            System.out.println("Welcome to the Turkey Store!\n" + 
+                "Here at the turkey store, we offer every variety of turkey imaginable!\n" +
+                "Feel free to contact any of our reputable sellers to learn about stores, \n" +
+                "that you can buy our wonderful products from!\n"
+            );
             System.out.println(PROMPT);
             int resp = -1;
             do {
@@ -309,7 +313,8 @@ public class MainInterface {
             } else if (resp == 3) {
                 //Exit program
                 //should this print at the end no matter what? if so, change to separate if loop at end
-                System.out.println("Have a nice rest of your day!");
+                System.out.println("Thank you for shopping at the turkey store!\n" + 
+                    "Have a nice rest of your day!");
                 loop1 = false;
             }
         }

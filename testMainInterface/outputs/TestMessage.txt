@@ -1,0 +1,9 @@
+Welcome to the Turkey Store!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email: 
+Please enter your password: 
+Sorry, the email or password you entered is incorrect
+Please enter your email: 
