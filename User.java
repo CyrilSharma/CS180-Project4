@@ -1,7 +1,16 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
+ * Project 4 -> User
+ *
+ * Creates the Customer and Seller distinctions and their unique functions/restrictions
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class User {
     //Instance fields
     private String email;
@@ -13,8 +22,12 @@ public class User {
     private String id; //user's personal ID
     private String splitter = "-----";
     private int splitVal = 0;
-    
-    //creating an account
+
+    /**
+     * creating an account
+     *
+     * @param email, password, role, manager
+     */
     public User(String email, String password, String role, MessageManager manager, Database db) {
         this.email = email;
         this.role = role;
@@ -23,14 +36,20 @@ public class User {
         stores = new ArrayList<>();
         this.id = db.get("email", this.email).get("id");
     }
-
-    //checks if the account exists
+    /**
+     * checks if the account exists
+     *
+     * @return hasAccount boolean
+     */
     public boolean accountExists() {
         return this.hasAccount;
     }
 
-    //This method allows the user, if customer, to view the list of stores
-    //if the customer is not blocked, they can view the list of stores
+    /**
+     * This method allows customers to view the list of stores
+     * If the customer is blocked, that specific store will not appear
+     *
+     */
     public void viewStores() {
         ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", Role.Seller.toString());
         if (this.role.toLowerCase().equals(Role.Customer.toString().toLowerCase())) {
@@ -53,8 +72,11 @@ public class User {
         }
     }
 
-    //Implementing Seller
-    //contains the blocked functionality where the user cannot input the store if the seller is blocked
+    /**
+     * Allows seller to create a store under their name that is visible to all
+     * unblocked customers
+     * @param store
+     */
     public void addStores(String store) throws InvalidUserException {
         if (this.role.toLowerCase().equals("seller")) {
             try {
@@ -77,7 +99,9 @@ public class User {
             }
         }
     }
-    //Seller views list of customers that they can send messages to
+    /**
+     * Seller can view list of customers that they can send messages to
+     */
     public void viewCustomers() {
         ArrayList<HashMap<String, String>> getCustomers = db.getSelection("role", Role.Customer.toString());
         if (this.role.toLowerCase().equals(Role.Seller.toString().toLowerCase())) {
@@ -95,11 +119,20 @@ public class User {
         }
     }
 
-    //get list of stores
+    /**
+     * get list of stores
+     * @return stores
+     */
     public ArrayList<String> getStores() {
         return stores;
     }
 
+    /**
+     * Read text file with list of stores and return as an arraylist of string (stores)
+     *
+     * @param email
+     * @return things as arraylist of strings with stores from the file
+     */
     public static ArrayList<String> readStoresFromFile(String email) {
         try (BufferedReader bfr = new BufferedReader(new FileReader(new File("Stores.txt")))) {
             ArrayList<String> things = new ArrayList<String>();
@@ -115,7 +148,9 @@ public class User {
             return null;
         }
     }
-
+    /**
+     * Gets seller name from the associated store
+     */
     public static String getEmailFromStore(String store) {
         try (BufferedReader bfr = new BufferedReader(new FileReader(new File("Stores.txt")))) {
             String line;
