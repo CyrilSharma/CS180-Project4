@@ -17,8 +17,8 @@ public class MessageManager {
     private Database db;
     private String historyDir;
 
-    public MessageManager(String dbPath, String historyPath) {
-        db = new Database(dbPath);
+    public MessageManager(Database db, String historyPath) {
+        this.db = db;
         historyDir = historyPath;
         random = new Random();
     }
@@ -43,8 +43,11 @@ public class MessageManager {
             while ((line = bfr.readLine()) != null) {
                 HashMap<String, String> message = new HashMap<String, String>();
                 if (!line.contains(tokenSep) && !line.contains(conversationSplit)) {
-                    recipient = line;
+                    recipient = line.split("-")[0];
                     message.put("recipient", recipient);
+                    if (line.contains("-")) {
+                        message.put("store", line.split("-")[0]);
+                    }
                 } else if (line.contains(conversationSplit)) {
                     message.put("messageBreak", line);
                 } else {
@@ -113,12 +116,8 @@ public class MessageManager {
                     } while (false);
                 }
                 HashMap<String, String> historyLoc = new HashMap<String, String>();
-                historyLoc.put("recipient", recipientID);
-
-
+                historyLoc.put("recipient", id.equals(senderID) ? recipientID : senderID);
                 int startLocation = history.indexOf(historyLoc);
-                historyLoc = new HashMap<String, String>();
-                historyLoc.put("recipient", senderID);
 
 
                 HashMap<String, String> newEntry = new HashMap<String, String>();
@@ -130,7 +129,7 @@ public class MessageManager {
                 int i = startLocation;
                 if (startLocation == -1) {
                     HashMap<String, String> temp = new HashMap<String, String>();
-                    temp.put("recipient", recipientID);
+                    temp.put("recipient", id.equals(senderID) ? recipientID : senderID);
                     history.add(temp);
                     HashMap<String, String> temp2 = new HashMap<String, String>();
                     temp2.put("messageBreak", conversationSplit);

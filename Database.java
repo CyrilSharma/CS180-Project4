@@ -19,7 +19,7 @@ public class Database {
     private String databasePath;
     private ArrayList<HashMap<String, String>> database;
     private final String DATABASE_SPLIT = "###";
-    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked"};
+    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
     private final String BLOCKED_SPLIT_STRING = ",";
     private Random random;
 
@@ -67,7 +67,7 @@ public class Database {
     public ArrayList<HashMap<String, String>> getSelection(String key, String criteria) {
         ArrayList<HashMap<String, String>> results = new ArrayList<HashMap<String, String>>();
         for (HashMap<String, String> entry: database) {
-            if (entry.get(key) == criteria || criteria.equals("all")) {
+            if (entry.get(key) == criteria || entry.get(key).equals(criteria) || criteria.equals("all")) {
                 results.add(entry);
             }
         }
@@ -98,6 +98,7 @@ public class Database {
         String[] tokens = {id, name, password, role.toString(), Instant.now().toString(), "null", "null"};
         String line = String.join(DATABASE_SPLIT, tokens);
         database.add(getDatabaseEntry(line));
+        save();
     }
 
     public void remove(String name) throws InvalidUserException {
@@ -106,6 +107,7 @@ public class Database {
             throw new InvalidUserException("That email does not exist");
         }
         database.remove(toBeRemoved);
+        save();
     }
 
     public void block(String name, String emailToBlock, boolean invisible) throws InvalidUserException {
@@ -140,6 +142,7 @@ public class Database {
         } else {
             changeInfo.put("blocked", String.join(",", blockedUsers));
         }
+        save();
     }
 
     public void unblock(String name, String emailToUnblock, boolean invisible) throws InvalidUserException {
@@ -160,23 +163,19 @@ public class Database {
         }
         boolean removed = blockedUsers.remove(blocked.get("id"));
         if (removed) {
-            try {
-                if (blockedUsers.isEmpty()) {
-                    blockedUsers = null;
-                }
-                if (invisible) {
-                    modify(name, "invisible", String.join(",", blockedUsers));
-                } else {
-                    modify(name, "blocked", String.join(",", blockedUsers));
-                }
-            } catch (InvalidKeyException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (blockedUsers.isEmpty()) {
+                blockedUsers.add("null");
+            }
+            if (invisible) {
+                blocker.put("invisible", String.join(",", blockedUsers));
+            } else {
+                blocker.put("blocked", String.join(",", blockedUsers));
             }
         }
         else {
             throw new InvalidUserException("You are not blocking that user");
         }
+        save();
     }
 
     // Returns whether the password given for a user was the correct password
@@ -215,6 +214,7 @@ public class Database {
             if (user.get("email").equals(email)) {
                 user.put(key, val);
                 database.set(i, user);
+                save();
                 return;
             }
         }
@@ -222,7 +222,7 @@ public class Database {
     }
 
     //Checks to make sure a string that will go to the database has NO SPECIAL CHARACTERS
-    private boolean validate(String str, String key) {
+    public boolean validate(String str, String key) {
         if (key == KEYS[1]) {
             return str.matches("^[A-Za-z0-9\\-\\._]{1,64}[^.]@[A-Za-z0-9]+\\.[a-z]{3}$");
         } else if (key == KEYS[2]) {

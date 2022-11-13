@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,7 +28,7 @@ public class TestMessageManager {
     public static boolean test0() {
         // tests construction.
         try {
-            MessageManager mm1 = new MessageManager(dbPath, histPath);
+            MessageManager mm1 = new MessageManager(new Database(dbPath), histPath);
             for (int i = 0; i < 10; i++) {
                 String message = String.format("%d - %d - %d", i, i + 1, i + 2);
                 mm1.messageUser(ids[0], ids[1], message);
@@ -43,7 +42,7 @@ public class TestMessageManager {
     public static boolean test1() {
         // tests messageUser.
         try {
-            MessageManager mm = new MessageManager(dbPath, histPath);
+            MessageManager mm = new MessageManager(new Database(dbPath), histPath);
             ArrayList<HashMap<String,String>> history = mm.getPersonalHistory(ids[0]);
             ArrayList<String> messages = new ArrayList<String>();
             for (HashMap<String,String> hist : history) {
@@ -70,13 +69,14 @@ public class TestMessageManager {
     public static boolean test2() {
         // tests deleteMessage.
         try {
-            MessageManager mm1 = new MessageManager(dbPath, histPath);
+            Database db = new Database(dbPath);
+            MessageManager mm1 = new MessageManager(db, histPath);
             ArrayList<String> messages = new ArrayList<String>();
             for (int i = 3; i < 10; i++) {
                 mm1.deleteMessage(ids[0], ids[1], messageIDs.get(i));
             }
 
-            MessageManager mm2 = new MessageManager(dbPath, histPath);
+            MessageManager mm2 = new MessageManager(db, histPath);
             ArrayList<HashMap<String,String>> history = mm2.getPersonalHistory(ids[0]);
             for (HashMap<String,String> hist : history) {
                 if (hist.containsKey("message")) {
@@ -99,13 +99,14 @@ public class TestMessageManager {
     public static boolean test3() {
         // tests editMessage.
         try {
-            MessageManager mm1 = new MessageManager(dbPath, histPath);
+            Database db = new Database(dbPath);
+            MessageManager mm1 = new MessageManager(db, histPath);
             ArrayList<String> messages = new ArrayList<String>();
             for (int i = 0; i < 3; i++) {
                 mm1.editMessage(ids[0], ids[1], String.format("%d", i * 10), messageIDs.get(i));
             }
 
-            MessageManager mm2 = new MessageManager(dbPath, histPath);
+            MessageManager mm2 = new MessageManager(db, histPath);
             ArrayList<HashMap<String,String>> history = mm2.getPersonalHistory(ids[0]);
             for (HashMap<String,String> hist : history) {
                 if (hist.containsKey("message")) {

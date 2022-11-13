@@ -17,13 +17,13 @@ public class User {
     private String splitter = "-----";
     private int splitVal = 0;
     //creating an account
-    public User(String email, String password, String role) {
+    public User(String email, String password, String role, MessageManager manager, Database db) {
         this.email = email;
         this.password = password;
         this.role = role;
         this.hasAccount = true;
-        this.manager = new MessageManager("UserDatabase.txt", "history");
-        db = new Database("UserDatabase.txt");
+        this.manager = manager;
+        this.db = db;
         stores = new ArrayList<>();
         this.id = db.get("email", this.email).get("id");
     }
@@ -49,23 +49,19 @@ public class User {
 
     //This method allows the user, if customer, to view the list of stores
     //if the customer is not blocked, they can view the list of stores
-    public void viewStores() throws InvalidUserException, IOException {
-        boolean blocked = false;
-        ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", "customer");
-        for (HashMap<String, String> sellerBlocked : getSellers) {
-            if (sellerBlocked.get("blocked").contains(id)) {
-                blocked = true;
+    public void viewStores() {
+        ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", Role.Seller.toString());
+        if (this.role.toLowerCase().equals(Role.Customer.toString().toLowerCase())) {
+            System.out.println("Stores:");
+            for (HashMap<String, String> sellerBlocked : getSellers) {
+                if (!sellerBlocked.get("blocked").contains(id) && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
+                    System.out.println(sellerBlocked.get("email"));
+                } else if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)){
+                    System.out.println(sellerBlocked.get("email") + " (blocked)");
+                } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)) {
+                    System.out.println(sellerBlocked.get("email") + " (invisible)");
+                }
             }
-        }
-        if (this.role.toLowerCase().equals("customer") && !blocked) {
-            BufferedReader br = new BufferedReader(new FileReader("stores.txt"));
-            String line = br.readLine();
-            while (line != null) {
-                System.out.println(line);
-            }
-            br.close();
-        } else if (blocked) {
-            throw new InvalidUserException(this.id + "has been blocked");
         }
     }
     //Customer can select a store and then send a message to the associated seller
@@ -131,21 +127,20 @@ public class User {
         }
     }
     //Seller views list of customers that they can send messages to
-    public void viewCustomers() throws InvalidUserException { //blocked
-        boolean blocked = false;
-        ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", "seller");
-        for (HashMap<String, String> sellerBlocked : getSellers) {
-            if (sellerBlocked.get("blocked").contains(id)) {
-                blocked = true;
+    public void viewCustomers() {
+        ArrayList<HashMap<String, String>> getCustomers = db.getSelection("role", Role.Customer.toString());
+        if (this.role.toLowerCase().equals(Role.Seller.toString().toLowerCase())) {
+            System.out.println("Customers:");
+            HashMap<String, String> thisUser = db.get("id", id);
+            for (HashMap<String, String> sellerBlocked : getCustomers) {
+                if (!sellerBlocked.get("invisible").contains(id) && !thisUser.get("blocked").contains(sellerBlocked.get("id")) && !thisUser.get("invisible").contains(sellerBlocked.get("id"))) {
+                    System.out.println(sellerBlocked.get("email"));
+                } else if (!thisUser.get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)){
+                    System.out.println(sellerBlocked.get("email") + " (invisible)");
+                } else if (thisUser.get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)) {
+                    System.out.println(sellerBlocked.get("email") + " (blocked)");
+                }
             }
-        }
-        if (this.role.toLowerCase().equals("seller") && !blocked) {
-            ArrayList<String> customers = manager.getNames("Customer");
-            for (String customer : customers) {
-                System.out.println(customer);
-            }
-        } else if (blocked) {
-            throw new InvalidUserException(this.id + "has been blocked");
         }
     }
     //get list of stores
