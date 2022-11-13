@@ -1,7 +1,15 @@
 import java.util.*;
 import java.io.*;
-
-//dashboard class
+/**
+ * Project 4 -> Dashboard
+ *
+ * brief description of the program
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class Dashboard {
     private ArrayList<ArrayList<String[]>> allConversations;
     private ArrayList<ArrayList<String[]>> myConversations;
