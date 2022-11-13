@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 
 public class MessageInterface {
@@ -20,7 +21,18 @@ public class MessageInterface {
         } else {
             System.out.println("Who do you want to message:");
             email = scanner.nextLine();
-            store = "";
+            if (db.get("email", email) == null) {
+                System.out.println("That is not a valid email");
+                return;
+            }
+            ArrayList<String> stores = User.readStoresFromFile(h.get("email"));
+            System.out.println("List of stores:\n" + String.join(", ", stores));
+            System.out.println("Which store would you like to send a message from:");
+            store = scanner.nextLine();
+            if (User.getEmailFromStore(store) == null) {
+                System.out.println("That is not a valid store");
+                return;
+            }
         }
         recipient = db.get("email", email);
         if (recipient == null || !recipient.containsKey("blocked") || recipient.get("role").equals(h.get("role")) || recipient.get("blocked").contains(id) || h.get("blocked").contains(recipient.get("id"))) {
@@ -111,26 +123,19 @@ public class MessageInterface {
         while (history.get(x).size() > 1) {
             HashMap<String, String> message = history.get(x);
             String content = message.get("message");
-            String recipient;
-            String sender;
-            if (message.get("recipient").equals(otherUser.get("id"))) {
-                sender = userEmail;
-                recipient = otherUserEmail;
-                if (!otherUser.get("role").equals(Role.Customer.toString())) {
-                    recipient += " (" + message.get("store") + ")";
-                }
+            String sender = db.get("id", message.get("sender")).get("email");
+            String recipient = db.get("id", message.get("recipient")).get("email");
+            if (db.get("id", message.get("sender")).get("role").equals(Role.Customer.toString())) {
+                recipient += " (" + message.get("store") + ")";
             } else {
-                sender = otherUserEmail;
-                recipient = userEmail;
-                if (otherUser.get("role").equals(Role.Customer.toString())) {
-                    recipient += " (" + message.get("store") + ")";
-                }
+                sender += " (" + message.get("store") + ")";
             }
-            String timeString = message.get("timeStamp");
-            conversations = String.format("%s->%s at %s: %s\n", sender, recipient, timeString, content) + conversations;
+            Instant time = Instant.parse(message.get("timeStamp"));
+            String timeString = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
+            conversations += String.format("%s->%s at %s: %s\n", sender, recipient, timeString, content);
             x++;
         }
-        System.out.println("Message History (newest first):");
+        System.out.println("Message History (oldest first):");
         System.out.println(conversations.strip());
     }
 
@@ -178,6 +183,64 @@ public class MessageInterface {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             System.out.println("Unable to export those conversations to CSV");
+        }
+    }
+
+    public static void missedMessages(Scanner scanner, String id, Database db, MessageManager mm) {
+        Instant lastOnline = Instant.parse(db.get("id", id).get("lastOnline"));
+        try {
+            ArrayList<HashMap<String, String>> history = mm.getPersonalHistory(id);
+            ArrayList<HashMap<String, String>> missedMessages = new ArrayList<HashMap<String, String>>();
+            for (HashMap<String, String> message : history) {
+                if (message.size() > 1) {
+                    if (Instant.parse(message.get("timeStamp")).isAfter(lastOnline)) {
+                        missedMessages.add(message);
+                    }
+                }
+            }
+            sort(missedMessages);
+            String conversations = "Missed Messages:\n";
+            for (HashMap<String, String> message : missedMessages) {
+                String content = message.get("message");
+                String sender = db.get("id", message.get("sender")).get("email");
+                String recipient = db.get("id", message.get("recipient")).get("email");
+                if (db.get("id", message.get("sender")).get("role").equals(Role.Customer.toString())) {
+                    recipient += " (" + message.get("store") + ")";
+                } else {
+                    sender += " (" + message.get("store") + ")";
+                }
+                Instant time = Instant.parse(message.get("timeStamp"));
+                String timeString = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
+                conversations += String.format("%s->%s at %s: %s\n", sender, recipient, timeString, content);
+            }
+            if (missedMessages.isEmpty()) {
+                conversations = "You don't have any missed messages";
+            }
+            System.out.println(conversations);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("There was a problem accessing your history");
+        }
+    }
+
+    private static void sort(ArrayList<HashMap<String, String>> messages) {
+        boolean sorted = false;
+        HashMap<String, String> previousMessage = null;
+        while (sorted == false) {
+            sorted = true;
+            for (int i = 0; i < messages.size(); i++) {
+                HashMap<String, String> message = messages.get(i);
+                if (previousMessage == null) {
+                    previousMessage = message;
+                } else {
+                    if (Instant.parse(previousMessage.get("timeStamp")).isAfter(Instant.parse(message.get("timeStamp")))) {
+                        sorted = false;
+                        messages.set(i - 1, message);
+                        messages.set(i, previousMessage);
+                    }
+                    previousMessage = messages.get(i);
+                }
+            }
         }
     }
 }

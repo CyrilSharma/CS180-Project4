@@ -51,6 +51,7 @@ public class MainInterface {
                         System.out.println("Login successful!");
                         HashMap<String, String> acct = db.get("email", email);
                         User user = new User(email, password, acct.get("role"), messageManager, db);
+                        MessageInterface.missedMessages(scan, acct.get("id"), db, messageManager);
                         while (loop2) {
                             String MESSAGEPROMPT = "Would you like to..." +
                                     "\n1. Message a user" +
@@ -83,48 +84,17 @@ public class MainInterface {
                             if (userAction == 1) {
                                 //message user
                                 if (acct.get("role").toLowerCase().equals("customer")) {
-                                    //option to view available stores
-                                    System.out.println("Would you like to view a list of the available stores? (Y/N)");
-                                    String storeList = "";
-                                    storeList = scan.nextLine().toUpperCase();
-                                    while (!storeList.equals("Y") && !storeList.equals("N")) {
-                                        System.out.println("Invalid input, try again.");
-                                        System.out.println("Would you like to view a list of the available stores? (Y/N)");
-                                        storeList = scan.nextLine().toUpperCase();
-                                    }
-                                    if (storeList.equals("Y")) {
-                                        user.viewStores();
-                                    }
+                                    user.viewStores();
                                 } else {
-                                    //option to view list of customers
-                                    System.out.println("Would you like to view a list of customers? (Y/N)");
-                                    String storeList = "";
-                                    storeList = scan.nextLine().toUpperCase();
-                                    while (!storeList.equals("Y") && !storeList.equals("N")) {
-                                        System.out.println("Invalid input, try again.");
-                                        System.out.println("Would you like to view a list of customers? (Y/N)");
-                                        storeList = scan.nextLine().toUpperCase();
-                                    }
-                                    if (storeList.equals("Y")) {
-                                        user.viewCustomers();
-                                    }
+                                    user.viewCustomers();
                                 }
                                 MessageInterface.message(scan, messageManager, db, acct.get("id"));
                             } else if (userAction == 2){
+                                //view message history
                                 MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
                             } else if (userAction == 3) {
-                                //edit message
-                                String view = "";
-                                System.out.println("Would you like to see your message history to find the conversation? (Y/N)");
-                                view = scan.nextLine().toUpperCase();
-                                while (!view.equals("Y") && !view.equals("N")) {
-                                    System.out.println("Invalid input, try again.");
-                                    System.out.println("Would you like to see your message history to find the conversation? (Y/N)");
-                                    view = scan.nextLine().toUpperCase();
-                                }
-                                if (view.equals("Y")) {
-                                    MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
-                                }
+                                //edit a message
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
                                 String recipient = "";
                                 //Should this be changed to somehow take seller name and get convo?
                                 //message recipient email
@@ -142,18 +112,7 @@ public class MainInterface {
                                 messageManager.editMessage(acct.get("ID"), db.get("role", recipient).get("email"), newMessage, String.valueOf(messageNum));
                             } else if (userAction == 4) {
                                 //delete message
-                                String view = "";
-                                //option to view message history
-                                System.out.println("Would you like to see your message history to find the conversation? (Y/N)");
-                                view = scan.nextLine().toUpperCase();
-                                while (!view.equals("Y") && !view.equals("N")) {
-                                    System.out.println("Invalid input, try again.");
-                                    System.out.println("Would you like to see your message history to find the conversation? (Y/N)");
-                                    view = scan.nextLine().toUpperCase();
-                                }
-                                if (view.equals("Y")) {
-                                    MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
-                                }
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
                                 String recipient = "";
                                 //message recipient email
                                 System.out.println("Who did you send the message to?");
@@ -165,35 +124,15 @@ public class MainInterface {
                                 scan.nextLine();
                                 messageManager.deleteMessage(acct.get("ID"), db.get("role", recipient).get("email"), String.valueOf(messageNum));
                             } else if (userAction == 5) {
-                                //TODO: export conversations
+                                //export conversations
                                 MessageInterface.exportConversations(scan, acct.get("id"), db, messageManager);
                             } else if (userAction == 6) {
                                 //block user
                                 //option to see list of customers or stores (dep on role) to see who to block
                                 if (acct.get("role").toLowerCase() == "customer") {
-                                    System.out.println("Would you like to view a list of the available stores? (Y/N)");
-                                    String storeList = "";
-                                    storeList = scan.nextLine().toUpperCase();
-                                    while (!storeList.equals("Y") && !storeList.equals("N")) {
-                                        System.out.println("Invalid input, try again.");
-                                        System.out.println("Would you like to view a list of the available stores? (Y/N)");
-                                        storeList = scan.nextLine().toUpperCase();
-                                    }
-                                    if (storeList.equals("Y")) {
-                                        user.viewStores();
-                                    }
+                                    user.viewStores();
                                 } else {
-                                    System.out.println("Would you like to view a list of customers? (Y/N)");
-                                    String storeList = "";
-                                    storeList = scan.nextLine().toUpperCase();
-                                    while (!storeList.equals("Y") && !storeList.equals("N")) {
-                                        System.out.println("Invalid input, try again.");
-                                        System.out.println("Would you like to view a list of customers? (Y/N)");
-                                        storeList = scan.nextLine().toUpperCase();
-                                    }
-                                    if (storeList.equals("Y")) {
-                                        user.viewCustomers();
-                                    }
+                                    user.viewCustomers();
                                 }
                                 System.out.println("Who would you like to block?");
                                 String userToBlock = "";
@@ -207,7 +146,6 @@ public class MainInterface {
                                 try {
                                     db.block(email, userToBlock, invisible);
                                 } catch (InvalidUserException e) {
-                                    // TODO Auto-generated catch block
                                     System.out.println(e.getMessage());
                                     continue;
                                 }
@@ -217,7 +155,7 @@ public class MainInterface {
                                     System.out.println(userToBlock + " has been blocked!");
                                 }
                             } else if (userAction == 7) {
-                                //TODO: unblock a user
+                                //unblock a user
                                 if (acct.get("role").equals(Role.Customer.toString())) {
                                     user.viewStores();
                                 } else {
@@ -234,7 +172,6 @@ public class MainInterface {
                                 try {
                                     db.unblock(email, name, visible);
                                 } catch (InvalidUserException e) {
-                                    // TODO Auto-generated catch block
                                     System.out.println(e.getMessage());
                                     continue;
                                 }
@@ -244,20 +181,21 @@ public class MainInterface {
                                     System.out.println(name + " has been unblocked!");
                                 }
                             } else if (userAction == 8) {
-                                //TODO: view stores
+                                //view stores
                                 if (acct.get("role").equals(Role.Customer.toString())) {
                                     user.viewStores();
                                 } else {
                                     System.out.println("You cannot do this, you are a seller!");
                                 }
                             } else if (userAction == 9) {
-                                //TODO: view customers
+                                //view customers
                                 if (acct.get("role").equals(Role.Seller.toString())) {
                                     user.viewCustomers();
                                 } else {
                                     System.out.println("You cannot do this, you are a customer!");
                                 }
                             } else if (userAction == 10) {
+                                //create stores
                                 if (acct.get("role").toLowerCase().equals("customer")) {
                                     System.out.println("You cannot do this, you are a customer!");
                                 } else {
@@ -267,13 +205,13 @@ public class MainInterface {
                                     try {
                                         user.addStores(storeName);
                                     } catch (InvalidUserException e) {
-                                        // TODO Auto-generated catch block
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
                                     System.out.println(storeName + " has been created!");
                                 }
                             } else if (userAction == 11) {
+                                //view statistics
                                 Dashboard dashboard = new Dashboard(email, "");
                                 dashboard.readDatabase();
                                 dashboard.presentDashboard(scan);
@@ -282,6 +220,7 @@ public class MainInterface {
                                 Filter f = new Filter(email);
                                 f.presentFilterMenu(scan);
                             } else if (userAction == 13) {
+                                //delete account
                                 System.out.println("Are you sure you want to delete your account (Y/N)");
                                 if (scan.nextLine().toUpperCase().equals("Y")) {
                                     System.out.println("Confirm by entering your password:");
@@ -289,7 +228,6 @@ public class MainInterface {
                                         try {
                                             db.remove(email);
                                         } catch (InvalidUserException e) {
-                                            // TODO Auto-generated catch block
                                             System.out.println(e.getMessage());
                                             continue;
                                         }
@@ -306,7 +244,6 @@ public class MainInterface {
                             try {
                                 db.modify(email, "lastOnline", Instant.now().toString());
                             } catch (InvalidUserException | InvalidKeyException e) {
-                                // TODO Auto-generated catch block
                                 System.out.println("Something went wrong trying to log you out");
                             }
                         }
@@ -344,7 +281,6 @@ public class MainInterface {
                 try {
                     db.add(email, password, Role.valueOf(role));
                 } catch (InvalidUserException e) {
-                    // TODO Auto-generated catch block
                     System.out.println(e.getMessage());
                     continue;
                 }
@@ -360,7 +296,6 @@ public class MainInterface {
                         try {
                             account.addStores(storeName);
                         } catch (InvalidUserException e) {
-                            // TODO Auto-generated catch block
                             System.out.println(e.getMessage());
                             continue;
                         }

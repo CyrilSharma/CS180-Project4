@@ -39,6 +39,7 @@ public class MessageManager {
                 HashMap<String, String> message = new HashMap<String, String>();
                 if (!line.contains(tokenSep) && !line.contains(conversationSplit)) {
                     message.put("recipient", line);
+                    recipient = line;
                 } else if (line.contains(conversationSplit)) {
                     message.put("messageBreak", line);
                 } else {
