@@ -62,14 +62,9 @@ public class User {
                     throw new InvalidUserException("That store name is not available");
                 }
                 File f = new File("stores.txt");
-                FileOutputStream fos = new FileOutputStream(f, false);
+                FileOutputStream fos = new FileOutputStream(f, true);
                 PrintWriter pw = new PrintWriter(fos);
-                String sellerID = db.get("email", this.email).get("id");
-                if (splitVal == 0) {
-                    pw.write(sellerID + splitter + "\n");
-                    splitVal += 1;
-                }
-                pw.write(store + "\n");
+                pw.write(store + "-" + email + "\n");
                 stores.add(store);
                 pw.close();
             } catch (IOException e) {
