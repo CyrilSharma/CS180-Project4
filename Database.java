@@ -66,6 +66,12 @@ public class Database {
     }
 
     // Returns a HashMap object by splitting the string from the database
+    /**
+     * returns a HashMap object by splitting the string from the database
+     *
+     * @param userString
+     * @return a HashMap<String, String></String,>
+     */
     private HashMap<String, String> getDatabaseEntry(String userString) {
         HashMap<String, String> map = new HashMap<String, String>();
         String[] lineArray = userString.split(DATABASE_SPLIT);
@@ -75,6 +81,13 @@ public class Database {
         return map;
     }
 
+    /**
+     * returns the ArrayList from the databse where the key equals the criteria
+     *
+     * @param key email of the user
+     * @param criteria object passed in
+     * @return ArrayList<HashMap<String, String>>
+     */
     public ArrayList<HashMap<String, String>> getSelection(String key, String criteria) {
         ArrayList<HashMap<String, String>> results = new ArrayList<HashMap<String, String>>();
         for (HashMap<String, String> entry: database) {
