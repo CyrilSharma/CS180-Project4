@@ -77,7 +77,7 @@ public class MessageInterface {
         System.out.println("Message sent");
     }
 
-    public static void viewMessageHistory(Scanner scanner, String id, Database db, MessageManager mm) {
+    public static void viewMessageHistory(Scanner scanner, String id, Database db, MessageManager mm, boolean on, Filter filter) {
         ArrayList<String> conversationPartners = MessageInterface.listConversations(id, db, mm);
         if (conversationPartners.isEmpty()) {
             return;
@@ -136,7 +136,12 @@ public class MessageInterface {
             x++;
         }
         System.out.println("Message History (oldest first):");
-        System.out.println(conversations.strip());
+        if (on) {
+            System.out.println(filter.filter(conversations.strip()));
+        } else {
+            System.out.println(conversations.strip());
+        }
+
     }
 
     public static ArrayList<String> listConversations(String id, Database db, MessageManager mm) {
