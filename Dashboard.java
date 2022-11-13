@@ -70,9 +70,15 @@ public class Dashboard {
         String name = "";
 
         if (conversation.get(0)[0].equals(id)) {
+            if (conversation.get(0)[1].equals("No Customer")) {
+                return "No Customer";
+            }
             name = conversation.get(0)[1];
             name = getEmail(name);
         } else {
+            if (conversation.get(0)[0].equals("No Customer")) {
+                return "No Customer";
+            }
             name = conversation.get(0)[0];
             name = getEmail(name);
         }
@@ -121,7 +127,6 @@ public class Dashboard {
     //print the statistics of the current user
     public void printMyStatistic() {
         //System.out.println(myConversations.size());
-        System.out.println(myConversations.size());
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
@@ -132,14 +137,83 @@ public class Dashboard {
             }
         } else {
             for (ArrayList<String[]> conv : myConversations) {
-                int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", getStoreName(conv));
-                System.out.printf("Customer name: %s\n", getOtherName(conv));
-                System.out.printf("Message Received: %d\n", data[0]);
-                System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
+                if (getOtherName(conv).equals("No Customer")) {
+                    System.out.printf("Store name: %s\n", getStoreName(conv));
+                    System.out.println("No customers\n");
+                } else {
+                    int[] data = getMessageData(conv);
+                    System.out.printf("Store name: %s\n", getStoreName(conv));
+                    System.out.printf("Customer name: %s\n", getOtherName(conv));
+                    System.out.printf("Message Received: %d\n", data[0]);
+                    if (data[0] == 0) {
+                        System.out.println();
+                    } else {
+                        System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
+                    }
+                }
             }
         }
 
+    }
+
+    public void getStoreFromDatabase() {
+        File f = new File("Stores.txt");
+        FileReader fr;
+        BufferedReader bfr;
+        try {
+            fr = new FileReader(f);
+            bfr = new BufferedReader(fr);
+            while(true) {
+                String line = bfr.readLine();
+                if (line == null) {
+                    break;
+                }
+                String[] info = line.split("-");
+                if (email.equals(info[1])) {
+                    if (!checkStoreExist(info[0])) {
+                        String[] data = new String[3];
+                        data[1] = id;
+                        data[0] = "No Customer";
+                        data[2] = info[0];
+                        ArrayList<String[]> conv = new ArrayList<>();
+                        conv.add(data);
+                        myConversations.add(conv);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean checkStoreExist(String name) {
+        for (ArrayList<String[]> conv: myConversations) {
+            if (conv.get(0)[2].equals(name)) {
+                //System.out.println(name + "true");
+                return true;
+            }
+        }
+        //System.out.println(name + "false");
+        return false;
+    }
+    public boolean checkStoreExist(ArrayList<ArrayList<String[]>> conv, String name) {
+        for (ArrayList<String[]> con: conv) {
+            if (con.get(0)[2].equals(name)) {
+                //System.out.println(name + "true");
+                return true;
+            }
+        }
+        //System.out.println(name + "false");
+        return false;
+    }
+
+    public boolean checkUserExist(ArrayList<ArrayList<String[]>> conv, String name) {
+        for (ArrayList<String[]> con: conv) {
+            if ((con.get(0)[1].equals(name) || con.get(0)[0].equals(name)) && !name.equals("No Customer")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // read database and store conversation data
@@ -199,6 +273,7 @@ public class Dashboard {
                 }
                 myConversations.add(conversation);
             }
+            getStoreFromDatabase();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Database Error!");
@@ -338,12 +413,18 @@ public class Dashboard {
 
 
     public String getEmail(String ID) {
+        if (ID.equals("No Customer")) {
+            return "No Customer";
+        }
         Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("id", ID);
         return map.get("email");
     }
 
     public String getID(String email) {
+        if (email.equals("No Customer")) {
+            return "No Customer";
+        }
         Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("email", email);
         return map.get("id");
@@ -372,11 +453,11 @@ public class Dashboard {
         } else {
             if (role == Role.Seller) {
                 for (ArrayList<String[]> conversation: myConversations) {
-                    sortedList.add(conversation.get(0)[0]);
+                    sortedList.add(getEmail(conversation.get(0)[0]));
                 }
             } else {
                 for (ArrayList<String[]> conversation: myConversations) {
-                    sortedList.add(conversation.get(0)[1]);
+                    sortedList.add(getEmail(conversation.get(0)[1]));
                 }
             }
         }
@@ -386,17 +467,38 @@ public class Dashboard {
             for (ArrayList<String[]> conversation: myConversations) {
                 if (option == 1) {
                     if (conversation.get(0)[2].equals(user)) {
-                        temp.add(conversation);
+                        if (role == Role.Customer) {
+                            if (!checkUserExist(temp, conversation.get(0)[1])) {
+                                temp.add(conversation);
+                            } else {
+                                continue;
+                            }
+
+                        } else {
+                            if (!checkUserExist(temp, conversation.get(0)[0])) {
+                                temp.add(conversation);
+                            } else {
+                                continue;
+                            }
+                        }
                         break;
                     }
                 } else {
                     if (role == Role.Seller) {
-                        if (conversation.get(0)[0].equals(user)) {
-                            temp.add(conversation);
-                            break;
+                        if (conversation.get(0)[0].equals("No Customer")) {
+                            if (!checkStoreExist(temp, conversation.get(0)[2])) {
+                                temp.add(0, conversation);
+                            } else {
+                                continue;
+                            }
+                        } else {
+                            if (conversation.get(0)[0].equals(getID(user))) {
+                                temp.add(conversation);
+                                break;
+                            }
                         }
                     } else {
-                        if (conversation.get(0)[1].equals(user)) {
+                        if (conversation.get(0)[1].equals(getID(user))) {
                             temp.add(conversation);
                         }
                     }
@@ -449,13 +551,20 @@ public class Dashboard {
         }
         ArrayList<ArrayList<String[]>> temp = new ArrayList<>();
         for (String user: users) {
-            System.out.println(user);
             user = getID(user);
             for (ArrayList<String[]> conversation: myConversations) {
                 if (role == Role.Seller) {
-                    if (conversation.get(0)[0].equals(user)) {
-                        temp.add(conversation);
-                        break;
+                    if (conversation.get(0)[0].equals("No Customer")) {
+                        if (!checkStoreExist(temp, conversation.get(0)[2])) {
+                            temp.add(0, conversation);
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        if (conversation.get(0)[0].equals(user)) {
+                            temp.add(conversation);
+                            break;
+                        }
                     }
                 } else {
                     if (conversation.get(0)[1].equals(user)) {
