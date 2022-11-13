@@ -10,7 +10,6 @@ public class TestMainInterface2 {
     private static final String expectedPath = "testMainInterface2/expected.txt";
     private static ArrayList<String> messageIDs = new ArrayList<String>();
     public static void main(String[] args) throws IOException {
-        System.out.println("Test " + (test0() ? "Passed" : "Failed"));
         String[] args2 = null;
         if (System.getProperty("os.name").contains("Windows")) {
             args2 = new String[] {"cmd.exe", "/c", "java MainInterface < testMainInterface2/inputs.txt > testMainInterface2/outputs.txt", "with", "args"};
@@ -18,6 +17,10 @@ public class TestMainInterface2 {
             args2 = new String[] {"/bin/bash", "-c", "java MainInterface < testMainInterface2/inputs.txt > testMainInterface2/outputs.txt", "with", "args"};
         }
         Process proc = new ProcessBuilder(args2).start();
+        while(proc.isAlive()) {
+
+        }
+        System.out.println("Test " + (test0() ? "Passed" : "Failed"));
     }
     public static boolean test0() {
         // tests construction.
@@ -38,7 +41,9 @@ public class TestMainInterface2 {
             File file1 = new File(dbPath);
             File file2 = new File(storePath);
             file1.delete();
+            file1.createNewFile();
             file2.delete();
+            file2.createNewFile();
             return passedTest;
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block

@@ -60,6 +60,7 @@ public class User {
                     throw new InvalidUserException("That store name is not available");
                 }
                 File f = new File("Stores.txt");
+                f.createNewFile();
                 FileOutputStream fos = new FileOutputStream(f, true);
                 PrintWriter pw = new PrintWriter(fos);
                 pw.write(store + "-" + email + "\n");
