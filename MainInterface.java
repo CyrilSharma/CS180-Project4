@@ -293,7 +293,7 @@ public class MainInterface {
                     System.out.println("How many stores would you like to create?");
                     int numStores = scan.nextInt();
                     scan.nextLine();
-                    for (int i = 0; i < numStores; i++) {
+                    for (int i = 1; i <= numStores; i++) {
                         String storeName = "";
                         System.out.println("What is the name of store " + i + "?");
                         storeName = scan.nextLine();

@@ -59,7 +59,7 @@ public class User {
                 if (User.getEmailFromStore(store) != null) {
                     throw new InvalidUserException("That store name is not available");
                 }
-                File f = new File("stores.txt");
+                File f = new File("Stores.txt");
                 FileOutputStream fos = new FileOutputStream(f, true);
                 PrintWriter pw = new PrintWriter(fos);
                 pw.write(store + "-" + email + "\n");

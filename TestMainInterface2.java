@@ -22,27 +22,23 @@ public class TestMainInterface2 {
     public static boolean test0() {
         // tests construction.
         try {
-            PrintWriter pw = new PrintWriter(new File(dbPath));
-            pw.write("");
-            pw.flush();
-            pw.close();
-            pw = new PrintWriter(new File(storePath));
-            pw.write("");
-            pw.flush();
-            pw.close();
             boolean passedTest = true;
             BufferedReader bfr = new BufferedReader(new FileReader(new File(outputPath)));
             BufferedReader bfr2 = new BufferedReader(new FileReader(new File(expectedPath)));
             String line;
             String line2;
             while ((line = bfr.readLine()) != null && (line2 = bfr2.readLine()) != null) {
-                if (!line.equals(line2)) {
+                if (!line.strip().equals(line2.strip())) {
                     System.out.println("Comparison Failure: " + "<" + line.strip() + "> " + "<" + line2.strip() + ">");
                     passedTest = false;
                 }
             }
             bfr.close();
             bfr2.close();
+            File file1 = new File(dbPath);
+            File file2 = new File(storePath);
+            file1.delete();
+            file2.delete();
             return passedTest;
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
