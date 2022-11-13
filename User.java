@@ -11,8 +11,6 @@ public class User {
     private ArrayList<String> stores;
 
     private String id; //user's personal ID
-    private String splitter = "-----";
-    private int splitVal = 0;
     
     //creating an account
     public User(String email, String password, String role, MessageManager manager, Database db) {

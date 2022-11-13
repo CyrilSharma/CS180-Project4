@@ -256,7 +256,7 @@ public class MainInterface {
                 do {
                     System.out.println("Please enter your email: ");
                     email = scan.nextLine();
-                    if (!db.validate(email, "email")) {
+                    if (!db.validate(email, "email") || db.get("email", email) != null) {
                         System.out.println("Please enter a valid email");
                     }
                 } while (!db.validate(email, "email"));
