@@ -66,7 +66,7 @@ public class User {
                     && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
                     System.out.println(sellerBlocked.get("email") + ": " + storeString);
                 } else if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
-                    && !sellerBlocked.get("invisible").contains(id)){
+                    && !sellerBlocked.get("invisible").contains(id)) {
                     System.out.println(sellerBlocked.get("email") + " (blocked): " + storeString);
                 } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
                     && !sellerBlocked.get("invisible").contains(id)) {
@@ -113,7 +113,7 @@ public class User {
                     && !thisUser.get("invisible").contains(sellerBlocked.get("id"))) {
                     System.out.println(sellerBlocked.get("email"));
                 } else if (!thisUser.get("blocked").contains(sellerBlocked.get("id")) 
-                    && !sellerBlocked.get("invisible").contains(id)){
+                    && !sellerBlocked.get("invisible").contains(id)) {
                     System.out.println(sellerBlocked.get("email") + " (invisible)");
                 } else if (thisUser.get("blocked").contains(sellerBlocked.get("id")) 
                     && !sellerBlocked.get("invisible").contains(id)) {

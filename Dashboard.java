@@ -448,11 +448,11 @@ public class Dashboard {
     /**
      * dashboard menu, user interface to use dashboard
      */
-    public String getEmail(String id) {
-        if (id.equals("No Customer")) {
+    public String getEmail(String idString) {
+        if (idString.equals("No Customer")) {
             return "No Customer";
         }
-        HashMap<String, String> map = database.get("id", id);
+        HashMap<String, String> map = database.get("id", idString);
         return map.get("email");
     }
 
