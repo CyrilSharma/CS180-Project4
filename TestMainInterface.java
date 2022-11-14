@@ -26,11 +26,16 @@ public class TestMainInterface {
         for (String name: filenames) {
             String[] commandArgs = null;
             if (System.getProperty("os.name").equals("Windows 10")) {
-                commandArgs = new String[] {"cmd.exe", "/c", "java MainInterface < testMainInterface/inputs/%s > testMainInterface/outputs/%s", "with", "args"};
+                commandArgs = new String[] {"cmd.exe", "/c", String.format("java MainInterface testMainInterface/databases/db.txt testMainInterface/history < testMainInterface/inputs/%s > testMainInterface/outputs/%s", "with", "args")};
             } else {
-                commandArgs = new String[] {"/bin/bash", "-c", String.format("java MainInterface < testMainInterface/inputs/%s > testMainInterface/outputs/%s", name, name), "with", "args"};
+                commandArgs = new String[] {"/bin/bash", "-c", String.format("java MainInterface testMainInterface/databases/db.txt testMainInterface/history < testMainInterface/inputs/%s > testMainInterface/outputs/%s", name, name), "with", "args"};
             }
             Process proc = new ProcessBuilder(commandArgs).start();
+            try {
+                proc.waitFor();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             // Just inspect the outputs: timesteps make exact comparisons impossible.
             /* Path inputPath = new File(String.format("testMainInterface/outputs/%s", name)).toPath();
             Path expectedPath = new File(String.format("testMainInterface/expected/%s", name)).toPath();
@@ -38,6 +43,12 @@ public class TestMainInterface {
             boolean success = Files.mismatch(inputPath, expectedPath) == -1;
             System.out.printf("Test %s %s\n", name.substring(0, name.length() - 4),
                success ? "passed." : "failed."); */
+            File history = new File("testMainInterface/history");
+            File db = new File("testMainInterface/databases/db.txt");
+            for (File f: history.listFiles()) {
+                f.delete();
+            }
+            db.delete();
         }
     }
 }

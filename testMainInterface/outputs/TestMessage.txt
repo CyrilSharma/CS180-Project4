@@ -20,7 +20,6 @@ Please enter your password:
 Please enter your role (Seller/Customer):
 Account created!
 How many stores would you like to create?
-How many stores would you like to create?
 What is the name of store 1?
 That store name is not available
 Would you like to...
@@ -46,13 +45,8 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Logout
+14. Exit
 Customers:
-CyrilSharma@gmail.com
-Qyril@gmail.com
-user1767@gmail.com
-user1797@gmail.com
-userA@gmail.com
 userA1@gmail.com
 Who do you want to message:
 List of stores:
@@ -77,7 +71,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Logout
+14. Exit
 Would you like to...
 1. Login
 2. Create an account
@@ -87,7 +81,7 @@ Please enter your password (type back to go back):
 Login successful!
 
 Missed Messages:
-userB1@gmail.com (Deli)->userA1@gmail.com at 21:56:37.194902: RELINQUISH YOUR TURKEY IMMEDIATELY.
+userB1@gmail.com (Deli)->userA1@gmail.com at 22:28:23.499082: RELINQUISH YOUR TURKEY IMMEDIATELY.
 
 Would you like to...
 1. Message a user
@@ -103,7 +97,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Logout
+14. Exit
 Would you like to...
 1. Login
 2. Create an account

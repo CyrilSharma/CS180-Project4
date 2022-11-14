@@ -1,24 +1,10 @@
 import java.time.Instant;
 import java.util.*;
-/**
- * Project 4 -> MainInterface
- *
- * The interface where the user can login/create an account and utilize all the functionality
- * of the marketplace messaging system to buy turkeys :)
- *
- *
- * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
- *
- * @version November 13, 2022
- *
- */
+
 public class MainInterface {
 
-    /**
-     * Main method where our project runs through the console
-     */
     public static void main(String[] args) {
-        // Let's you switch out defaults with command line arguments.
+        // Lets you switch out defaults with command line arguments.
         // Testing purposes only.
         String databasePath = "UserDatabase.txt";
         String historyPath = "history";
@@ -62,7 +48,7 @@ public class MainInterface {
                 }
             } while (resp == -1);
 
-            MessageManager messageManager = new MessageManager(db, "history");
+            MessageManager messageManager = new MessageManager(db, historyPath);
             if (resp == 1) { //Login
                 boolean loggedIn = false;
                 String email = "";
@@ -245,6 +231,7 @@ public class MainInterface {
                                     try {
                                         user.addStores(storeName);
                                     } catch (InvalidUserException e) {
+                                        e.printStackTrace();
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
@@ -266,7 +253,6 @@ public class MainInterface {
                                     if (db.verify(email, scan.nextLine())) {
                                         try {
                                             db.remove(email);
-                                            messageManager.removeHistory(email);
                                         } catch (InvalidUserException e) {
                                             System.out.println(e.getMessage());
                                             continue;
@@ -295,7 +281,7 @@ public class MainInterface {
             } else if (resp == 2) { //Creating Acct
                 String email;
                 do {
-                    System.out.println("Please enter your email:");
+                    System.out.println("Please enter your email: ");
                     email = scan.nextLine();
                     if (!db.validate(email, "email") || db.get("email", email) != null) {
                         System.out.println("Please enter a valid email");
@@ -335,7 +321,6 @@ public class MainInterface {
                 User account = new User(email, password, role, messageManager, db);
                 System.out.println("Account created!");
                 if (role.toLowerCase().equals("seller")) {
-                    System.out.println("How many stores would you like to create?");
                     int numStores = -1;
                     do {
                         System.out.println("How many stores would you like to create?");
