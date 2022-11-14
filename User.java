@@ -59,7 +59,8 @@ public class User {
                 for (String store : stores) {
                     storeString += store + ", ";
                 }
-                storeString = storeString.substring(0, storeString.length() - 2);
+                if (storeString.length() > 2)
+                    storeString = storeString.substring(0, storeString.length() - 2);
                 if (!sellerBlocked.get("blocked").contains(id) && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
                     System.out.println(sellerBlocked.get("email") + ": " + storeString);
                 } else if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)){

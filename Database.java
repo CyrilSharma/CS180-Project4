@@ -179,7 +179,7 @@ public class Database {
     // Returns whether the password given for a user was the correct password
     public boolean verify(String name, String password) {
         HashMap<String, String> user = get("email", name);
-        if (user != null) {
+        if (user != null && !user.get("role").equals(Role.Deleted.toString())) {
             String databasePassword = user.get("password");
             return databasePassword.equals(password);
         } else {

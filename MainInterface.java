@@ -299,7 +299,7 @@ public class MainInterface {
                     email = scan.nextLine();
                     if (!db.validate(email, "email") || db.get("email", email) != null) {
                         System.out.println("Please enter a valid email");
-                        email = null;
+                        email = "";
                     }
                 } while (!db.validate(email, "email"));
                 String password;
