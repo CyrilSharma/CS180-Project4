@@ -47,7 +47,7 @@ Would you like to...
 13. Delete your account
 14. Exit
 Stores:
-userB1@gmail.com: Deli
+userB1@gmail.com: Deli, Terrific Turkey Time
 Which store you like to send a message to?
 How would you like to send a message?
 1. Console
@@ -82,7 +82,7 @@ Please enter your password (type back to go back):
 Login successful!
 
 Missed Messages:
-userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 22:28:23.589887: RELINQUISH YOUR TURKEY IMMEDIATELY.
+userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:10:11.888446: RELINQUISH YOUR TURKEY IMMEDIATELY.
 
 Would you like to...
 1. Message a user

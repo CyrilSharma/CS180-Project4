@@ -46,17 +46,9 @@ Would you like to...
 12. Open Filter
 13. Delete your account
 14. Exit
-Customers:
-userA1@gmail.com
-Who do you want to message:
-List of stores:
-Deli, Terrific Turkey Time
-Which store would you like to send a message from:
-How would you like to send a message?
-1. Console
-2. Text file
-Type your message and press enter:
-Message sent
+Who would you like to block?
+Would you like to block them or become invisble to them (block/invisible)?
+userB1@gmail.com has been blocked!
 Would you like to...
 1. Message a user
 2. View messages
@@ -72,17 +64,45 @@ Would you like to...
 12. Open Filter
 13. Delete your account
 14. Exit
+Stores:
+userB1@gmail.com (invisible): Deli, Terrific Turkey Time
+Which store you like to send a message to?
+You do not have permission to message that user
 Would you like to...
-1. Login
-2. Create an account
-3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
-Login successful!
-
-Missed Messages:
-userB1@gmail.com (Deli)->userA1@gmail.com at 23:10:11.799597: RELINQUISH YOUR TURKEY IMMEDIATELY.
-
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Exit
+Input invalid, try again.
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Exit
+Stores:
+userB1@gmail.com (invisible): Deli, Terrific Turkey Time
+Which store you like to send a message to?
+That is not a valid store
 Would you like to...
 1. Message a user
 2. View messages

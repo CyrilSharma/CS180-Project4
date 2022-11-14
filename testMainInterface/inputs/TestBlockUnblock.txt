@@ -11,18 +11,13 @@ Deli
 1
 userA1@gmail.com
 password
-1
+6
 userB1@gmail.com
-Deli
-1
-RELINQUISH YOUR TURKEY IMMEDIATELY.
 14
 1
 userB1@gmail.com
 password
-14
 1
-userA1@gmail.com
-password
+idk
+14
 3
-userB1@gmail.com

@@ -263,7 +263,6 @@ public class MainInterface {
                                 Dashboard dashboard = new Dashboard(email, "", db);
                                 dashboard.readDatabase();
                                 dashboard.printMyStatistic();
-                                dashboard.presentDashboard(scan);
                             } else if (userAction == 12) {
                                 f.presentFilterMenu(scan, filter);
                             } else if (userAction == 13) {

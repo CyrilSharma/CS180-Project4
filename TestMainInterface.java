@@ -16,6 +16,9 @@ import java.util.HashMap;
  */
 public class TestMainInterface {
     public static void main(String[] args) throws IOException {
+        /*
+         * TODO: remove persistence from stores.
+         */
         File dir = new File("testMainInterface/inputs");
         File[] files = dir.listFiles();
         String[] filenames = new String[files.length];
