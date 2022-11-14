@@ -85,7 +85,8 @@ public class MessageManager {
     }
 
     /**
-     * Allows the user to message other users (Customers to Sellers and vv, NOT Customers to Customers or Sellers to Sellers
+     * Allows the user to message other users (Customers to Sellers and vv, 
+     * NOT Customers to Customers or Sellers to Sellers
      */
     public void messageUser(String senderID, String recipientID, String message, String store) {
         try {
@@ -120,7 +121,8 @@ public class MessageManager {
     /**
      * Allows the user to delete a message from THEIR personal message history
      */
-    public void generalMessage(String senderID, String recipientID, String message, String action, String messageID, String store) throws IOException {
+    public void generalMessage(String senderID, String recipientID, String message, String action, 
+        String messageID, String store) throws IOException {
         String[] ids = {senderID, recipientID};
         for (String id: ids) {
             ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
@@ -171,7 +173,7 @@ public class MessageManager {
                         break;
                     }
                 }
-            } else if (action.equals("delete")){
+            } else if (action.equals("delete")) {
                 if (id.equals(senderID)) {
                     for (HashMap<String, String> hist : history) {
                         if (hist.containsKey("messageNum") && hist.get("messageNum").equals(messageID)) {
@@ -196,7 +198,9 @@ public class MessageManager {
         String messageString = "";
         for (HashMap<String, String> things : messages) {
             if (things.size() > 1) {
-                messageString += String.join(tokenSep, things.get("message"), things.get("recipient"), things.get("messageNum"), things.get("timeStamp"), things.get("store") + messageSplit + "\n");
+                messageString += String.join(tokenSep, things.get("message"), things.get("recipient"), 
+                    things.get("messageNum"), things.get("timeStamp"), 
+                    things.get("store") + messageSplit + "\n");
             } else if (things.containsKey("recipient")) {
                 messageString += things.get("recipient") + "\n";
             } else {
@@ -234,20 +238,24 @@ public class MessageManager {
         ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
         String text = "Message ID, Sender,Recipient,Store,Time Stamp,Message Contents\n";
         for (HashMap<String, String> message : history) {
-            if (message.size() > 1){
+            if (message.size() > 1) {
                 String recipient = db.get("id", message.get("recipient")).get("email");
                 String sender = db.get("id", message.get("sender")).get("email");
                 if (Arrays.asList(idsOfConversationsToRetrieve).contains(message.get("recipient"))) {
                     Instant time = Instant.parse(message.get("timeStamp"));
-                    String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
-                    text += String.join(",", message.get("messageNum"), sender, recipient, message.get("store"), timeStamp, message.get("message")) + "\n";
+                    String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId())
+                        .toLocalTime().toString();
+                    text += String.join(",", message.get("messageNum"), 
+                        sender, recipient, message.get("store"), timeStamp, 
+                        message.get("message")) + "\n";
                 }
             }
         }
         int count = 1;
         File file = new File("csv/" + id + "-historyCSV.csv");
         if (!file.createNewFile()) {
-            while (!(file = new File("csv/" + id + "-historyCSV-" + count + ".csv")).createNewFile()) {
+            while (!file.createNewFile()) {
+                file = new File("csv/" + id + "-historyCSV-" + count + ".csv");
                 count++;
             }
         }

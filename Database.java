@@ -21,8 +21,8 @@ import java.util.Random;
 public class Database {
     private String databasePath;
     private ArrayList<HashMap<String, String>> database;
-    private final String DATABASE_SPLIT = "###";
-    private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
+    private final String databaseSplit = "###";
+    private final String[] keys = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
     private Random random;
 
     /**
@@ -52,7 +52,7 @@ public class Database {
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             ArrayList<HashMap<String, String>> userList = new ArrayList<HashMap<String, String>>();
             String line;
-            while((line = bfr.readLine()) != null) {
+            while ((line = bfr.readLine()) != null) {
                 userList.add(getDatabaseEntry(line));
             }
             if (userList.isEmpty()) {
@@ -73,9 +73,9 @@ public class Database {
      */
     private HashMap<String, String> getDatabaseEntry(String userString) {
         HashMap<String, String> map = new HashMap<String, String>();
-        String[] lineArray = userString.split(DATABASE_SPLIT);
-        for (int i = 0; i < KEYS.length; i++) {
-            map.put(KEYS[i], lineArray[i]);
+        String[] lineArray = userString.split(databaseSplit);
+        for (int i = 0; i < keys.length; i++) {
+            map.put(keys[i], lineArray[i]);
         }
         return map;
     }
@@ -107,9 +107,9 @@ public class Database {
     public void add(String name, String password, Role role) throws InvalidUserException {
         if (get("email", name) != null) {
             throw new InvalidUserException("That email is already registered");
-        } else if (!validate(name, KEYS[1])) {
+        } else if (!validate(name, keys[1])) {
             throw new InvalidUserException("Your email cannot include special characters");
-        } else if (!validate(password, KEYS[2])) {
+        } else if (!validate(password, keys[2])) {
             throw new InvalidUserException("Your password cannot include special characters");
         }
         String id = "";
@@ -126,7 +126,7 @@ public class Database {
             }
         } while (get("id", id) != null);
         String[] tokens = {id, name, password, role.toString(), Instant.now().toString(), "null", "null"};
-        String line = String.join(DATABASE_SPLIT, tokens);
+        String line = String.join(databaseSplit, tokens);
         database.add(getDatabaseEntry(line));
         save();
     }
@@ -225,8 +225,7 @@ public class Database {
             } else {
                 blocker.put("blocked", String.join(",", blockedUsers));
             }
-        }
-        else {
+        } else {
             throw new InvalidUserException("You are not blocking that user");
         }
         save();
@@ -305,9 +304,9 @@ public class Database {
      * @return if the string is valid
      */
     public boolean validate(String str, String key) {
-        if (key == KEYS[1]) {
+        if (key == keys[1]) {
             return str.matches("^[A-Za-z0-9\\-\\._]{1,64}[^.]@[A-Za-z0-9]+\\.[a-z]{3}$");
-        } else if (key == KEYS[2]) {
+        } else if (key == keys[2]) {
             return str.matches("^[A-Za-z0-9]+$");
         }
         return true;
@@ -321,7 +320,7 @@ public class Database {
      */
     private boolean validateKey(String key) {
         boolean keyExists = false;
-        for (String k: KEYS) {
+        for (String k: keys) {
             if (k == key) {
                 keyExists = true;
                 break;
@@ -357,10 +356,10 @@ public class Database {
         String output = "";
         for (HashMap<String, String> user : database) {
             ArrayList<String> strings = new ArrayList<String>();
-            for (String key : KEYS) {
+            for (String key : keys) {
                 strings.add(user.get(key));
             }
-            output += "\n" + String.join(DATABASE_SPLIT, strings);
+            output += "\n" + String.join(databaseSplit, strings);
         }
         return output;
     }

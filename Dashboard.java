@@ -28,7 +28,7 @@ public class Dashboard {
     public Dashboard(String email, String msgDatabaseLocation, Database database) {
         this.email = email;
         this.database = database;
-        loadUserFromDatabase(email, database);
+        loadUserFromDatabase(email);
         allConversations = new ArrayList<>();
         myConversations = new ArrayList<>();
     }
@@ -37,20 +37,19 @@ public class Dashboard {
      * initializes the role field to the Role Enum:
      * Seller or Customer
      *
-     * @param email email of the user
-     * @param database object passed in
+     * @param emailString email of the user
      */
-    private void loadUserFromDatabase(String email, Database database) {
-        HashMap<String, String> map = database.get("email", email);
+    private void loadUserFromDatabase(String emailString) {
+        HashMap<String, String> map = database.get("email", emailString);
         if (map.get("role").equals("Seller")) {
             role = Role.Seller; //Seller Enum
-        } else if (map.get("role").equals("Customer")){
+        } else if (map.get("role").equals("Customer")) {
             role = Role.Customer; //Customer Enum
         } else {
             System.out.println("DATABASE ERROR");
         }
         id = map.get("id");
-        textDatabase = new File("history/"+ id + "-messageHistory.txt");
+        textDatabase = new File("history/" + id + "-messageHistory.txt");
 
     }
 
@@ -220,7 +219,7 @@ public class Dashboard {
         try {
             fr = new FileReader(f);
             bfr = new BufferedReader(fr);
-            while(true) {
+            while (true) {
                 String line = bfr.readLine();
                 if (line == null) {
                     break;
@@ -302,13 +301,13 @@ public class Dashboard {
             }
             fr = new FileReader(textDatabase);
             bfr = new BufferedReader(fr);
-            while(true) {
+            while (true) {
                 String line = bfr.readLine();
                 if (line == null) {
                     break;
                 }
                 ArrayList<String[]> conversation = new ArrayList<>();
-                String path = "history/"+ line + "-messageHistory.txt";
+                String path = "history/" + line + "-messageHistory.txt";
                 String[] users = new String[3];
                 users[2] = "";
                 if (role == Role.Seller) {
@@ -355,37 +354,37 @@ public class Dashboard {
         if (!textDatabase.exists()) {
             return;
         }
-        String MENU_MESSAGE = "what do you want to do? " +
+        String menuMessage = "what do you want to do? " +
                 "\n1. sort stores";
 
         if (role == Role.Seller) {
-            MENU_MESSAGE += "\n2. sort customers" +
+            menuMessage += "\n2. sort customers" +
                     "\n3. quit";
         } else {
-            MENU_MESSAGE += "\n2. sort sellers" +
+            menuMessage += "\n2. sort sellers" +
                     "\n3. quit";
         }
 
-        String SORT_MESSAGE = "How do you want to sort? " +
+        String sortMessage = "How do you want to sort? " +
                 "\n1. sort by alphabetical order " +
                 "\n2. sort by alphabetical backwards" +
                 "\n3. sort by lowest message received" +
                 "\n4. sort by highest message received" +
                 "\n5. go back to previous menu";
-        String SORT_MESSAGE1 = "How do you want to sort? " +
+        String sortMessage1 = "How do you want to sort? " +
                 "\n1. sort by alphabetical order " +
                 "\n2. sort by alphabetical backwards" +
                 "\n3. go back to previous menu";
-        String ERROR_MSG = "Please enter a valid number";
+        String errorMsg = "Please enter a valid number";
         boolean ongoing = true;
         while (ongoing) {
-            System.out.println(MENU_MESSAGE);
+            System.out.println(menuMessage);
             String option = sc.nextLine();
             switch (option) {
                 case "1":
                     boolean ongoing1 = true;
                     while (ongoing1) {
-                        System.out.println(SORT_MESSAGE1);
+                        System.out.println(sortMessage1);
                         String option1 = sc.nextLine();
                         switch (option1) {
                             case "1":
@@ -400,7 +399,7 @@ public class Dashboard {
                                 ongoing1 = false;
                                 break;
                             default:
-                                System.out.println(ERROR_MSG);
+                                System.out.println(errorMsg);
                                 break;
                         }
                     }
@@ -408,7 +407,7 @@ public class Dashboard {
                 case "2":
                     boolean ongoing2 = true;
                     while (ongoing2) {
-                        System.out.println(SORT_MESSAGE);
+                        System.out.println(sortMessage);
                         String option1 = sc.nextLine();
                         switch (option1) {
                             case "1":
@@ -431,7 +430,7 @@ public class Dashboard {
                                 ongoing2 = false;
                                 break;
                             default:
-                                System.out.println(ERROR_MSG);
+                                System.out.println(errorMsg);
                                 break;
                         }
                     }
@@ -440,7 +439,7 @@ public class Dashboard {
                     ongoing = false;
                     break;
                 default:
-                    System.out.println(ERROR_MSG);
+                    System.out.println(errorMsg);
                     break;
             }
         }
@@ -449,24 +448,24 @@ public class Dashboard {
     /**
      * dashboard menu, user interface to use dashboard
      */
-    public String getEmail(String ID) {
-        if (ID.equals("No Customer")) {
+    public String getEmail(String id) {
+        if (id.equals("No Customer")) {
             return "No Customer";
         }
-        HashMap<String, String> map = database.get("id", ID);
+        HashMap<String, String> map = database.get("id", id);
         return map.get("email");
     }
 
     /**
      * get the ID of a user from their email
-     * @param email
+     * @param emailString
      * @return ID
      */
-    public String getID(String email) {
-        if (email.equals("No Customer")) {
+    public String getID(String emailString) {
+        if (emailString.equals("No Customer")) {
             return "No Customer";
         }
-        HashMap<String, String> map = database.get("email", email);
+        HashMap<String, String> map = database.get("email", emailString);
         return map.get("id");
     }
 
@@ -592,14 +591,14 @@ public class Dashboard {
             } else {
                 int index = 0;
                 int size = map.size();
-                for (String email: map.keySet()) {
-                    if (sent > map.get(email)) {
+                for (String emailString: map.keySet()) {
+                    if (sent > map.get(emailString)) {
                         map.put(otherEmail, sent);
                         users.add(index, otherEmail);
                         break;
                     }
                     if (index == size - 1) {
-                        map.put(otherEmail,sent);
+                        map.put(otherEmail, sent);
                         users.add(otherEmail);
                     }
                     index++;

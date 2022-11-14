@@ -1,6 +1,7 @@
 import java.time.Instant;
 import java.util.*;
 
+//TODO: Add javadoc
 public class MainInterface {
 
     public static void main(String[] args) {
@@ -26,24 +27,24 @@ public class MainInterface {
         boolean filter = false;
         while (loop1) {
 
-            String PROMPT = "Would you like to..." +
+            String prompt = "Would you like to..." +
                     "\n1. Login" +  
                     "\n2. Create an account" +
                     "\n3. Exit";
                     
             int resp = -1;
-            System.out.println(PROMPT);
+            System.out.println(prompt);
             do {
                 try {
                     resp = Integer.parseInt(scan.nextLine());
                     if (resp < 1 || resp > 3) {
                         System.out.println("Input invalid, try again.");
-                        System.out.println(PROMPT);
+                        System.out.println(prompt);
                         resp = -1;
                     }
                 } catch (Exception e) {
                     System.out.println("Input invalid, try again.");
-                    System.out.println(PROMPT);
+                    System.out.println(prompt);
                     resp = -1;
                 }
             } while (resp == -1);
@@ -78,7 +79,7 @@ public class MainInterface {
                             System.out.println("Something went wrong trying to log you in");
                         }
                         while (loop2) {
-                            String MESSAGEPROMPT = "Would you like to..." +
+                            String messagePrompt = "Would you like to..." +
                                     "\n1. Message a user" +
                                     "\n2. View messages" +
                                     "\n3. Edit a message" +
@@ -93,7 +94,7 @@ public class MainInterface {
                                     "\n12. Open Filter" +
                                     "\n13. Delete your account" +
                                     "\n14. Exit";
-                            System.out.println(MESSAGEPROMPT);
+                            System.out.println(messagePrompt);
                             filter = f.getStatus();
                             int userAction = -1;
                             do {
@@ -104,23 +105,25 @@ public class MainInterface {
                                 }
                                 if (userAction < 1 || userAction > 14) {
                                     System.out.println("Input invalid, try again.");
-                                    System.out.println(MESSAGEPROMPT);
+                                    System.out.println(messagePrompt);
                                 }
                             } while (userAction < 1 || userAction > 14);
                             if (userAction == 1) {
                                 //message user
                                 if (acct.get("role").toLowerCase().equals("customer")) {
                                     user.viewStores();
-                                } else if (acct.get("role").equals(Role.Seller.toString())){
+                                } else if (acct.get("role").equals(Role.Seller.toString())) {
                                     user.viewCustomers();
                                 }
                                 MessageInterface.message(scan, messageManager, db, acct.get("id"));
-                            } else if (userAction == 2){
+                            } else if (userAction == 2) {
                                 //view message history
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f, true);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, 
+                                    filter, f, true);
                             } else if (userAction == 3) {
                                 //edit a message
-                                ArrayList<HashMap<String, String>> messages = MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f, true);
+                                ArrayList<HashMap<String, String>> messages = MessageInterface.viewMessageHistory(scan, 
+                                    acct.get("id"), db, messageManager, filter, f, true);
                                 if (messages == null) {
                                     continue;
                                 }
@@ -144,11 +147,13 @@ public class MainInterface {
                                 //what the new message will be
                                 System.out.println("What would you like to change the message to?");
                                 newMessage = scan.nextLine();
-                                messageManager.editMessage(acct.get("id"), selectedMessage.get("recipient"), newMessage, selectedMessage.get("messageNum"));
+                                messageManager.editMessage(acct.get("id"), selectedMessage.get("recipient"), 
+                                    newMessage, selectedMessage.get("messageNum"));
                                 System.out.println("Message edited");
                             } else if (userAction == 4) {
                                 //delete message
-                                ArrayList<HashMap<String, String>> messages = MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f, true);
+                                ArrayList<HashMap<String, String>> messages = MessageInterface.viewMessageHistory(scan, 
+                                    acct.get("id"), db, messageManager, filter, f, true);
                                 if (messages == null) {
                                     continue;
                                 }
@@ -168,7 +173,8 @@ public class MainInterface {
                                     }
                                 } while (messageNum == -1);
                                 HashMap<String, String> selectedMessage = messages.get(messageNum - 1);
-                                messageManager.deleteMessage(acct.get("id"), selectedMessage.get("recipient"), selectedMessage.get("messageNum"));
+                                messageManager.deleteMessage(acct.get("id"), selectedMessage.get("recipient"), 
+                                    selectedMessage.get("messageNum"));
                                 System.out.println("Message deleted");
                             } else if (userAction == 5) {
                                 //export conversations
@@ -176,7 +182,7 @@ public class MainInterface {
                             } else if (userAction == 6) {
                                 //block user
                                 //option to see list of customers or stores (dep on role) to see who to block
-                                if (acct.get("role").toLowerCase() == "customer") {
+                                if (acct.get("role").toLowerCase().equals("customer")) {
                                     user.viewStores();
                                 } else if (acct.get("role").equals(Role.Seller.toString())) {
                                     user.viewCustomers();
@@ -188,7 +194,8 @@ public class MainInterface {
                                     System.out.println("That is not a valid email");
                                     continue;
                                 }
-                                System.out.println("Would you like to block them or become invisble to them (block/invisible)?");
+                                System.out.println("Would you like to block them or become" 
+                                    + " invisble to them (block/invisible)?");
                                 boolean invisible = scan.nextLine().toLowerCase().equals("invisible");
                                 try {
                                     db.block(email, userToBlock, invisible);
@@ -214,7 +221,8 @@ public class MainInterface {
                                     System.out.println("That is not a valid email");
                                     continue;
                                 }
-                                System.out.println("Would you like to unblock them or become visible to them (unblock/visible)");
+                                System.out.println("Would you like to unblock them or become visible" 
+                                    + " to them (unblock/visible)");
                                 boolean visible = scan.nextLine().toLowerCase().equals("visible");
                                 try {
                                     db.unblock(email, name, visible);
@@ -328,7 +336,7 @@ public class MainInterface {
                         roleValid = true;
                         rolething = Role.Seller;
                     }
-                    if (role.toLowerCase().equals("customer")){ 
+                    if (role.toLowerCase().equals("customer")) { 
                         roleValid = true;
                         rolething = Role.Customer;
                     }

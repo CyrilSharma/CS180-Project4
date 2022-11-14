@@ -1,9 +1,10 @@
 import java.io.File;
 import java.util.HashMap;
 
+//TODO: Add javadoc
 public class TestDatabase {
-    private static final String filepath = "testDatabase/testDatabase1.txt";
-    private static File f = new File(filepath);
+    private static final String FILEPATH = "testDatabase/testDatabase1.txt";
+    private static File f = new File(FILEPATH);
     public static void main(String[] args) {
         System.out.println("Test " + (test1() ? "Passed" : "Failed"));
         System.out.println("Test " + (test2() ? "Passed" : "Failed"));
@@ -14,7 +15,7 @@ public class TestDatabase {
 
     public static boolean test1() {
         // Test get.
-        Database db1 = new Database(filepath);
+        Database db1 = new Database(FILEPATH);
         try {
             for (int i = 0; i < 10; i++) {
                 String username = String.format("User%d@gmail.com", i + 1);
@@ -27,7 +28,7 @@ public class TestDatabase {
             return false;
         }
 
-        Database db2 = new Database(filepath);
+        Database db2 = new Database(FILEPATH);
         for (int i = 0; i < 10; i++) {
             boolean valid = false;
             String username = String.format("User%d@gmail.com", i + 1);
@@ -44,7 +45,7 @@ public class TestDatabase {
 
     public static boolean test2() {
         // Test verify.
-        Database db = new Database(filepath);
+        Database db = new Database(FILEPATH);
         for (int i = 0; i < 10; i++) {
             String username = String.format("User%d@gmail.com", i + 1);
             String password = String.format("password%d", i + 1);
@@ -58,7 +59,7 @@ public class TestDatabase {
 
     public static boolean test3() {
         // Test modify.
-        Database db1 = new Database(filepath);
+        Database db1 = new Database(FILEPATH);
         for (int i = 6; i < 10; i++) {
             String username = String.format("User%d@gmail.com", i + 1);
             String password = String.format("password%d", i + 1);
@@ -71,7 +72,7 @@ public class TestDatabase {
         }
         db1.save();
 
-        Database db2 = new Database(filepath);
+        Database db2 = new Database(FILEPATH);
         for (int i = 6; i < 10; i++) {
             String username = String.format("User%d@gmail.com", i + 1);
             String password = String.format("password%dedited", i + 1);
@@ -85,7 +86,7 @@ public class TestDatabase {
 
     public static boolean test4() {
         // Test block.
-        Database db1 = new Database(filepath);
+        Database db1 = new Database(FILEPATH);
         for (int i = 0; i < 5; i++) {
             String username1 = String.format("User%d@gmail.com", i + 1);
             String username2 = String.format("User%d@gmail.com", i + 2);
@@ -98,14 +99,14 @@ public class TestDatabase {
         }
         db1.save();
 
-        Database db2 = new Database(filepath);
+        Database db2 = new Database(FILEPATH);
         for (int i = 0; i < 5; i++) {
             String username1 = String.format("User%d@gmail.com", i + 1);
             HashMap<String, String> user1 = db2.get("email", username1);
             String[] blocked = user1.get("blocked").split(",");
             String username2 = String.format("User%d@gmail.com", i + 2);
             HashMap<String, String> user2 = db2.get("email", username2);
-            boolean valid = blocked[0].equals(user2.get("id"));;
+            boolean valid = blocked[0].equals(user2.get("id"));
             if (!valid) {
                 return false;
             }

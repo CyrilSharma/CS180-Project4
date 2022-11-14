@@ -1,3 +1,4 @@
+//TODO: Add javadoc 
 public class Test {
     public static void main(String[] args) {
         Database db = new Database("TestDatabase.txt");
@@ -38,7 +39,9 @@ public class Test {
             // NOTE. This will eventually have to be replaced with IDs since names are not unique.
             db.modify("Cyril", "name", "Qyril");
             System.out.println("Test 5 Failed.");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         Dashboard dashboard = new Dashboard("Alex@gmail.com", "testMessageHistory.txt", db);
         dashboard.readDatabase();
@@ -48,7 +51,8 @@ public class Test {
         //Sample test for filter
         //Filter f = new Filter("Jacob@gmail.com");
         //        System.out.println(f.toString());
-        //        String line = "Freak, I hate you bro, you are such idiOt and DUMB, I will never buy anything from this freaking store!";
+        //        String line = "Freak, I hate you bro, you are such idiOt and DUMB, 
+        //            I will never buy anything from this freaking store!";
         //        System.out.println(f.filter(line));
         //        try {
         //            f.add("never");
