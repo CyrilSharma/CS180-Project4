@@ -4,7 +4,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
+ * Project 4 -> TestMainInterface
+ *
+ * class handles the testing of main interface
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class TestMainInterface {
     // Useful constants.
     public static void main(String[] args) throws IOException {

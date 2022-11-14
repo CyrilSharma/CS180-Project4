@@ -1,6 +1,15 @@
 import java.io.*;
 import java.util.*;
-
+/**
+ * Project 4 -> TestMainInterface2
+ *
+ * class handles the testing of main interface
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class TestMainInterface2 {
     // Useful constants.
     private static final String dbPath = "UserDatabase.txt";

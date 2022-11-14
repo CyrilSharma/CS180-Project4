@@ -2,7 +2,15 @@ import java.io.*;
 import java.util.*;
 import java.time.Instant;
 /**
- * This class handles message sending for a particular user.
+ * Project 4 -> MessageManager
+ *
+ * This class handles message sending for a particular user. It specifically adds create, edit, and remove message
+ * functionality as well as the means to export conversations into a .CSV file.
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
  */
 public class MessageManager {
     String tokenSep = "|||||";
@@ -12,13 +20,20 @@ public class MessageManager {
     private Database db;
     private String historyDir;
 
+    /**
+     * Initializes instance fields
+     *
+     * @param db, historyPath
+     */
     public MessageManager(Database db, String historyPath) {
         this.db = db;
         historyDir = historyPath;
         random = new Random();
     }
 
-    //Returns the names of all the customers a user can talk to
+    /**
+     * Returns the names of all the customers a user can talk to
+     */
     public ArrayList<String> getNames(String type) throws InvalidUserException {
         ArrayList<HashMap<String, String>> results = db.getSelection("role", type);
         ArrayList<String> names = new ArrayList<String>();
@@ -28,6 +43,9 @@ public class MessageManager {
         return names;
     }
 
+    /**
+     * Returns the personal message history of the user
+     */
     public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
         File f = new File(historyDir + "/" + id + "-messageHistory.txt");
         f.createNewFile();
@@ -67,6 +85,9 @@ public class MessageManager {
         return null;
     }
 
+    /**
+     * Allows the user to message other users (Customers to Sellers and vv, NOT Customers to Customers or Sellers to Sellers
+     */
     public void messageUser(String senderID, String recipientID, String message, String store) {
         try {
             generalMessage(senderID, recipientID, message, "message", "", store);
@@ -75,6 +96,9 @@ public class MessageManager {
         }
     }
 
+    /**
+     * Allows the user to edit a message in an existing conversation
+     */
     public void editMessage(String senderID, String recipientID, String message, String messageId) {
         try {
             generalMessage(senderID, recipientID, message, "edit", messageId, "");
@@ -83,6 +107,9 @@ public class MessageManager {
         }
     }
 
+    /**
+     * Allows the user to delete a message from THEIR personal message history
+     */
     public void deleteMessage(String senderID, String recipientID, String messageId) {
         try {
             generalMessage(senderID, recipientID, "", "delete", messageId, "");
@@ -91,7 +118,9 @@ public class MessageManager {
         }
     }
 
-
+    /**
+     * Allows the user to delete a message from THEIR personal message history
+     */
     public void generalMessage(String senderID, String recipientID, String message, String action, String messageID, String store) throws IOException {
         String[] ids = {senderID, recipientID};
         for (String id: ids) {
@@ -162,6 +191,9 @@ public class MessageManager {
         }
     }
 
+    /**
+     * Allows the user to delete a message from THEIR personal message history
+     */
     private String formatMessages(ArrayList<HashMap<String, String>> messages) {
         String messageString = "";
         for (HashMap<String, String> things : messages) {
@@ -176,6 +208,9 @@ public class MessageManager {
         return messageString.strip();
     }
 
+    /**
+     * Takes a text file and returns the contents as a string, allowing for the contents to be sent to another user
+     */
     public String[] readTextFromFile(String path) throws FileNotFoundException {
         String[] text = null;
         try (BufferedReader bfr = new BufferedReader(new FileReader(new File(path)))) {
@@ -194,6 +229,9 @@ public class MessageManager {
         return text;
     }
 
+    /**
+     * Converts personal message history text file into a CSV file that can be exported
+     */
     public void messagesToCSV(String id, String[] idsOfConversationsToRetrieve) throws IOException {
         ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
         String text = "Message ID, Sender,Recipient,Store,Time Stamp,Message Contents\n";
