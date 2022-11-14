@@ -47,17 +47,13 @@ Would you like to...
 12. Open Filter
 13. Delete your account
 14. Logout
-Customers:
-CyrilSharma@gmail.com
-Qyril@gmail.com
-user1767@gmail.com
-user1797@gmail.com
-userA@gmail.com
-userA1@gmail.com
-Who do you want to message:
-List of stores:
-Deli
-Which store would you like to send a message from:
+Stores:
+userB1@gmail.com: Deli
+Which store you like to send a message to?
+How would you like to send a message?
+1. Console
+2. Text file
+That is not a valid input. Please try again
 How would you like to send a message?
 1. Console
 2. Text file
@@ -87,7 +83,7 @@ Please enter your password (type back to go back):
 Login successful!
 
 Missed Messages:
-userB1@gmail.com (Deli)->userA1@gmail.com at 21:56:37.194902: RELINQUISH YOUR TURKEY IMMEDIATELY.
+userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 21:45:47.886205: RELINQUISH YOUR TURKEY IMMEDIATELY.
 
 Would you like to...
 1. Message a user
