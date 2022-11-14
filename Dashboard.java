@@ -1,7 +1,16 @@
 import java.util.*;
 import java.io.*;
-
-//dashboard class
+/**
+ * Project 4 -> Dashboard
+ *
+ * Allows for user to access statistics related to user's messaging as well as unique statistics for sellers
+ * and customers respectively, such as the most common word used.
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class Dashboard {
     private ArrayList<ArrayList<String[]>> allConversations;
     private ArrayList<ArrayList<String[]>> myConversations;
@@ -11,7 +20,12 @@ public class Dashboard {
     private File textDatabase;
     private Database database;
 
-    public Dashboard(String email, String msgDatabaseLocation, Database database) {
+    /**
+     * initializes the instance field variables
+     *
+     * @param email email of the user
+     */
+    public Dashboard(String email, String msgDatabaseLocation) {
         this.email = email;
         this.database = database;
         loadUserFromDatabase(email, database);
@@ -19,15 +33,19 @@ public class Dashboard {
         myConversations = new ArrayList<>();
     }
 
-    //sets up role from the userDatabase
+    /**
+     * initializes the role field to the Role Enum:
+     * Seller or Customer
+     *
+     * @param email email of the user
+     * @param database object passed in
+     */
     private void loadUserFromDatabase(String email, Database database) {
         HashMap<String, String> map = database.get("email", email);
         if (map.get("role").equals("Seller")) {
-            //userSeller = new Seller(email);
-            role = Role.Seller;
+            role = Role.Seller; //Seller Enum
         } else if (map.get("role").equals("Customer")){
-            //userCustomer = new Customer(email);
-            role = Role.Customer;
+            role = Role.Customer; //Customer Enum
         } else {
             System.out.println("DATABASE ERROR");
         }
@@ -36,7 +54,15 @@ public class Dashboard {
         System.out.println("Successfully loaded!");
     }
 
-    //return int[2] data where data[0] = message customer sent and data[1] = message seller sent from history txt file
+    /**
+     * creates a messageData integer array that contains the number of messages
+     * given from the customer and seller and sotres it
+     * messageData[0] is the customer messages and messageData[1]
+     * is the seller messages.
+     *
+     * @param conversation ArrayList of the message conversation
+     * @return returns the messageData integer array
+     */
     public int[] getMessageData(ArrayList<String[]> conversation) {
         //messageData[0] = # customer sent && messageData[1] = # seller sent
         int[] messageData = new int[2];
@@ -49,8 +75,10 @@ public class Dashboard {
             }
             if (msg[0].equals(id)) {
                 if (role == Role.Customer) {
+                    //increasing customer message count
                     customerSent++;
                 } else {
+                    //increasing seller message count
                     sellerSent++;
                 }
             } else {
@@ -66,7 +94,12 @@ public class Dashboard {
         return messageData;
     }
 
-    //get other user's name with conversation list
+    /**
+     * retrieves another user's name that is provided in the conversation list
+     *
+     * @param conversation ArrayList of the message conversation
+     * @return returns name
+     */
     public String getOtherName(ArrayList<String[]> conversation) {
         String name = "";
 
@@ -86,7 +119,12 @@ public class Dashboard {
         return name;
     }
 
-    //remove special characters from word
+    /**
+     * removes special characters from a word
+     *
+     * @param word String
+     * @return returns result, word without special characters
+     */
     public String removeSpecialChar(String word) {
         String result = "";
         for (int i = 0; i < word.length(); i++) {
@@ -96,7 +134,13 @@ public class Dashboard {
         }
         return result;
     }
-    //finds the most common word from conversation(excluding special characters)
+
+    /**
+     * finds the most common word from conversation(excluding special characters)
+     *
+     * @param conversation ArrayList String[] containing conversation split by lines in a String array
+     * @return returns word that occurs most often
+     */
     public String findMostCommonWord(ArrayList<String[]> conversation) {
         HashMap<String, Integer> map = new HashMap<>();
         for (String[] msg: conversation) {
@@ -121,13 +165,21 @@ public class Dashboard {
         return word;
     }
 
+    /**
+     * returns the 2nd element of the String array of the first String
+     * array found in the ArrayList conv.
+     *
+     * @param conv ArrayList String[] containing conversation
+     * @return String
+     */
     public String getStoreName(ArrayList<String[]> conv) {
         return conv.get(0)[2];
     }
 
-    //print the statistics of the current user
+    /**
+     * print the statistics of the current user
+     */
     public void printMyStatistic() {
-        //System.out.println(myConversations.size());
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
@@ -157,6 +209,10 @@ public class Dashboard {
 
     }
 
+    /**
+     * gets the store from database and adds the data to the ArrayList
+     * conv.
+     */
     public void getStoreFromDatabase() {
         File f = new File("Stores.txt");
         FileReader fr;
@@ -187,27 +243,43 @@ public class Dashboard {
         }
     }
 
+    /**
+     * checks to see if the store exists by seeing if the name of the store is in
+     * the arrayList myCOnversations
+     *
+     * @param name
+     * @return true or false
+     */
     public boolean checkStoreExist(String name) {
         for (ArrayList<String[]> conv: myConversations) {
             if (conv.get(0)[2].equals(name)) {
-                //System.out.println(name + "true");
                 return true;
             }
         }
-        //System.out.println(name + "false");
-        return false;
-    }
-    public boolean checkStoreExist(ArrayList<ArrayList<String[]>> conv, String name) {
-        for (ArrayList<String[]> con: conv) {
-            if (con.get(0)[2].equals(name)) {
-                //System.out.println(name + "true");
-                return true;
-            }
-        }
-        //System.out.println(name + "false");
         return false;
     }
 
+    /**
+     * checks to see if the store exists by seeing if the name of the store is
+     * in the arrayList conv
+     * @param conv ArrayList String[] containing conversation
+     * @param name
+     * @return boolean true or false
+     */
+    public boolean checkStoreExist(ArrayList<ArrayList<String[]>> conv, String name) {
+        for (ArrayList<String[]> con: conv) {
+            if (con.get(0)[2].equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * checks to see if the user exists in the arrayList conv
+     * @param conv ArrayList String[] containing conversation
+     * @param name
+     * @return boolean true or false
+     */
     public boolean checkUserExist(ArrayList<ArrayList<String[]>> conv, String name) {
         for (ArrayList<String[]> con: conv) {
             if ((con.get(0)[1].equals(name) || con.get(0)[0].equals(name)) && !name.equals("No Customer")) {
@@ -217,7 +289,9 @@ public class Dashboard {
         return false;
     }
 
-    // read database and store conversation data
+    /**
+     * read database and store conversation data
+     */
     public void readDatabase() {
         FileReader fr;
         BufferedReader bfr;
@@ -247,7 +321,6 @@ public class Dashboard {
                 }
                 while (!line.equals("#####")) {
                     String[] chart = line.split("\\|\\|\\|\\|\\|");
-                    //System.out.println(line);
                     String[] message = new String[2];
                     String name = chart[1];
                     String msg = chart[0];
@@ -279,6 +352,9 @@ public class Dashboard {
             System.out.println("Database Error!");
         }
     }
+    /**
+     * read the database of the other person (non-user) to store edits and new messages
+     */
     public ArrayList<String> readDatabaseOther(String path) {
         File f = new File(path);
         FileReader fr;
@@ -316,8 +392,9 @@ public class Dashboard {
         return null;
     }
 
-    //dashboard menu
-
+    /**
+     * dashboard menu, user interface to use dashboard
+     */
     public void presentDashboard(Scanner sc) {
         String MENU_MESSAGE = "what do you want to do? " +
                 "\n1. sort stores";
@@ -410,7 +487,9 @@ public class Dashboard {
         }
     }
 
-
+    /**
+     * dashboard menu, user interface to use dashboard
+     */
     public String getEmail(String ID) {
         if (ID.equals("No Customer")) {
             return "No Customer";
@@ -419,6 +498,11 @@ public class Dashboard {
         return map.get("email");
     }
 
+    /**
+     * get the ID of a user from their email
+     * @param email
+     * @return ID
+     */
     public String getID(String email) {
         if (email.equals("No Customer")) {
             return "No Customer";
@@ -427,6 +511,9 @@ public class Dashboard {
         return map.get("id");
     }
 
+    /**
+     * print out a conversation between the user and someone else
+     */
     public void printConversation() {
         for (ArrayList<String[]> conversation: allConversations) {
             for (int i = 0; i < conversation.size(); i++) {
@@ -439,8 +526,11 @@ public class Dashboard {
             System.out.println("-----divider-----");
         }
     }
-    //option 1 = sort store, 2 = sort other users
-    //set myConversation list that sorted store/customers in alphabetical order
+
+    /**
+     * Set the myConversation list to store stores/customers in alphabetical order
+     * @param option int (1=store, 2=sort other users)
+     */
     public void sortByAlphabet(int option) {
         ArrayList<String> sortedList = new ArrayList<>();
         if (option == 1) {
@@ -504,12 +594,20 @@ public class Dashboard {
         }
         myConversations = temp;
     }
-    //reverse sortByAlphabet();
+
+    /* Set the myConversation list to store stores/customers in reverse alphabetical order
+     * @param option int (1=store, 2=sort other users)
+     */
     public void sortByAlphabetInverse(int option) {
         sortByAlphabet(option);
         Collections.reverse(myConversations);
     }
-    //get number of message sent by users from history txt file
+
+    /**
+     * Set the myConversation list to store stores/customers in alphabetical order
+     * @param conversation (an arraylist of string arrays)
+     * @return count, # of messages sent
+     */
     public int getMessageSent(ArrayList<String[]> conversation) {
         int count = 0;
         for (int i = 1; i < conversation.size(); i++) {
@@ -519,7 +617,10 @@ public class Dashboard {
         }
         return count;
     }
-    //sort myConversation list in a way from # highest message received to lowest.
+
+    /**
+     * sort myConversation list in a way from highest # of messages received to lowest.
+     */
     public void sortByHighestReceived() {
         ArrayList<String> users = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
@@ -573,7 +674,9 @@ public class Dashboard {
         }
         myConversations = temp;
     }
-    //reverse previous method
+    /**
+     * reverses the myConversations array that is modified from sortByHighestReceived() method
+     */
     public void sortByLowestReceived() {
         sortByHighestReceived();
         Collections.reverse(myConversations);

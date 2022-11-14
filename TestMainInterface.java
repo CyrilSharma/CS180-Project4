@@ -4,14 +4,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
+ * Project 4 -> TestMainInterface
+ *
+ * class handles the testing of main interface
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class TestMainInterface {
-    // Useful constants.
-    private static final String dbPath = "testMainInterface/databases/db.txt";
-    private static final String histPath = "testMainInterface/history";
-    private static final String inputPath = "testMainInterface/inputs";
-    private static final String outputPath = "testMainInterface/outputs.txt";
-    private static ArrayList<String> messageIDs = new ArrayList<String>();
     public static void main(String[] args) throws IOException {
         File dir = new File("testMainInterface/inputs");
         File[] files = dir.listFiles();

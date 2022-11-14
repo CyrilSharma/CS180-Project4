@@ -1,8 +1,22 @@
 import java.time.Instant;
 import java.util.*;
-
+/**
+ * Project 4 -> MainInterface
+ *
+ * The interface where the user can login/create an account and utilize all the functionality
+ * of the marketplace messaging system to buy turkeys :)
+ *
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class MainInterface {
 
+    /**
+     * Main method where our project runs through the console
+     */
     public static void main(String[] args) {
         // Let's you switch out defaults with command line arguments.
         // Testing purposes only.
@@ -322,7 +336,14 @@ public class MainInterface {
                 System.out.println("Account created!");
                 if (role.toLowerCase().equals("seller")) {
                     System.out.println("How many stores would you like to create?");
-                    int numStores = scan.nextInt();
+                    int numStores = -1;
+                    do {
+                        System.out.println("How many stores would you like to create?");
+                        numStores = scan.nextInt();
+                        if (numStores <= 0) {
+                            System.out.println("You must make at least one store!");
+                        }
+                    } while (numStores <= 0);
                     scan.nextLine();
                     for (int i = 1; i <= numStores; i++) {
                         String storeName = "";

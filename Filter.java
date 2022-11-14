@@ -1,14 +1,30 @@
 import java.io.*;
 import java.util.*;
-
+/**
+ * Project 4 -> Filter
+ *
+ * Allows user to filter out certain words in their conversations and replace with auto-generated asterisks or
+ * user-defined phrase(s)
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class Filter {
     private File f;
     private HashMap<String, String> map;
     private ArrayList<String[]> userWordList;
 
     private boolean on = false;
-    //using one txt file that has all users' blocked/filtered words
-    public Filter(String email, Database db) {
+
+    /**
+     * Initializes instance fields and creates a file if not already created
+     *
+     * @param email email of the user
+     */
+    public Filter(String email) {
+        db = new Database("UserDatabase.txt");
         map = db.get("email", email);
         f = new File("UserFilter.txt");
         if (!f.exists()) {
@@ -21,7 +37,10 @@ public class Filter {
         userWordList = new ArrayList<>();
         read();
     }
-    //read UserFilter.txt and bring the content into the list
+
+    /**
+     * read UserFilter.txt and bring the content into the list
+     */
     public void read() {
         String splitter = "::";
         FileReader fr;
@@ -42,7 +61,10 @@ public class Filter {
         }
     }
 
-    //get list of filtered words
+    /**
+     * get list of filtered words
+     * @return result, arraylist of filtered words
+     */
     public ArrayList<String> get() {
         String[] words = new String[0];
         for (String[] userData: userWordList) {
@@ -59,7 +81,11 @@ public class Filter {
         return result;
     }
 
-    //remove special characters from word
+    /**
+     * remove special characters from word
+     * @param word
+     * @return
+     */
     public String removeSpecialChar(String word) {
         String result = "";
         for (int i = 0; i < word.length(); i++) {
@@ -70,10 +96,19 @@ public class Filter {
         return result;
     }
 
+    /**
+     * returns whether status is on or off
+     * @return on
+     */
     public boolean getStatus() {
         return on;
     }
-    //checks the line and if the line has the filtered word, replace it with * and return the modified line
+
+    /**
+     * checks the line and if the line has the filtered word, replace it with * and return the modified line
+     * @param line
+     * @return line, modified
+     */
     public String filter(String line) {
         ArrayList<String> list = get();
         for (String word : list) {
@@ -82,7 +117,11 @@ public class Filter {
         return line;
     }
 
-    //get str composed of * based on length
+    /**
+     * get str composed of * based on length
+     * @param size (int)
+     * @return word, filtered & replaced w/ *'s
+     */
     public String createFilteredWord(int size) {
         String word = "";
         for (int i = 0; i < size; i++) {
@@ -91,7 +130,11 @@ public class Filter {
         return word;
     }
 
-    //turn filtered list into format in txt file
+    /**
+     * turn filtered list into format in txt file
+     * @param words (arraylist of strings)
+     * @return str
+     */
     public String toTxtFileFormat(ArrayList<String> words) {
         String str = "";
         for (int i = 0; i < words.size(); i++) {
@@ -106,7 +149,10 @@ public class Filter {
         return str;
     }
 
-    //remove word from filter and txt file
+    /**
+     * remove word from filter and txt file
+     * @param word (string)
+     */
     public void remove(String word) throws InvalidWordException{
         ArrayList<String> words = get();
         if (!words.contains(word)) {
@@ -126,7 +172,10 @@ public class Filter {
         write();
     }
 
-    //add word to the filter and txt file
+    /**
+     * add word to the filter and txt file
+     * @param word
+     */
     public void add(String word) throws InvalidWordException {
         ArrayList<String> words = get();
         if (words.contains(word)) {
@@ -159,6 +208,9 @@ public class Filter {
         write();
     }
 
+    /**
+     * write file
+     */
     public void write() {
         FileOutputStream fos;
         PrintWriter pw;
@@ -177,6 +229,9 @@ public class Filter {
         }
     }
 
+    /**
+     * toString format
+     */
     public String toString() {
         String format = "words: ";
         ArrayList<String> list = get();
@@ -197,6 +252,10 @@ public class Filter {
 
         return format;
     }
+
+    /**
+     * UI for user to utilize Filter class
+     */
     public void presentFilterMenu(Scanner sc, boolean filter) {
 
         String menu;
