@@ -26,8 +26,8 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 You don't have any missed messages
@@ -77,12 +77,12 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 Missed Messages:
-userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:10:11.548816: RELINQUISH YOUR TURKEY IMMEDIATELY.
+userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:32:09.279519: RELINQUISH YOUR TURKEY IMMEDIATELY.
 
 Would you like to...
 1. Message a user
@@ -103,8 +103,8 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 You don't have any missed messages
@@ -127,7 +127,74 @@ Your conversations:
 1. userB1@gmail.com
 Enter the number or email you wish to see message history for
 Message History (oldest first):
-userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:10:11.548366: RELINQUISH YOUR TURKEY IMMEDIATELY.
-Who did you send the message to?
-Which message (number) would you like to edit?
+1. userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:32:09.279088: RELINQUISH YOUR TURKEY IMMEDIATELY.
+Which message number would you like to edit?
+Enter a number please
+Which message number would you like to edit?
 What would you like to change the message to?
+Message edited
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Exit
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
+Login successful!
+
+You don't have any missed messages
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Exit
+Your conversations:
+1. userA1@gmail.com
+Enter the number or email you wish to see message history for
+Message History (oldest first):
+1. userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:32:09.279519: Would you please relinquish thoust turkey?
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Exit
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Thank you for shopping at the turkey store!
+Have a nice rest of your day!

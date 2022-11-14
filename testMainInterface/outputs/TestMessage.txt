@@ -26,8 +26,8 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 You don't have any missed messages
@@ -76,12 +76,12 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 Missed Messages:
-userB1@gmail.com (Deli)->userA1@gmail.com at 23:10:11.799597: RELINQUISH YOUR TURKEY IMMEDIATELY.
+userB1@gmail.com (Deli)->userA1@gmail.com at 23:32:09.538481: RELINQUISH YOUR TURKEY IMMEDIATELY.
 
 Would you like to...
 1. Message a user

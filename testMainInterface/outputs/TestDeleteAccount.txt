@@ -15,8 +15,8 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 You don't have any missed messages
@@ -36,55 +36,19 @@ Would you like to...
 13. Delete your account
 14. Exit
 Are you sure you want to delete your account (Y/N)
+Confirm by entering your password:
+Account deleted!
 Would you like to...
-1. Message a user
-2. View messages
-3. Edit a message
-4. Delete a message
-5. Export conversations
-6. Block a user
-7. Unblock a user
-8. View stores
-9. View customers
-10. Add a store
-11. Dashboard
-12. Open Filter
-13. Delete your account
-14. Exit
-Stores:
-Which store you like to send a message to?
-That is not a valid store
+1. Login
+2. Create an account
+3. Exit
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
+Sorry, the email or password you entered is incorrect
+Please enter your email (type back to go back):
 Would you like to...
-1. Message a user
-2. View messages
-3. Edit a message
-4. Delete a message
-5. Export conversations
-6. Block a user
-7. Unblock a user
-8. View stores
-9. View customers
-10. Add a store
-11. Dashboard
-12. Open Filter
-13. Delete your account
-14. Exit
-Input invalid, try again.
-Would you like to...
-1. Message a user
-2. View messages
-3. Edit a message
-4. Delete a message
-5. Export conversations
-6. Block a user
-7. Unblock a user
-8. View stores
-9. View customers
-10. Add a store
-11. Dashboard
-12. Open Filter
-13. Delete your account
-14. Exit
-Your conversations:
-You do not appear to have any conversations
-Who did you send the message to?
+1. Login
+2. Create an account
+3. Exit
+Thank you for shopping at the turkey store!
+Have a nice rest of your day!
