@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 /**
  * Project 4 -> TestMainInterface
  *
@@ -16,9 +13,7 @@ import java.util.HashMap;
  */
 public class TestMainInterface {
     public static void main(String[] args) throws IOException {
-        /*
-         * TODO: remove persistence from stores.
-         */
+        
         File dir = new File("testMainInterface/inputs");
         File[] files = dir.listFiles();
         String[] filenames = new String[files.length];
