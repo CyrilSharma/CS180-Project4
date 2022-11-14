@@ -90,7 +90,7 @@ public class User {
                 stores.add(store);
                 pw.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("An error has occurred creating your store");
             }
         }
     }

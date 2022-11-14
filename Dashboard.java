@@ -18,15 +18,16 @@ public class Dashboard {
     private String id;
     private String email;
     private File textDatabase;
+    private Database database;
 
     /**
      * initializes the instance field variables
      *
      * @param email email of the user
      */
-    public Dashboard(String email, String msgDatabaseLocation) {
+    public Dashboard(String email, String msgDatabaseLocation, Database database) {
         this.email = email;
-        Database database = new Database("UserDatabase.txt");
+        this.database = database;
         loadUserFromDatabase(email, database);
         allConversations = new ArrayList<>();
         myConversations = new ArrayList<>();
@@ -187,7 +188,7 @@ public class Dashboard {
                 System.out.printf("Message Sent: %d\n", data[0]);
                 System.out.printf("Message Received: %d\n\n", data[1]);
             }
-        } else {
+        } else if (role == Role.Seller) {
             for (ArrayList<String[]> conv : myConversations) {
                 if (getOtherName(conv).equals("No Customer")) {
                     System.out.printf("Store name: %s\n", getStoreName(conv));
@@ -238,7 +239,7 @@ public class Dashboard {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("An error has occurred trying to read the database");
         }
     }
 
@@ -348,7 +349,6 @@ public class Dashboard {
             }
             getStoreFromDatabase();
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Database Error!");
         }
     }
@@ -387,7 +387,6 @@ public class Dashboard {
             bfr.close();
             return messages;
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Database Error!");
         }
         return null;
@@ -495,7 +494,6 @@ public class Dashboard {
         if (ID.equals("No Customer")) {
             return "No Customer";
         }
-        Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("id", ID);
         return map.get("email");
     }
@@ -509,7 +507,6 @@ public class Dashboard {
         if (email.equals("No Customer")) {
             return "No Customer";
         }
-        Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("email", email);
         return map.get("id");
     }

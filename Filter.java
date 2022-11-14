@@ -13,7 +13,6 @@ import java.util.*;
  */
 public class Filter {
     private File f;
-    private Database db;
     private HashMap<String, String> map;
     private ArrayList<String[]> userWordList;
 
@@ -24,8 +23,7 @@ public class Filter {
      *
      * @param email email of the user
      */
-    public Filter(String email) {
-        db = new Database("UserDatabase.txt");
+    public Filter(String email, Database db) {
         map = db.get("email", email);
         f = new File("UserFilter.txt");
         if (!f.exists()) {
@@ -33,7 +31,6 @@ public class Filter {
                 f.createNewFile();
             } catch (Exception e) {
                 System.out.println("Error occured while trying to create a file!");
-                e.printStackTrace();
             }
         }
         userWordList = new ArrayList<>();
@@ -59,7 +56,6 @@ public class Filter {
                 userWordList.add(users);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Database Error!");
         }
     }
@@ -114,14 +110,8 @@ public class Filter {
      */
     public String filter(String line) {
         ArrayList<String> list = get();
-        for (String word: list) {
-            String temp = "";
-            while(line.toLowerCase().indexOf(word) != -1) {
-                temp = line.substring(0, line.toLowerCase().indexOf(word));
-                temp += createFilteredWord(word.length());
-                temp += line.substring(line.toLowerCase().indexOf(word) + word.length());
-                line = temp;
-            }
+        for (String word : list) {
+            line = line.replaceAll(word, createFilteredWord(word.length()));
         }
         return line;
     }
@@ -195,7 +185,6 @@ public class Filter {
         String newLine = toTxtFileFormat(words);
         int index = 0;
         for (String[] user: userWordList) {
-            System.out.println(Arrays.toString(user));
             if (user.length == 1) {
                 String[] temp = new String[2];
                 temp[0] = user[0];
@@ -236,7 +225,6 @@ public class Filter {
 
         } catch (Exception e) {
             System.out.println("Exception occurred!!");
-            e.printStackTrace();
         }
     }
 
@@ -289,7 +277,6 @@ public class Filter {
                     on = !on;
                     break;
                 case "2":
-                    //TODO:FIX THIS
                     System.out.println(toString());
                     break;
                 case "3":
@@ -301,8 +288,6 @@ public class Filter {
                         System.out.println(toString());
                     } catch (Exception e) {
                         System.out.println("Error while trying to add a word");
-                        e.printStackTrace();
-
                     }
                     break;
                 case "4":
@@ -314,7 +299,6 @@ public class Filter {
                         System.out.println(toString());
                     } catch (Exception e) {
                         System.out.println("Error while trying to remove a word");
-                        e.printStackTrace();
                     }
                     break;
                 case "5":

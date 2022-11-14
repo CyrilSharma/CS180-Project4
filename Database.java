@@ -47,7 +47,7 @@ public class Database {
         try {
             f.createNewFile();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("An error has occurred reading from the database");
         }
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             ArrayList<HashMap<String, String>> userList = new ArrayList<HashMap<String, String>>();
@@ -61,7 +61,6 @@ public class Database {
                 return userList;
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -144,8 +143,6 @@ public class Database {
         }
         try {
             modify(name, "role", Role.Deleted.toString());
-            File file = new File(get("email", name).get("id") + "-messageHistory.txt");
-            file.delete();
         } catch (InvalidKeyException e) {
             System.out.println("Something went wrong trying to delete your account");
         }
@@ -346,7 +343,7 @@ public class Database {
             pw.flush();
             pw.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            return;
         }
     }
 
