@@ -1,4 +1,5 @@
 public enum Role {
     Customer(),
-    Seller()
+    Seller(),
+    Deleted()
 }

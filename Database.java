@@ -101,7 +101,13 @@ public class Database {
         if (toBeRemoved == null) {
             throw new InvalidUserException("That email does not exist");
         }
-        database.remove(toBeRemoved);
+        try {
+            modify(name, "role", Role.Deleted.toString());
+            File file = new File(get("email", name).get("id") + "-messageHistory.txt");
+            file.delete();
+        } catch (InvalidKeyException e) {
+            System.out.println("Something went wrong trying to delete your account");
+        }
         save();
     }
 

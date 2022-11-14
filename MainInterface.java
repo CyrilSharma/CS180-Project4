@@ -32,6 +32,7 @@ public class MainInterface {
                     "\n3. Exit";
                     
             int resp = -1;
+            System.out.println(PROMPT);
             do {
                 try {
                     resp = Integer.parseInt(scan.nextLine());
@@ -71,6 +72,11 @@ public class MainInterface {
                         User user = new User(email, password, acct.get("role"), messageManager, db);
                         MessageInterface.missedMessages(scan, acct.get("id"), db, messageManager);
                         Filter f = new Filter(email);
+                        try {
+                            db.modify(email, "lastOnline", Instant.now().toString());
+                        } catch (InvalidUserException | InvalidKeyException e) {
+                            System.out.println("Something went wrong trying to log you in");
+                        }
                         while (loop2) {
                             String MESSAGEPROMPT = "Would you like to..." +
                                     "\n1. Message a user" +
@@ -105,7 +111,7 @@ public class MainInterface {
                                 //message user
                                 if (acct.get("role").toLowerCase().equals("customer")) {
                                     user.viewStores();
-                                } else {
+                                } else if (acct.get("role").equals(Role.Seller.toString())){
                                     user.viewCustomers();
                                 }
                                 MessageInterface.message(scan, messageManager, db, acct.get("id"));
@@ -151,7 +157,7 @@ public class MainInterface {
                                 //option to see list of customers or stores (dep on role) to see who to block
                                 if (acct.get("role").toLowerCase() == "customer") {
                                     user.viewStores();
-                                } else {
+                                } else if (acct.get("role").equals(Role.Seller.toString())) {
                                     user.viewCustomers();
                                 }
                                 System.out.println("Who would you like to block?");
@@ -204,21 +210,21 @@ public class MainInterface {
                                 //view stores
                                 if (acct.get("role").equals(Role.Customer.toString())) {
                                     user.viewStores();
-                                } else {
+                                } else if (acct.get("role").equals(Role.Seller.toString())) {
                                     System.out.println("You cannot do this, you are a seller!");
                                 }
                             } else if (userAction == 9) {
                                 //view customers
                                 if (acct.get("role").equals(Role.Seller.toString())) {
                                     user.viewCustomers();
-                                } else {
+                                } else if (acct.get("role").equals(Role.Customer.toString())) {
                                     System.out.println("You cannot do this, you are a customer!");
                                 }
                             } else if (userAction == 10) {
                                 //create stores
                                 if (acct.get("role").toLowerCase().equals("customer")) {
                                     System.out.println("You cannot do this, you are a customer!");
-                                } else {
+                                } else if (acct.get("role").equals(Role.Seller.toString())) {
                                     String storeName = "";
                                     System.out.println("What is the name of the store you would like to add?");
                                     storeName = scan.nextLine();
@@ -244,7 +250,7 @@ public class MainInterface {
                                 System.out.println("Are you sure you want to delete your account (Y/N)");
                                 if (scan.nextLine().toUpperCase().equals("Y")) {
                                     System.out.println("Confirm by entering your password:");
-                                    if (db.verify(email, password)) {
+                                    if (db.verify(email, scan.nextLine())) {
                                         try {
                                             db.remove(email);
                                         } catch (InvalidUserException e) {

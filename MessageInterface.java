@@ -14,14 +14,14 @@ public class MessageInterface {
             System.out.println("Which store you like to send a message to?");
             store = scanner.nextLine();
             email = User.getEmailFromStore(store);
-            if (email == null) {
+            if (email == null || db.get("email", email) == null || !db.get("email", email).get("role").equals(Role.Seller.toString())) {
                 System.out.println("That is not a valid store");
                 return;
             }
-        } else {
+        } else if (h.get("role").equals(Role.Seller.toString())) {
             System.out.println("Who do you want to message:");
             email = scanner.nextLine();
-            if (db.get("email", email) == null) {
+            if (db.get("email", email) == null || !db.get("email", email).get("role").equals(Role.Customer.toString())) {
                 System.out.println("That is not a valid email");
                 return;
             }
@@ -33,6 +33,9 @@ public class MessageInterface {
                 System.out.println("That is not a valid store");
                 return;
             }
+        } else {
+            System.out.println("You do not have permission to message that user");
+            return;
         }
         recipient = db.get("email", email);
         if (recipient == null || !recipient.containsKey("blocked") || recipient.get("role").equals(h.get("role")) || recipient.get("blocked").contains(id) || h.get("blocked").contains(recipient.get("id"))) {
@@ -221,7 +224,7 @@ public class MessageInterface {
             if (missedMessages.isEmpty()) {
                 conversations = "You don't have any missed messages";
             }
-            System.out.println(conversations);
+            System.out.println("\n" + conversations);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("There was a problem accessing your history");
