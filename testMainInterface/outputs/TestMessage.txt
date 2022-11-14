@@ -8,6 +8,36 @@ Would you like to...
 2. Create an account
 3. Exit
 Please enter your email: 
-Please enter your password: 
-Sorry, the email or password you entered is incorrect
+Please enter a valid email
+Please enter your password:
+Please enter your role (Seller/Customer):
+That email is already registered
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
 Please enter your email: 
+Please enter your password: 
+Login successful!
+You don't have any missed messages
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Exit
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Thank you for shopping at the turkey store!
+Have a nice rest of your day!
