@@ -68,12 +68,12 @@ public class MainInterface {
                 String email = "";
                 String password = "";
                 while (!loggedIn) {
-                    System.out.println("Please enter your email (type back to go back): ");
+                    System.out.println("Please enter your email (type back to go back):");
                     email = scan.nextLine();
                     if (email.equals("back")) {
                         break;
                     }
-                    System.out.println("Please enter your password (type back to go back): ");
+                    System.out.println("Please enter your password (type back to go back):");
                     password = scan.nextLine();
                     if (password.equals("back")) {
                         break;
