@@ -26,7 +26,7 @@ public class MessageInterface {
         String email;
         String store;
         if (h.get("role").equals(Role.Customer.toString())) {
-            System.out.println("Which store you like to send a message to?");
+            System.out.println("Which store would you like to send a message to?");
             store = scanner.nextLine();
             email = User.getEmailFromStore(store);
             if (email == null || db.get("email", email) == null || !db.get("email", email).get("role").equals(Role.Seller.toString())) {
