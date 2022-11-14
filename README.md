@@ -1,6 +1,6 @@
 # Instruction
 
-To compile and run our project, go to MainInterface.java and run MainInterface. There, you can start by choosing to log in, create account, delete account, or exit. Once you log in or create an account, the program will take you to the inner menus where you can choose to do various things. 
+To compile and run our project, go to MainInterface.java and run MainInterface. There, you can start by choosing to log in, create account, or exit. Once you log in or create an account, the program will take you to the inner menus where you can choose to do various things. 
 
 # Submission
 
@@ -99,7 +99,6 @@ This class serves as a main interface where users can access every functionality
 - In the outer menu, users can choose to 
   - log in
   - create account
-  - delete account
   - exit in the outer menu.
 - once user logs in or creates the account, the user is directed to the inner menu
 - In the inner menu, users can choose to 
@@ -142,7 +141,7 @@ This class is essential in the MainInterface class as it provides methods to sen
 
 A class that assists MessageManager class
 - allow users to export their conversation into .csv file
-- notifies users new message 
+- notifies users of new message
 - allow users to send message
 
 #### Relationship
@@ -153,7 +152,7 @@ This class provides useful methods to MessageManager and MainInterface so that t
 
 #### Functionality
 
-Basic enum to separate between seller and customer
+Basic enum to separate between seller and customer or a deleted account
 
 #### Relationship
 
