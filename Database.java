@@ -82,7 +82,7 @@ public class Database {
     }
 
     /**
-     * returns the ArrayList from the databse where the key equals the criteria
+     * returns the ArrayList from the database where the key equals the criteria
      *
      * @param key email of the user
      * @param criteria object passed in
