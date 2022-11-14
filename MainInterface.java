@@ -335,7 +335,14 @@ public class MainInterface {
                 System.out.println("Account created!");
                 if (role.toLowerCase().equals("seller")) {
                     System.out.println("How many stores would you like to create?");
-                    int numStores = scan.nextInt();
+                    int numStores = -1;
+                    do {
+                        System.out.println("How many stores would you like to create?");
+                        numStores = scan.nextInt();
+                        if (numStores <= 0) {
+                            System.out.println("You must make at least one store!");
+                        }
+                    } while (numStores <= 0);
                     scan.nextLine();
                     for (int i = 1; i <= numStores; i++) {
                         String storeName = "";

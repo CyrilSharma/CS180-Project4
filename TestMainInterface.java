@@ -15,7 +15,6 @@ import java.util.HashMap;
  *
  */
 public class TestMainInterface {
-    // Useful constants.
     public static void main(String[] args) throws IOException {
         File dir = new File("testMainInterface/inputs");
         File[] files = dir.listFiles();
