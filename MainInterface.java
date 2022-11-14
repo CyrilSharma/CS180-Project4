@@ -263,6 +263,7 @@ public class MainInterface {
                                 Dashboard dashboard = new Dashboard(email, "", db);
                                 dashboard.readDatabase();
                                 dashboard.printMyStatistic();
+                                dashboard.presentDashboard(scan);
                             } else if (userAction == 12) {
                                 f.presentFilterMenu(scan, filter);
                             } else if (userAction == 13) {
@@ -354,7 +355,7 @@ public class MainInterface {
                             System.out.println("You must make at least one store!");
                         }
                     } while (numStores <= 0);
-                    scan.nextLine();
+                    //scan.nextLine();
                     for (int i = 1; i <= numStores; i++) {
                         String storeName = "";
                         System.out.println("What is the name of store " + i + "?");

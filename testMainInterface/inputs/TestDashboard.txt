@@ -1,0 +1,42 @@
+2
+userAA@gmail.com
+password
+Seller
+1
+good turkey store
+2
+userBB@gmail.com
+password
+Customer
+1
+userBB@gmail.com
+password
+1
+good turkey store
+1
+do you sell turkey like a good turkey?
+1
+good turkey store
+1
+I want turkey!!
+14
+2
+userCC@gmail.com
+password
+Customer
+1
+userCC@gmail.com
+password
+1
+good turkey store
+1
+hey is there thanksgiving event during thanksgiving?
+14
+1
+userAA@gmail.com
+password
+11
+2
+3
+5
+14
