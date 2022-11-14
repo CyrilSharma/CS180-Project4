@@ -23,8 +23,7 @@ public class Filter {
      *
      * @param email email of the user
      */
-    public Filter(String email) {
-        db = new Database("UserDatabase.txt");
+    public Filter(String email, Database db) {
         map = db.get("email", email);
         f = new File("UserFilter.txt");
         if (!f.exists()) {

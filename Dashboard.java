@@ -25,7 +25,7 @@ public class Dashboard {
      *
      * @param email email of the user
      */
-    public Dashboard(String email, String msgDatabaseLocation) {
+    public Dashboard(String email, String msgDatabaseLocation, Database database) {
         this.email = email;
         this.database = database;
         loadUserFromDatabase(email, database);
