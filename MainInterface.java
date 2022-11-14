@@ -4,21 +4,33 @@ import java.util.*;
 public class MainInterface {
 
     public static void main(String[] args) {
-        Database db = new Database("UserDatabase.txt");
+        // Let's you switch out defaults with command line arguments.
+        // Testing purposes only.
+        String databasePath = "UserDatabase.txt";
+        String historyPath = "history";
+        if (args.length == 2) {
+            databasePath = args[0];
+            historyPath = args[1];
+        }
+
+        System.out.println("Welcome to the Turkey Store!\n" + 
+            "Here at the turkey store, we offer every variety of turkey imaginable!\n" +
+            "Feel free to contact any of our reputable sellers to learn about stores, \n" +
+            "that you can buy our wonderful products from!\n"
+        );
+
+        Database db = new Database(databasePath);
         Scanner scan = new Scanner(System.in);
         boolean loop1 = true;
         boolean loop2 = false;
+        boolean filter = false;
         while (loop1) {
 
             String PROMPT = "Would you like to..." +
-                    "\n1. Login" +
+                    "\n1. Login" +  
                     "\n2. Create an account" +
                     "\n3. Exit";
-
-
-            //Welcome message
-            System.out.println("Welcome to the Turkey Store!");
-            System.out.println(PROMPT);
+                    
             int resp = -1;
             do {
                 try {
@@ -41,10 +53,16 @@ public class MainInterface {
                 String email = "";
                 String password = "";
                 while (!loggedIn) {
-                    System.out.println("Please enter your email: ");
+                    System.out.println("Please enter your email (type back to go back): ");
                     email = scan.nextLine();
-                    System.out.println("Please enter your password: ");
+                    if (email.equals("back")) {
+                        break;
+                    }
+                    System.out.println("Please enter your password (type back to go back): ");
                     password = scan.nextLine();
+                    if (password.equals("back")) {
+                        break;
+                    }
                     if (db.verify(email, password)) {
                         loggedIn = true;
                         loop2 = true;
@@ -52,6 +70,7 @@ public class MainInterface {
                         HashMap<String, String> acct = db.get("email", email);
                         User user = new User(email, password, acct.get("role"), messageManager, db);
                         MessageInterface.missedMessages(scan, acct.get("id"), db, messageManager);
+                        Filter f = new Filter(email);
                         while (loop2) {
                             String MESSAGEPROMPT = "Would you like to..." +
                                     "\n1. Message a user" +
@@ -69,6 +88,7 @@ public class MainInterface {
                                     "\n13. Delete your account" +
                                     "\n14. Exit";
                             System.out.println(MESSAGEPROMPT);
+                            filter = f.getStatus();
                             int userAction = -1;
                             do {
                                 try {
@@ -91,10 +111,10 @@ public class MainInterface {
                                 MessageInterface.message(scan, messageManager, db, acct.get("id"));
                             } else if (userAction == 2){
                                 //view message history
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
                             } else if (userAction == 3) {
                                 //edit a message
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
                                 String recipient = "";
                                 //Should this be changed to somehow take seller name and get convo?
                                 //message recipient email
@@ -112,7 +132,7 @@ public class MainInterface {
                                 messageManager.editMessage(acct.get("ID"), db.get("role", recipient).get("email"), newMessage, String.valueOf(messageNum));
                             } else if (userAction == 4) {
                                 //delete message
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
                                 String recipient = "";
                                 //message recipient email
                                 System.out.println("Who did you send the message to?");
@@ -205,6 +225,7 @@ public class MainInterface {
                                     try {
                                         user.addStores(storeName);
                                     } catch (InvalidUserException e) {
+                                        e.printStackTrace();
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
@@ -214,11 +235,10 @@ public class MainInterface {
                                 //view statistics
                                 Dashboard dashboard = new Dashboard(email);
                                 dashboard.readDatabase();
+                                dashboard.printMyStatistic();
                                 dashboard.presentDashboard(scan);
                             } else if (userAction == 12) {
-                                //TODO: Not sure if we can keep this feature
-                                Filter f = new Filter(email);
-                                f.presentFilterMenu(scan);
+                                f.presentFilterMenu(scan, filter);
                             } else if (userAction == 13) {
                                 //delete account
                                 System.out.println("Are you sure you want to delete your account (Y/N)");
@@ -233,6 +253,7 @@ public class MainInterface {
                                         }
                                         System.out.println("Account deleted!");
                                         loop2 = false;
+                                        break;
                                     }
                                 }
                             } else if (userAction == 14) {
@@ -256,13 +277,13 @@ public class MainInterface {
                 do {
                     System.out.println("Please enter your email: ");
                     email = scan.nextLine();
-                    if (!db.validate(email, "email")) {
+                    if (!db.validate(email, "email") || db.get("email", email) != null) {
                         System.out.println("Please enter a valid email");
                     }
                 } while (!db.validate(email, "email"));
                 String password;
                 do {
-                    System.out.println("Please enter your password: ");
+                    System.out.println("Please enter your password:");
                     password = scan.nextLine();
                     if (!db.validate(password, "password")) {
                         System.out.println("That password is not valid. Please do not use special characters");
@@ -270,16 +291,22 @@ public class MainInterface {
                 } while (!db.validate(password, "password"));
                 boolean roleValid = false;
                 String role = "";
+                Role rolething = null;
                 while (!roleValid) {
-                    System.out.println("Please enter your role (Seller/Customer): ");
+                    System.out.println("Please enter your role (Seller/Customer):");
                     role = scan.nextLine();
 
-                    if (role.toLowerCase().equals("seller") || role.toLowerCase().equals("customer")) {
+                    if (role.toLowerCase().equals("seller")) {
                         roleValid = true;
+                        rolething = Role.Seller;
+                    }
+                    if (role.toLowerCase().equals("customer")){ 
+                        roleValid = true;
+                        rolething = Role.Customer;
                     }
                 }
                 try {
-                    db.add(email, password, Role.valueOf(role));
+                    db.add(email, password, rolething);
                 } catch (InvalidUserException e) {
                     System.out.println(e.getMessage());
                     continue;
@@ -289,7 +316,8 @@ public class MainInterface {
                 if (role.toLowerCase().equals("seller")) {
                     System.out.println("How many stores would you like to create?");
                     int numStores = scan.nextInt();
-                    for (int i = 0; i < numStores; i++) {
+                    scan.nextLine();
+                    for (int i = 1; i <= numStores; i++) {
                         String storeName = "";
                         System.out.println("What is the name of store " + i + "?");
                         storeName = scan.nextLine();
@@ -305,7 +333,8 @@ public class MainInterface {
             } else if (resp == 3) {
                 //Exit program
                 //should this print at the end no matter what? if so, change to separate if loop at end
-                System.out.println("Have a nice rest of your day!");
+                System.out.println("Thank you for shopping at the turkey store!\n" + 
+                    "Have a nice rest of your day!");
                 loop1 = false;
             }
         }

@@ -7,6 +7,7 @@ public class Filter {
     private HashMap<String, String> map;
     private ArrayList<String[]> userWordList;
 
+    private boolean on = false;
     //using one txt file that has all users' blocked/filtered words
     public Filter(String email) {
         db = new Database("UserDatabase.txt");
@@ -50,7 +51,12 @@ public class Filter {
         String[] words = new String[0];
         for (String[] userData: userWordList) {
             if (userData[0].equals(map.get("id"))) {
-                words = userData[1].split(";");
+                if (userData.length == 1) {
+                    words = new String[1];
+                    words[0] = "no word";
+                } else {
+                    words = userData[1].split(";");
+                }
             }
         }
         ArrayList<String> result = new ArrayList<>(Arrays.asList(words));
@@ -68,6 +74,9 @@ public class Filter {
         return result;
     }
 
+    public boolean getStatus() {
+        return on;
+    }
     //checks the line and if the line has the filtered word, replace it with * and return the modified line
     public String filter(String line) {
         ArrayList<String> list = get();
@@ -96,6 +105,9 @@ public class Filter {
     public String toTxtFileFormat(ArrayList<String> words) {
         String str = "";
         for (int i = 0; i < words.size(); i++) {
+            if (words.get(i).equals("no word") || words.get(i).equals("") || words.get(i).equals(" ")) {
+                continue;
+            }
             str += words.get(i);
             if (i != words.size() - 1) {
                 str += ";";
@@ -135,11 +147,25 @@ public class Filter {
         String newLine = toTxtFileFormat(words);
         int index = 0;
         for (String[] user: userWordList) {
+            System.out.println(Arrays.toString(user));
+            if (user.length == 1) {
+                String[] temp = new String[2];
+                temp[0] = user[0];
+                user = temp;
+            }
             if (user[0].equals(id)) {
                 user[1] = newLine;
                 userWordList.set(index, user);
+                break;
             }
             index++;
+
+        }
+        if (index == userWordList.size()) {
+            String[] userdata = new String[2];
+            userdata[0] = id;
+            userdata[1] = newLine;
+            userWordList.add(userdata);
         }
         write();
     }
@@ -166,34 +192,49 @@ public class Filter {
     public String toString() {
         String format = "words: ";
         ArrayList<String> list = get();
-        int index = 0;
-        for (String word: list) {
-            format += word;
-            if (index != list.size() - 1) {
-                format +=  ", ";
-            } else {
-                format += "\n";
+        if (list.size() == 0) {
+            format += "no words";
+        } else {
+            int index = 0;
+            for (String word: list) {
+                format += word;
+                if (index != list.size() - 1) {
+                    format +=  ", ";
+                } else {
+                    format += "\n";
+                }
+                index++;
             }
-            index++;
         }
+
         return format;
     }
-    public void presentFilterMenu(Scanner sc) {
-        String menu = "what do you want to do?\n" +
-                    "1. see filtered words\n" +
-                    "2. add word to the filter\n" +
-                    "3. remove the word from filter\n" +
-                    "4. quit";
-        System.out.println(menu);
+    public void presentFilterMenu(Scanner sc, boolean filter) {
+
+        String menu;
         boolean ongoing = true;
         while(ongoing) {
+            menu = "what do you want to do?\n";
+            if (on) {
+                menu += "1. disable filter\n";
+            } else {
+                menu += "1. enable filter\n";
+            }
+            menu += "2. see filtered words\n" +
+                    "3. add word to the filter\n" +
+                    "4. remove the word from filter\n" +
+                    "5. quit";
+            System.out.println(menu);
             String option = sc.nextLine();
             switch (option) {
                 case "1":
+                    on = !on;
+                    break;
+                case "2":
                     //TODO:FIX THIS
                     System.out.println(toString());
                     break;
-                case "2":
+                case "3":
                     System.out.println("please enter a word to be filtered");
                     String word = sc.nextLine();
                     try {
@@ -206,7 +247,7 @@ public class Filter {
 
                     }
                     break;
-                case "3":
+                case "4":
                     System.out.println("please enter a word to remove from filter");
                     String wor = sc.nextLine();
                     try {
@@ -218,7 +259,7 @@ public class Filter {
                         e.printStackTrace();
                     }
                     break;
-                case "4":
+                case "5":
                     ongoing = false;
                     break;
                 default:
