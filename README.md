@@ -84,7 +84,6 @@ functionality as well as the means to export conversations into a .CSV file.
  
 ## User
 - Creates the Customer and Seller distinctions and includes unique funcitonalites such as viewing the stores, adding stores, and viewing customers. 
-This is vital for the seller role. 
-- This class also includes functionalities for reading stores froma. file and getting a seller name that is associated with a specific store. 
-
+This is vital for the seller and customer roles. 
+- This class also includes functionalities for reading stores from a file and getting a seller name that is associated with a specific store. 
 - User.java is vital throughout this project as this is how it interacts with getting a specific seller that is associated with a store and viewing a list of customers that a seller can choose. 
