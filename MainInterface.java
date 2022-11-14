@@ -117,38 +117,59 @@ public class MainInterface {
                                 MessageInterface.message(scan, messageManager, db, acct.get("id"));
                             } else if (userAction == 2){
                                 //view message history
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
+                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f, true);
                             } else if (userAction == 3) {
                                 //edit a message
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
-                                String recipient = "";
-                                //Should this be changed to somehow take seller name and get convo?
-                                //message recipient email
-                                System.out.println("Who did you send the message to?");
-                                recipient = scan.nextLine();
-                                int messageNum;
+                                ArrayList<HashMap<String, String>> messages = MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f, true);
+                                if (messages == null) {
+                                    continue;
+                                }
+                                int messageNum = -1;
                                 //message number
-                                System.out.println("Which message (number) would you like to edit?");
-                                messageNum = scan.nextInt();
-                                scan.nextLine();
+                                do {
+                                    System.out.println("Which message number would you like to edit?");
+                                    try {
+                                        messageNum = Integer.parseInt(scan.nextLine());
+                                        if (messageNum < 1 || messageNum > messages.size()) {
+                                            messageNum = -1;
+                                            System.out.println("Please choose one of the messages listed above");
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        messageNum = -1;
+                                        System.out.println("Enter a number please");
+                                    }
+                                } while (messageNum == -1);
+                                HashMap<String, String> selectedMessage = messages.get(messageNum - 1);
                                 String newMessage = "";
                                 //what the new message will be
                                 System.out.println("What would you like to change the message to?");
                                 newMessage = scan.nextLine();
-                                messageManager.editMessage(acct.get("ID"), db.get("role", recipient).get("email"), newMessage, String.valueOf(messageNum));
+                                messageManager.editMessage(acct.get("id"), selectedMessage.get("recipient"), newMessage, selectedMessage.get("messageNum"));
+                                System.out.println("Message edited");
                             } else if (userAction == 4) {
                                 //delete message
-                                MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f);
-                                String recipient = "";
-                                //message recipient email
-                                System.out.println("Who did you send the message to?");
-                                recipient = scan.nextLine();
-                                int messageNum;
+                                ArrayList<HashMap<String, String>> messages = MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, filter, f, true);
+                                if (messages == null) {
+                                    continue;
+                                }
+                                int messageNum = -1;
                                 //message number
-                                System.out.println("Which message (number) would you like to delete?");
-                                messageNum = scan.nextInt();
-                                scan.nextLine();
-                                messageManager.deleteMessage(acct.get("ID"), db.get("role", recipient).get("email"), String.valueOf(messageNum));
+                                do {
+                                    System.out.println("Which message number would you like to delete?");
+                                    try {
+                                        messageNum = Integer.parseInt(scan.nextLine());
+                                        if (messageNum < 1 || messageNum > messages.size()) {
+                                            messageNum = -1;
+                                            System.out.println("Please choose one of the messages listed above");
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        messageNum = -1;
+                                        System.out.println("Enter a number please");
+                                    }
+                                } while (messageNum == -1);
+                                HashMap<String, String> selectedMessage = messages.get(messageNum - 1);
+                                messageManager.deleteMessage(acct.get("id"), selectedMessage.get("recipient"), selectedMessage.get("messageNum"));
+                                System.out.println("Message deleted");
                             } else if (userAction == 5) {
                                 //export conversations
                                 MessageInterface.exportConversations(scan, acct.get("id"), db, messageManager);

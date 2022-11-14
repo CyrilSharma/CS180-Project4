@@ -106,10 +106,10 @@ public class MessageInterface {
      *
      * @param scanner, id, db, mm
      */
-    public static void viewMessageHistory(Scanner scanner, String id, Database db, MessageManager mm, boolean on, Filter filter) {
+    public static ArrayList<HashMap<String, String>> viewMessageHistory(Scanner scanner, String id, Database db, MessageManager mm, boolean on, Filter filter, boolean showNumbers) {
         ArrayList<String> conversationPartners = MessageInterface.listConversations(id, db, mm);
         if (conversationPartners.isEmpty()) {
-            return;
+            return null;
         }
         System.out.println("Enter the number or email you wish to see message history for");
         String otherUserEmail;
@@ -129,14 +129,14 @@ public class MessageInterface {
         HashMap<String, String> otherUser = db.get("email", otherUserEmail);
         if (otherUser == null) {
             System.out.println("The user you were messaging doesn't seem to exist");
-            return;
+            return null;
         }
         ArrayList<HashMap<String, String>> history;
         try {
             history = mm.getPersonalHistory(user.get("id"));
         } catch (IOException e) {
             System.out.println("You don't seem to have any conversation history");
-            return;
+            return null;
         }
         String conversations = "";
         int startLocation = -1;
@@ -148,8 +148,11 @@ public class MessageInterface {
             }
         }
         int x = startLocation + 1;
+        ArrayList<HashMap<String, String>> listOfMessages = new ArrayList<HashMap<String, String>>();
+        int i = 1;
         while (history.get(x).size() > 1) {
             HashMap<String, String> message = history.get(x);
+            listOfMessages.add(message);
             String content = message.get("message");
             String sender = db.get("id", message.get("sender")).get("email");
             String recipient = db.get("id", message.get("recipient")).get("email");
@@ -160,17 +163,21 @@ public class MessageInterface {
             }
             Instant time = Instant.parse(message.get("timeStamp"));
             String timeString = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
-            conversations += String.format("%s->%s at %s: %s\n", sender, recipient, timeString, content);
+            if (showNumbers) {
+                conversations += String.format("%d. %s->%s at %s: %s\n", i, sender, recipient, timeString, content);
+            } else {
+                conversations += String.format("%s->%s at %s: %s\n", sender, recipient, timeString, content);
+            }
             x++;
+            i++;
         }
         System.out.println("Message History (oldest first):");
         if (on) {
-            System.out.println("GOT HERE");
             System.out.println(filter.filter(conversations.strip()));
         } else {
             System.out.println(conversations.strip());
         }
-
+        return listOfMessages;
     }
 
     /**
