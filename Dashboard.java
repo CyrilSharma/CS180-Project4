@@ -57,7 +57,7 @@ public class Dashboard {
 
     /**
      * creates a messageData integer array that contains the number of messages
-     * givesn from the customer and seller and sotres it
+     * given from the customer and seller and sotres it
      * messageData[0] is the customer messages and messageData[1]
      * is the seller messages.
      *
@@ -92,7 +92,6 @@ public class Dashboard {
         return messageData;
     }
 
-    //get other user's name with conversation list
     /**
      * retrieves another user's name that is provided in the conversation list
      *
@@ -103,9 +102,15 @@ public class Dashboard {
         String name = "";
 
         if (conversation.get(0)[0].equals(id)) {
+            if (conversation.get(0)[1].equals("No Customer")) {
+                return "No Customer";
+            }
             name = conversation.get(0)[1];
             name = getEmail(name);
         } else {
+            if (conversation.get(0)[0].equals("No Customer")) {
+                return "No Customer";
+            }
             name = conversation.get(0)[0];
             name = getEmail(name);
         }
@@ -127,6 +132,7 @@ public class Dashboard {
         }
         return result;
     }
+
     /**
      * finds the most common word from conversation(excluding special characters)
      *
@@ -157,30 +163,131 @@ public class Dashboard {
         return word;
     }
     /**
+     * returns the 2nd element of the String array of the first String
+     * array found in the ArrayList conv.
+     *
+     * @param conv ArrayList String[] containing conversation
+     * @return String
+     */
+    public String getStoreName(ArrayList<String[]> conv) {
+        return conv.get(0)[2];
+    }
+
+    /**
      * print the statistics of the current user
      */
     public void printMyStatistic() {
         //System.out.println(myConversations.size());
-        System.out.println(myConversations.size());
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", "placeholder");
+                System.out.printf("Store name: %s\n", getStoreName(conv));
                 System.out.printf("Seller name: %s\n", getOtherName(conv));
                 System.out.printf("Message Sent: %d\n", data[0]);
                 System.out.printf("Message Received: %d\n\n", data[1]);
             }
         } else {
             for (ArrayList<String[]> conv : myConversations) {
-                int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", "placeholder");
-                System.out.printf("Customer name: %s\n", getOtherName(conv));
-                System.out.printf("Message Received: %d\n", data[0]);
-                System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
+                if (getOtherName(conv).equals("No Customer")) {
+                    System.out.printf("Store name: %s\n", getStoreName(conv));
+                    System.out.println("No customers\n");
+                } else {
+                    int[] data = getMessageData(conv);
+                    System.out.printf("Store name: %s\n", getStoreName(conv));
+                    System.out.printf("Customer name: %s\n", getOtherName(conv));
+                    System.out.printf("Message Received: %d\n", data[0]);
+                    if (data[0] == 0) {
+                        System.out.println();
+                    } else {
+                        System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
+                    }
+                }
             }
         }
 
     }
+    /**
+     * gets the store from database and adds the data to the ArrayList
+     * conv.
+     */
+    public void getStoreFromDatabase() {
+        File f = new File("Stores.txt");
+        FileReader fr;
+        BufferedReader bfr;
+        try {
+            fr = new FileReader(f);
+            bfr = new BufferedReader(fr);
+            while(true) {
+                String line = bfr.readLine();
+                if (line == null) {
+                    break;
+                }
+                String[] info = line.split("-");
+                if (email.equals(info[1])) {
+                    if (!checkStoreExist(info[0])) {
+                        String[] data = new String[3];
+                        data[1] = id;
+                        data[0] = "No Customer";
+                        data[2] = info[0];
+                        ArrayList<String[]> conv = new ArrayList<>();
+                        conv.add(data);
+                        myConversations.add(conv);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * checks to see if the store exists by seeing if the name of the store is in
+     * the arrayList myCOnversations
+     *
+     * @param name
+     * @return true or false
+     */
+    public boolean checkStoreExist(String name) {
+        for (ArrayList<String[]> conv: myConversations) {
+            if (conv.get(0)[2].equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * checks to see if the store exists by seeing if the name of the store is
+     * in the arrayList conv
+     * @param conv ArrayList String[] containing conversation
+     * @param name
+     * @return boolean true or false
+     */
+    public boolean checkStoreExist(ArrayList<ArrayList<String[]>> conv, String name) {
+        for (ArrayList<String[]> con: conv) {
+            if (con.get(0)[2].equals(name)) {
+                //System.out.println(name + "true");
+                return true;
+            }
+        }
+        //System.out.println(name + "false");
+        return false;
+    }
+
+    /**
+     * checks to see if the user exists in the arrayList conv
+     * @param conv ArrayList String[] containing conversation
+     * @param name
+     * @return boolean true or false
+     */
+    public boolean checkUserExist(ArrayList<ArrayList<String[]>> conv, String name) {
+        for (ArrayList<String[]> con: conv) {
+            if ((con.get(0)[1].equals(name) || con.get(0)[0].equals(name)) && !name.equals("No Customer")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * read database and store conversation data
      */
@@ -197,7 +304,8 @@ public class Dashboard {
                 }
                 ArrayList<String[]> conversation = new ArrayList<>();
                 String path = "history/"+ line + "-messageHistory.txt";
-                String[] users = new String[2];
+                String[] users = new String[3];
+                users[2] = "";
                 if (role == Role.Seller) {
                     users[0] = line;
                     users[1] = id;
@@ -218,6 +326,11 @@ public class Dashboard {
                     String msg = chart[0];
                     message[0] = name;
                     message[1] = msg;
+                    if (conversation.get(0)[2].equals("")) {
+                        String[] conv = conversation.get(0);
+                        conv[2] = chart[4].substring(0, chart[4].indexOf("-----"));
+                        conversation.set(0, conv);
+                    }
                     conversation.add(message);
                     line = bfr.readLine();
                     if (line == null) {
@@ -234,11 +347,13 @@ public class Dashboard {
                 }
                 myConversations.add(conversation);
             }
+            getStoreFromDatabase();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Database Error!");
         }
     }
+
     /**
      * read the database of the other person (non-user) to store edits and new messages
      */
@@ -279,8 +394,6 @@ public class Dashboard {
         }
         return null;
     }
-
-    //dashboard menu
     /**
      * dashboard menu, user interface to use dashboard
      */
@@ -377,11 +490,12 @@ public class Dashboard {
     }
 
     /**
-     * get the email of a user from their ID
-     * @param ID
-     * @return email
+     * dashboard menu, user interface to use dashboard
      */
     public String getEmail(String ID) {
+        if (ID.equals("No Customer")) {
+            return "No Customer";
+        }
         Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("id", ID);
         return map.get("email");
@@ -392,10 +506,14 @@ public class Dashboard {
      * @return ID
      */
     public String getID(String email) {
+        if (email.equals("No Customer")) {
+            return "No Customer";
+        }
         Database database = new Database("UserDatabase.txt");
         HashMap<String, String> map = database.get("email", email);
         return map.get("id");
     }
+
     /**
      * print out a conversation between the user and someone else
      */
@@ -424,11 +542,11 @@ public class Dashboard {
         } else {
             if (role == Role.Seller) {
                 for (ArrayList<String[]> conversation: myConversations) {
-                    sortedList.add(conversation.get(0)[0]);
+                    sortedList.add(getEmail(conversation.get(0)[0]));
                 }
             } else {
                 for (ArrayList<String[]> conversation: myConversations) {
-                    sortedList.add(conversation.get(0)[1]);
+                    sortedList.add(getEmail(conversation.get(0)[1]));
                 }
             }
         }
@@ -438,17 +556,38 @@ public class Dashboard {
             for (ArrayList<String[]> conversation: myConversations) {
                 if (option == 1) {
                     if (conversation.get(0)[2].equals(user)) {
-                        temp.add(conversation);
+                        if (role == Role.Customer) {
+                            if (!checkUserExist(temp, conversation.get(0)[1])) {
+                                temp.add(conversation);
+                            } else {
+                                continue;
+                            }
+
+                        } else {
+                            if (!checkUserExist(temp, conversation.get(0)[0])) {
+                                temp.add(conversation);
+                            } else {
+                                continue;
+                            }
+                        }
                         break;
                     }
                 } else {
                     if (role == Role.Seller) {
-                        if (conversation.get(0)[0].equals(user)) {
-                            temp.add(conversation);
-                            break;
+                        if (conversation.get(0)[0].equals("No Customer")) {
+                            if (!checkStoreExist(temp, conversation.get(0)[2])) {
+                                temp.add(0, conversation);
+                            } else {
+                                continue;
+                            }
+                        } else {
+                            if (conversation.get(0)[0].equals(getID(user))) {
+                                temp.add(conversation);
+                                break;
+                            }
                         }
                     } else {
-                        if (conversation.get(0)[1].equals(user)) {
+                        if (conversation.get(0)[1].equals(getID(user))) {
                             temp.add(conversation);
                         }
                     }
@@ -457,15 +596,13 @@ public class Dashboard {
         }
         myConversations = temp;
     }
-    /**
-     * Set the myConversation list to store stores/customers in reverse alphabetical order
+    /* Set the myConversation list to store stores/customers in reverse alphabetical order
      * @param option int (1=store, 2=sort other users)
      */
     public void sortByAlphabetInverse(int option) {
         sortByAlphabet(option);
         Collections.reverse(myConversations);
     }
-    //get number of message sent by users from history txt file
     /**
      * Set the myConversation list to store stores/customers in alphabetical order
      * @param conversation (an arraylist of string arrays)
@@ -480,7 +617,6 @@ public class Dashboard {
         }
         return count;
     }
-    //sort myConversation list in a way from # highest message received to lowest.
     /**
      * sort myConversation list in a way from highest # of messages received to lowest.
      */
@@ -512,13 +648,20 @@ public class Dashboard {
         }
         ArrayList<ArrayList<String[]>> temp = new ArrayList<>();
         for (String user: users) {
-            System.out.println(user);
             user = getID(user);
             for (ArrayList<String[]> conversation: myConversations) {
                 if (role == Role.Seller) {
-                    if (conversation.get(0)[0].equals(user)) {
-                        temp.add(conversation);
-                        break;
+                    if (conversation.get(0)[0].equals("No Customer")) {
+                        if (!checkStoreExist(temp, conversation.get(0)[2])) {
+                            temp.add(0, conversation);
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        if (conversation.get(0)[0].equals(user)) {
+                            temp.add(conversation);
+                            break;
+                        }
                     }
                 } else {
                     if (conversation.get(0)[1].equals(user)) {
