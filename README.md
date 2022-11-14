@@ -1,11 +1,11 @@
 # Instruction
 
-Go to MainInterface.java and run MainInterface. There, you can start by choosing to log in, create account, delete account, or exit. Once you log in or create an account, the program will take you to the inner menus where you can choose to do various things. 
+To compile and run our project, go to MainInterface.java and run MainInterface. There, you can start by choosing to log in, create account, delete account, or exit. Once you log in or create an account, the program will take you to the inner menus where you can choose to do various things. 
 
 # Submission
 
-Project 4 was submmited by ---- in Vocareum. <br />
-Report was submitted by ---- on BrightSpace
+Project 4 was submmited by Cyril Sharma in Vocareum. <br />
+Report was submitted by Atharva Gupta on BrightSpace
 
 
 # Classes
