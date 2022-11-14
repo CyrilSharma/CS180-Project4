@@ -1,17 +1,6 @@
 import java.time.Instant;
 import java.util.*;
-/**
- * Project 4 -> MainInterface
- *
- * The interface where the user can login/create an account and utilize all the functionality
- * of the marketplace messaging system to buy turkeys :)
- *
- *
- * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
- *
- * @version November 13, 2022
- *
- */
+
 public class MainInterface {
 
     public static void main(String[] args) {
@@ -24,10 +13,10 @@ public class MainInterface {
             historyPath = args[1];
         }
 
-        System.out.println("Welcome to the Turkey Store!\n" + 
-            "Here at the turkey store, we offer every variety of turkey imaginable!\n" +
-            "Feel free to contact any of our reputable sellers to learn about stores, \n" +
-            "that you can buy our wonderful products from!\n"
+        System.out.println("Welcome to the Turkey Store!\n" +
+                "Here at the turkey store, we offer every variety of turkey imaginable!\n" +
+                "Feel free to contact any of our reputable sellers to learn about stores, \n" +
+                "that you can buy our wonderful products from!\n"
         );
 
         Database db = new Database(databasePath);
@@ -38,10 +27,10 @@ public class MainInterface {
         while (loop1) {
 
             String PROMPT = "Would you like to..." +
-                    "\n1. Login" +  
+                    "\n1. Login" +
                     "\n2. Create an account" +
                     "\n3. Exit";
-                    
+
             int resp = -1;
             do {
                 try {
@@ -311,7 +300,7 @@ public class MainInterface {
                         roleValid = true;
                         rolething = Role.Seller;
                     }
-                    if (role.toLowerCase().equals("customer")){ 
+                    if (role.toLowerCase().equals("customer")){
                         roleValid = true;
                         rolething = Role.Customer;
                     }
@@ -344,8 +333,8 @@ public class MainInterface {
             } else if (resp == 3) {
                 //Exit program
                 //should this print at the end no matter what? if so, change to separate if loop at end
-                System.out.println("Thank you for shopping at the turkey store!\n" + 
-                    "Have a nice rest of your day!");
+                System.out.println("Thank you for shopping at the turkey store!\n" +
+                        "Have a nice rest of your day!");
                 loop1 = false;
             }
         }
