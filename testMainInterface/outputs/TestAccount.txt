@@ -15,8 +15,8 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 You don't have any missed messages

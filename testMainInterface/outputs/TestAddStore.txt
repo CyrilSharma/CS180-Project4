@@ -13,13 +13,13 @@ Please enter your role (Seller/Customer):
 Account created!
 How many stores would you like to create?
 What is the name of store 1?
-Deli has been created!
+That store name is not available
 Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
 Login successful!
 
 You don't have any missed messages
@@ -39,7 +39,7 @@ Would you like to...
 13. Delete your account
 14. Exit
 What is the name of the store you would like to add?
-Terrific Turkey Time has been created!
+That store name is not available
 Would you like to...
 1. Message a user
 2. View messages
