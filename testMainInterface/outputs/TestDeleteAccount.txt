@@ -15,22 +15,27 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email: 
-Please enter your password:
-Please enter your role (Seller/Customer):
-Account created!
-How many stores would you like to create?
-What is the name of store 1?
-That store name is not available
-Would you like to...
-1. Login
-2. Create an account
-3. Exit
 Please enter your email (type back to go back): 
 Please enter your password (type back to go back): 
 Login successful!
 
 You don't have any missed messages
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Exit
+Are you sure you want to delete your account (Y/N)
 Would you like to...
 1. Message a user
 2. View messages
@@ -47,17 +52,8 @@ Would you like to...
 13. Delete your account
 14. Exit
 Stores:
-userB1@gmail.com: Deli, Terrific Turkey Time
 Which store you like to send a message to?
-How would you like to send a message?
-1. Console
-2. Text file
-That is not a valid input. Please try again
-How would you like to send a message?
-1. Console
-2. Text file
-Type your message and press enter:
-Message sent
+That is not a valid store
 Would you like to...
 1. Message a user
 2. View messages
@@ -73,41 +69,7 @@ Would you like to...
 12. Open Filter
 13. Delete your account
 14. Exit
-Would you like to...
-1. Login
-2. Create an account
-3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
-Login successful!
-
-Missed Messages:
-userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:10:11.548816: RELINQUISH YOUR TURKEY IMMEDIATELY.
-
-Would you like to...
-1. Message a user
-2. View messages
-3. Edit a message
-4. Delete a message
-5. Export conversations
-6. Block a user
-7. Unblock a user
-8. View stores
-9. View customers
-10. Add a store
-11. Dashboard
-12. Open Filter
-13. Delete your account
-14. Exit
-Would you like to...
-1. Login
-2. Create an account
-3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
-Login successful!
-
-You don't have any missed messages
+Input invalid, try again.
 Would you like to...
 1. Message a user
 2. View messages
@@ -124,10 +86,5 @@ Would you like to...
 13. Delete your account
 14. Exit
 Your conversations:
-1. userB1@gmail.com
-Enter the number or email you wish to see message history for
-Message History (oldest first):
-userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:10:11.548366: RELINQUISH YOUR TURKEY IMMEDIATELY.
+You do not appear to have any conversations
 Who did you send the message to?
-Which message (number) would you like to edit?
-What would you like to change the message to?

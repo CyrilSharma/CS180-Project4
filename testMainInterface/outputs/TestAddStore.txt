@@ -11,17 +11,9 @@ Please enter your email:
 Please enter your password:
 Please enter your role (Seller/Customer):
 Account created!
-Would you like to...
-1. Login
-2. Create an account
-3. Exit
-Please enter your email: 
-Please enter your password:
-Please enter your role (Seller/Customer):
-Account created!
 How many stores would you like to create?
 What is the name of store 1?
-That store name is not available
+Deli has been created!
 Would you like to...
 1. Login
 2. Create an account
@@ -46,43 +38,8 @@ Would you like to...
 12. Open Filter
 13. Delete your account
 14. Exit
-Customers:
-userA1@gmail.com
-Who do you want to message:
-List of stores:
-Deli, Terrific Turkey Time
-Which store would you like to send a message from:
-How would you like to send a message?
-1. Console
-2. Text file
-Type your message and press enter:
-Message sent
-Would you like to...
-1. Message a user
-2. View messages
-3. Edit a message
-4. Delete a message
-5. Export conversations
-6. Block a user
-7. Unblock a user
-8. View stores
-9. View customers
-10. Add a store
-11. Dashboard
-12. Open Filter
-13. Delete your account
-14. Exit
-Would you like to...
-1. Login
-2. Create an account
-3. Exit
-Please enter your email (type back to go back): 
-Please enter your password (type back to go back): 
-Login successful!
-
-Missed Messages:
-userB1@gmail.com (Deli)->userA1@gmail.com at 23:10:11.799597: RELINQUISH YOUR TURKEY IMMEDIATELY.
-
+What is the name of the store you would like to add?
+Terrific Turkey Time has been created!
 Would you like to...
 1. Message a user
 2. View messages
