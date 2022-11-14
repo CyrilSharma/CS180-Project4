@@ -46,10 +46,16 @@ public class MainInterface {
                 String email = "";
                 String password = "";
                 while (!loggedIn) {
-                    System.out.println("Please enter your email: ");
+                    System.out.println("Please enter your email (type back to go back): ");
                     email = scan.nextLine();
-                    System.out.println("Please enter your password: ");
+                    if (email.equals("back")) {
+                        break;
+                    }
+                    System.out.println("Please enter your password (type back to go back): ");
                     password = scan.nextLine();
+                    if (password.equals("back")) {
+                        break;
+                    }
                     if (db.verify(email, password)) {
                         loggedIn = true;
                         loop2 = true;
@@ -240,6 +246,7 @@ public class MainInterface {
                                         }
                                         System.out.println("Account deleted!");
                                         loop2 = false;
+                                        break;
                                     }
                                 }
                             } else if (userAction == 14) {
@@ -277,16 +284,22 @@ public class MainInterface {
                 } while (!db.validate(password, "password"));
                 boolean roleValid = false;
                 String role = "";
+                Role rolething = null;
                 while (!roleValid) {
                     System.out.println("Please enter your role (Seller/Customer):");
                     role = scan.nextLine();
 
-                    if (role.toLowerCase().equals("seller") || role.toLowerCase().equals("customer")) {
+                    if (role.toLowerCase().equals("seller")) {
                         roleValid = true;
+                        rolething = Role.Seller;
+                    }
+                    if (role.toLowerCase().equals("customer")){ 
+                        roleValid = true;
+                        rolething = Role.Customer;
                     }
                 }
                 try {
-                    db.add(email, password, Role.valueOf(role));
+                    db.add(email, password, rolething);
                 } catch (InvalidUserException e) {
                     System.out.println(e.getMessage());
                     continue;
