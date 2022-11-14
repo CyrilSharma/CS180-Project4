@@ -54,18 +54,22 @@ public class User {
         if (this.role.toLowerCase().equals(Role.Customer.toString().toLowerCase())) {
             System.out.println("Stores:");
             for (HashMap<String, String> sellerBlocked : getSellers) {
-                ArrayList<String> stores = User.readStoresFromFile(sellerBlocked.get("email"));
+                ArrayList<String> stores2 = User.readStoresFromFile(sellerBlocked.get("email"));
                 String storeString = "";
-                for (String store : stores) {
+                for (String store : stores2) {
                     storeString += store + ", ";
                 }
                 if (storeString.length() > 2)
                     storeString = storeString.substring(0, storeString.length() - 2);
-                if (!sellerBlocked.get("blocked").contains(id) && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
+                if (!sellerBlocked.get("blocked").contains(id) 
+                    && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                    && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
                     System.out.println(sellerBlocked.get("email") + ": " + storeString);
-                } else if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)){
+                } else if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                    && !sellerBlocked.get("invisible").contains(id)){
                     System.out.println(sellerBlocked.get("email") + " (blocked): " + storeString);
-                } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)) {
+                } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                    && !sellerBlocked.get("invisible").contains(id)) {
                     System.out.println(sellerBlocked.get("email") + " (invisible): " + storeString);
                 }
             }
@@ -104,11 +108,15 @@ public class User {
             System.out.println("Customers:");
             HashMap<String, String> thisUser = db.get("id", id);
             for (HashMap<String, String> sellerBlocked : getCustomers) {
-                if (!sellerBlocked.get("invisible").contains(id) && !thisUser.get("blocked").contains(sellerBlocked.get("id")) && !thisUser.get("invisible").contains(sellerBlocked.get("id"))) {
+                if (!sellerBlocked.get("invisible").contains(id) 
+                    && !thisUser.get("blocked").contains(sellerBlocked.get("id")) 
+                    && !thisUser.get("invisible").contains(sellerBlocked.get("id"))) {
                     System.out.println(sellerBlocked.get("email"));
-                } else if (!thisUser.get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)){
+                } else if (!thisUser.get("blocked").contains(sellerBlocked.get("id")) 
+                    && !sellerBlocked.get("invisible").contains(id)){
                     System.out.println(sellerBlocked.get("email") + " (invisible)");
-                } else if (thisUser.get("blocked").contains(sellerBlocked.get("id")) && !sellerBlocked.get("invisible").contains(id)) {
+                } else if (thisUser.get("blocked").contains(sellerBlocked.get("id")) 
+                    && !sellerBlocked.get("invisible").contains(id)) {
                     System.out.println(sellerBlocked.get("email") + " (blocked)");
                 }
             }

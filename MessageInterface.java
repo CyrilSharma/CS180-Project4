@@ -29,14 +29,16 @@ public class MessageInterface {
             System.out.println("Which store would you like to send a message to?");
             store = scanner.nextLine();
             email = User.getEmailFromStore(store);
-            if (email == null || db.get("email", email) == null || !db.get("email", email).get("role").equals(Role.Seller.toString())) {
+            if (email == null || db.get("email", email) == null 
+                || !db.get("email", email).get("role").equals(Role.Seller.toString())) {
                 System.out.println("That is not a valid store");
                 return;
             }
         } else if (h.get("role").equals(Role.Seller.toString())) {
             System.out.println("Who do you want to message:");
             email = scanner.nextLine();
-            if (db.get("email", email) == null || !db.get("email", email).get("role").equals(Role.Customer.toString())) {
+            if (db.get("email", email) == null 
+                || !db.get("email", email).get("role").equals(Role.Customer.toString())) {
                 System.out.println("That is not a valid email");
                 return;
             }
@@ -56,7 +58,10 @@ public class MessageInterface {
             return;
         }
         recipient = db.get("email", email);
-        if (recipient == null || !recipient.containsKey("blocked") || recipient.get("role").equals(h.get("role")) || recipient.get("blocked").contains(id) || h.get("blocked").contains(recipient.get("id"))) {
+        if (recipient == null || !recipient.containsKey("blocked") 
+            || recipient.get("role").equals(h.get("role")) 
+            || recipient.get("blocked").contains(id) 
+            || h.get("blocked").contains(recipient.get("id"))) {
             recipient = null;
             System.out.println("You do not have permission to message that user");
             return;
@@ -82,8 +87,7 @@ public class MessageInterface {
         if (resp == 1) {
             System.out.println("Type your message and press enter:");
             message = new String[]{scanner.nextLine()};
-        }
-        else {
+        } else {
             do {
                 System.out.println("Type the path to your text file");
                 try {
@@ -106,7 +110,8 @@ public class MessageInterface {
      *
      * @param scanner, id, db, mm
      */
-    public static ArrayList<HashMap<String, String>> viewMessageHistory(Scanner scanner, String id, Database db, MessageManager mm, boolean on, Filter filter, boolean showNumbers) {
+    public static ArrayList<HashMap<String, String>> viewMessageHistory(Scanner scanner, String id, 
+        Database db, MessageManager mm, boolean on, Filter filter, boolean showNumbers) {
         ArrayList<String> conversationPartners = MessageInterface.listConversations(id, db, mm);
         if (conversationPartners.isEmpty()) {
             return null;
@@ -142,7 +147,8 @@ public class MessageInterface {
         int startLocation = -1;
         for (int i = 0; i < history.size(); i++) {
             HashMap<String, String> message = history.get(i);
-            if (message.size() == 1 && message.containsKey("recipient") && message.get("recipient").equals(otherUser.get("id"))) {
+            if (message.size() == 1 && message.containsKey("recipient") 
+                && message.get("recipient").equals(otherUser.get("id"))) {
                 startLocation = i;
                 break;
             }
@@ -225,9 +231,15 @@ public class MessageInterface {
             try {
                 input[i] = ids.get(Integer.parseInt(input[i]) - 1);
             } catch (Exception e) {
+                e.getMessage();
             }
-            input[i] = db.get("email", input[i]).get("id");
-            if (input[i] == null) {
+            try {
+                input[i] = db.get("email", input[i]).get("id");
+                if (input[i] == null) {
+                    System.out.println("It looks like one of those emails is invalid");
+                    return;
+                }
+            } catch (NullPointerException e) {
                 System.out.println("It looks like one of those emails is invalid");
                 return;
             }
@@ -267,7 +279,8 @@ public class MessageInterface {
                     sender += " (" + message.get("store") + ")";
                 }
                 Instant time = Instant.parse(message.get("timeStamp"));
-                String timeString = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalTime().toString();
+                String timeString = time.atZone(Calendar.getInstance().getTimeZone().toZoneId())
+                    .toLocalTime().toString();
                 conversations += String.format("%s->%s at %s: %s\n", sender, recipient, timeString, content);
             }
             if (missedMessages.isEmpty()) {
@@ -292,7 +305,8 @@ public class MessageInterface {
                 if (previousMessage == null) {
                     previousMessage = message;
                 } else {
-                    if (Instant.parse(previousMessage.get("timeStamp")).isAfter(Instant.parse(message.get("timeStamp")))) {
+                    if (Instant.parse(previousMessage.get("timeStamp"))
+                        .isAfter(Instant.parse(message.get("timeStamp")))) {
                         sorted = false;
                         messages.set(i - 1, message);
                         messages.set(i, previousMessage);

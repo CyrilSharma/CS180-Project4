@@ -47,7 +47,7 @@ public class Filter {
         try {
             fr = new FileReader(f);
             bfr = new BufferedReader(fr);
-            while(true) {
+            while (true) {
                 String line = bfr.readLine();
                 if (line == null) {
                     break;
@@ -152,7 +152,7 @@ public class Filter {
      * remove word from filter and txt file
      * @param word (string)
      */
-    public void remove(String word) throws InvalidWordException{
+    public void remove(String word) throws InvalidWordException {
         ArrayList<String> words = get();
         if (!words.contains(word)) {
             throw new InvalidWordException("The word does not exist in the current filter!");
@@ -259,7 +259,7 @@ public class Filter {
 
         String menu;
         boolean ongoing = true;
-        while(ongoing) {
+        while (ongoing) {
             menu = "what do you want to do?\n";
             if (on) {
                 menu += "1. disable filter\n";
