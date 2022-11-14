@@ -344,7 +344,12 @@ public class MainInterface {
                     int numStores = -1;
                     do {
                         System.out.println("How many stores would you like to create?");
-                        numStores = scan.nextInt();
+                        try {
+                            numStores = Integer.parseInt(scan.nextLine());
+                        } catch (NumberFormatException e) {
+                            numStores = -1;
+                            System.out.println("Enter a number");
+                        }
                         if (numStores <= 0) {
                             System.out.println("You must make at least one store!");
                         }
