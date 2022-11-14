@@ -4,7 +4,7 @@ To compile and run our project, go to MainInterface.java and run MainInterface. 
 
 # Submission
 
-Project 4 was submmited by Cyril Sharma in Vocareum. <br />
+Project 4 was submmited by Nitin Murthy in Vocareum. <br />
 Report was submitted by Atharva Gupta on BrightSpace
 
 
