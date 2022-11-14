@@ -2,9 +2,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
-
+/**
+ * Project 4 -> MessageInterface
+ *
+ * Specialized UI for messaging, extension off MessageManager
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class MessageInterface {
-    
+
+    /**
+     * main method where customers can message senders and vice versa
+     *
+     * @param scanner, mm, db, id
+     */
     public static void message(Scanner scanner, MessageManager mm, Database db, String id) {
         HashMap<String, String> h = db.get("id", id);
         HashMap<String, String> recipient;
@@ -25,6 +39,9 @@ public class MessageInterface {
                 System.out.println("That is not a valid email");
                 return;
             }
+            /** NOT a method designator
+             * select store to message
+             */
             ArrayList<String> stores = User.readStoresFromFile(h.get("email"));
             System.out.println("List of stores:\n" + String.join(", ", stores));
             System.out.println("Which store would you like to send a message from:");
@@ -42,6 +59,10 @@ public class MessageInterface {
         }
         int resp;
         do {
+            /** NOT a method designator
+             * allows user to either send message through console or send contents of a text file
+             *
+             */
             System.out.println("How would you like to send a message?\n1. Console\n2. Text file");
             try {
                 resp = Integer.parseInt(scanner.nextLine());
@@ -77,7 +98,12 @@ public class MessageInterface {
         System.out.println("Message sent");
     }
 
-    public static void viewMessageHistory(Scanner scanner, String id, Database db, MessageManager mm, boolean on, Filter filter) {
+    /**
+     * Allows user to view a specific conversation with a prompted user
+     *
+     * @param scanner, id, db, mm
+     */
+    public static void viewMessageHistory(Scanner scanner, String id, Database db, MessageManager mm) {
         ArrayList<String> conversationPartners = MessageInterface.listConversations(id, db, mm);
         if (conversationPartners.isEmpty()) {
             return;
@@ -136,14 +162,13 @@ public class MessageInterface {
             x++;
         }
         System.out.println("Message History (oldest first):");
-        if (on) {
-            System.out.println(filter.filter(conversations.strip()));
-        } else {
-            System.out.println(conversations.strip());
-        }
-
+        System.out.println(conversations.strip());
     }
 
+    /**
+     * Lists out all of a user's conversations
+     * @param db, id, mm
+     */
     public static ArrayList<String> listConversations(String id, Database db, MessageManager mm) {
         ArrayList<String> ids = new ArrayList<String>();
         try {
@@ -170,6 +195,11 @@ public class MessageInterface {
         return ids;
     }
 
+    /**
+     * Allows user to export specific conversations with a prompted user
+     *
+     * @param scanner, id, db, mm
+     */
     public static void exportConversations(Scanner scanner, String id, Database db, MessageManager mm) {
         if (listConversations(id, db, mm).isEmpty()) {
             return;
@@ -191,6 +221,9 @@ public class MessageInterface {
         }
     }
 
+    /**
+     * Feature for user to see new messages sent since they were last online
+     */
     public static void missedMessages(Scanner scanner, String id, Database db, MessageManager mm) {
         Instant lastOnline = Instant.parse(db.get("id", id).get("lastOnline"));
         try {
@@ -228,6 +261,9 @@ public class MessageInterface {
         }
     }
 
+    /**
+     * Sort conversations based on timestamp of last message (newest to oldest)
+     */
     private static void sort(ArrayList<HashMap<String, String>> messages) {
         boolean sorted = false;
         HashMap<String, String> previousMessage = null;

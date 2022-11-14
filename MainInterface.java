@@ -1,6 +1,17 @@
 import java.time.Instant;
 import java.util.*;
-
+/**
+ * Project 4 -> MainInterface
+ *
+ * The interface where the user can login/create an account and utilize all the functionality
+ * of the marketplace messaging system to buy turkeys :)
+ *
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class MainInterface {
 
     public static void main(String[] args) {
