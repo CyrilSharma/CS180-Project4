@@ -9,7 +9,14 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * This class handles all database manipulations.
+ * Project 4 -> Database
+ *
+ * class handles all the database manipulations
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
  */
 public class Database {
     private String databasePath;
@@ -18,13 +25,23 @@ public class Database {
     private final String[] KEYS = {"id", "email", "password", "role", "lastOnline", "blocked", "invisible"};
     private Random random;
 
+    /**
+     * initializes the instance field variables
+     *
+     * @param path of the database
+     */
     public Database(String path) {
         databasePath = path;
         database = readFromDatabase(path);
         random = new Random();
     }
 
-    //Returns everything in the user database into an arraylist of HashMaps
+    /**
+     * returns everything in the user database into an arraylist of HashMaps
+     *
+     * @param path of the fileName
+     * @return ArrayList<HashMap<String, String>> userlist
+     */
     private ArrayList<HashMap<String, String>> readFromDatabase(String path) {
         File f = new File(path);
         try {
@@ -49,7 +66,12 @@ public class Database {
         }
     }
 
-    // Returns a HashMap object by splitting the string from the database
+    /**
+     * returns a HashMap object by splitting the string from the database
+     *
+     * @param userString
+     * @return a HashMap<String, String></String,>
+     */
     private HashMap<String, String> getDatabaseEntry(String userString) {
         HashMap<String, String> map = new HashMap<String, String>();
         String[] lineArray = userString.split(DATABASE_SPLIT);
@@ -59,6 +81,13 @@ public class Database {
         return map;
     }
 
+    /**
+     * returns the ArrayList from the database where the key equals the criteria
+     *
+     * @param key email of the user
+     * @param criteria object passed in
+     * @return ArrayList<HashMap<String, String>>
+     */
     public ArrayList<HashMap<String, String>> getSelection(String key, String criteria) {
         ArrayList<HashMap<String, String>> results = new ArrayList<HashMap<String, String>>();
         for (HashMap<String, String> entry: database) {
@@ -69,6 +98,13 @@ public class Database {
         return results;
     }
 
+    /**
+     * adds a newly created user to the database arraylist
+     *
+     * @param name
+     * @param password
+     * @param role
+     */
     public void add(String name, String password, Role role) throws InvalidUserException {
         if (get("email", name) != null) {
             throw new InvalidUserException("That email is already registered");
@@ -96,6 +132,11 @@ public class Database {
         save();
     }
 
+    /**
+     * removes the user from the database arraylist
+     *
+     * @param name
+     */
     public void remove(String name) throws InvalidUserException {
         HashMap<String, String> toBeRemoved = get("email", name);
         if (toBeRemoved == null) {
@@ -111,6 +152,14 @@ public class Database {
         save();
     }
 
+    /**
+     * blocks the user and sets the user as invisible in the
+     * database arraylis
+     *
+     * @param name
+     * @param emailToBlock
+     * @param invisible
+     */
     public void block(String name, String emailToBlock, boolean invisible) throws InvalidUserException {
         HashMap<String, String> changeInfo = get("email", name);
         if (changeInfo == null) {
@@ -146,6 +195,13 @@ public class Database {
         save();
     }
 
+    /**
+     * unblocks the user from the arraylist database
+     *
+     * @param name
+     * @param emailToUnblock
+     * @param invisible
+     */
     public void unblock(String name, String emailToUnblock, boolean invisible) throws InvalidUserException {
         HashMap<String, String> blocker = get("email", name);
         HashMap<String, String> blocked = get("email", emailToUnblock);
@@ -180,6 +236,13 @@ public class Database {
     }
 
     // Returns whether the password given for a user was the correct password
+    /**
+     * returns whether the password given for a user was the correct password
+     *
+     * @param name
+     * @param password
+     * @return true or false
+     */
     public boolean verify(String name, String password) {
         HashMap<String, String> user = get("email", name);
         if (user != null) {
@@ -189,7 +252,15 @@ public class Database {
             return false;
         }
     }
-    // Searches through the database and pulls out a user's information, represented in a HashMap
+
+    /**
+     * Searches through the database and pulls out a user's information
+     * represented in a HashMap
+     *
+     * @param key
+     * @param val
+     * @return HashMap<String, String>
+     */
     public HashMap<String, String> get(String key, String val) {
         if (!validateKey(key)) {
             return null;
@@ -202,6 +273,13 @@ public class Database {
         return null;
     }
 
+    /**
+     * modifies the account
+     *
+     * @param email
+     * @param key
+     * @param val
+     */
     public void modify(String email, String key, String val) throws InvalidUserException,
         InvalidKeyException {
         if (!validateKey(key)) {
@@ -222,7 +300,13 @@ public class Database {
         throw new InvalidUserException("User does not exist!");
     }
 
-    //Checks to make sure a string that will go to the database has NO SPECIAL CHARACTERS
+    /**
+     * Checks to make sure a string that will go to the database has NO SPECIAL CHARACTERS
+     *
+     * @param str
+     * @param key
+     * @return if the string is valid
+     */
     public boolean validate(String str, String key) {
         if (key == KEYS[1]) {
             return str.matches("^[A-Za-z0-9\\-\\._]{1,64}[^.]@[A-Za-z0-9]+\\.[a-z]{3}$");
@@ -232,6 +316,12 @@ public class Database {
         return true;
     }
 
+    /**
+     * Checks to see if the key exists
+     *
+     * @param key
+     * @return true or false is the key exists
+     */
     private boolean validateKey(String key) {
         boolean keyExists = false;
         for (String k: KEYS) {
@@ -243,6 +333,9 @@ public class Database {
         return keyExists;
     }
 
+    /**
+     * saves the file
+     */
     public void save() {
         try {
             File file = new File(databasePath);
@@ -257,6 +350,12 @@ public class Database {
         }
     }
 
+    /**
+     * formats the string based on the toString
+     *
+     * @param key
+     * @return String
+     */
     public String toString() {
         String output = "";
         for (HashMap<String, String> user : database) {
