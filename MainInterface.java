@@ -30,14 +30,7 @@ public class MainInterface {
                     "\n1. Login" +  
                     "\n2. Create an account" +
                     "\n3. Exit";
-
-
-            //Welcome message
-            String PROMPT = "Would you like to..." +
-                    "\n1. Login" +  
-                    "\n2. Create an account" +
-                    "\n3. Exit";
-            System.out.println(PROMPT);
+                    
             int resp = -1;
             do {
                 try {
