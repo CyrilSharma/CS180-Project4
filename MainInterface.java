@@ -1,7 +1,16 @@
 import java.time.Instant;
 import java.util.*;
 
-//TODO: Add javadoc
+/**
+ * Project 4 -> MainInterface
+ *
+ * UI and main class to run our program
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class MainInterface {
 
     public static void main(String[] args) {
@@ -50,7 +59,7 @@ public class MainInterface {
             } while (resp == -1);
 
             MessageManager messageManager = new MessageManager(db, historyPath);
-            if (resp == 1) { //Login
+            if (resp == 1) { //Login feature
                 boolean loggedIn = false;
                 String email = "";
                 String password = "";

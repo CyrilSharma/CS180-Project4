@@ -1,7 +1,16 @@
 import java.io.File;
 import java.util.HashMap;
 
-//TODO: Add javadoc
+/**
+ * Project 4 -> TestDatabase
+ *
+ * Testing our database class
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version November 13, 2022
+ *
+ */
 public class TestDatabase {
     private static final String FILEPATH = "testDatabase/testDatabase1.txt";
     private static File f = new File(FILEPATH);

@@ -1,5 +1,5 @@
 /**
- * Project 4 -> InvaludWordException
+ * Project 4 -> InvalidWordException
  *
  * class handles the exception where a word is invalid
  *
