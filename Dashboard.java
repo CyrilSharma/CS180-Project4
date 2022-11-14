@@ -185,8 +185,8 @@ public class Dashboard {
                 int[] data = getMessageData(conv);
                 System.out.printf("Store name: %s\n", getStoreName(conv));
                 System.out.printf("Seller name: %s\n", getOtherName(conv));
-                System.out.printf("Message Sent: %d\n", data[0]);
-                System.out.printf("Message Received: %d\n\n", data[1]);
+                System.out.printf("Message Sent: %d\n", data[1]);
+                System.out.printf("Message Received: %d\n\n", data[0]);
             }
         } else if (role == Role.Seller) {
             for (ArrayList<String[]> conv : myConversations) {
@@ -197,7 +197,7 @@ public class Dashboard {
                     int[] data = getMessageData(conv);
                     System.out.printf("Store name: %s\n", getStoreName(conv));
                     System.out.printf("Customer name: %s\n", getOtherName(conv));
-                    System.out.printf("Message Received: %d\n", data[0]);
+                    System.out.printf("Message Received: %d\n", data[1]);
                     if (data[0] == 0) {
                         System.out.println();
                     } else {
@@ -337,14 +337,6 @@ public class Dashboard {
                         break;
                     }
                 }
-                ArrayList<String> messages = readDatabaseOther(path);
-                String recipient = "";
-                for (String msg: messages) {
-                    String[] message = new String[2];
-                    message[0] = recipient;
-                    message[1] = msg;
-                    conversation.add(message);
-                }
                 myConversations.add(conversation);
             }
             getStoreFromDatabase();
@@ -352,46 +344,6 @@ public class Dashboard {
             System.out.println("Database Error!");
         }
     }
-    /**
-     * read the database of the other person (non-user) to store edits and new messages
-     */
-    public ArrayList<String> readDatabaseOther(String path) {
-        File f = new File(path);
-        FileReader fr;
-        BufferedReader bfr;
-        try {
-            fr = new FileReader(f);
-            bfr = new BufferedReader(fr);
-            ArrayList<String> messages = new ArrayList<>();
-            while(true) {
-                String line = bfr.readLine();
-                if (line == null) {
-                    break;
-                }
-                if (line.equals(id)) {
-                    line = bfr.readLine();
-                    while (!line.equals("#####")) {
-                        String[] chart = line.split("\\|\\|\\|\\|\\|");
-                        messages.add(chart[0]);
-                        line = bfr.readLine();
-                        if (line == null) {
-                            break;
-                        }
-                    }
-                }
-                line = bfr.readLine();
-                if (line == null) {
-                    break;
-                }
-            }
-            bfr.close();
-            return messages;
-        } catch (Exception e) {
-            System.out.println("Database Error!");
-        }
-        return null;
-    }
-
     /**
      * dashboard menu, user interface to use dashboard
      */
