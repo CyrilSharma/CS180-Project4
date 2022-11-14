@@ -12,7 +12,7 @@ Report was submitted by ---- on BrightSpace
 
 ## Testing
 
-All of the testing for classes were done by running TestMainInterface2.java with inputs from inputs.txt and save all of the outputs in output.txt comparing it with the expected.txt 
+All of the testing for classes were done by running TestMainInterface.java with inputs from each txt file and save all of the outputs in output.txt comparing it with the expected txt files 
 
 ## Dashboard
 
