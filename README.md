@@ -1,12 +1,12 @@
-# Instruction
+# Instructions
 
-Go to MainInterface.java and run MainInterface. There, you can start by choosing to log in, create account, or delete account. 
-
+To compile and run our project, select the MainInterface.java file and click run. Once the program started running, look at the console to see the 
+instructions to log in, create an account, or delete an account.
 
 # Submission
 
 Project 4 was submmited by ---- in Vocareum. <br />
-Report was submitted by ---- on BrightSpace
+Report was submitted by Atharva Gupta on BrightSpace
 
 
 # Classes
@@ -44,24 +44,38 @@ Its relationship to other classes are crucial as it provides an easy access of t
 
 ## InvalidKeyException
 
+- Error that is thrown when the user is trying to use a key that is invalid. 
+
+- This class is necessary as in the MainInterface.java class, if a user is trying to login, we check for the key to confirm the account.
 
 
 ## InvalidUserException
 
+- Error that is thrown when the user is invalid when logging in. 
 
+- This class is necessary within the project as in the MainInterface.java class, the user can be notified that an issue has occured when trying to login
+  due to this exception.
 
 ## InvalidWordException
 
-Error that is thrown when the user is trying to add existing word to the filter or get rid of word that does not exist. 
+- Error that is thrown when the user is trying to add existing word to the filter or get rid of word that does not exist. 
 
-This class is necessary in Filter class as the program can notify user if the word is valid or not. 
+- This class is necessary in Filter class as the program can notify user if the word is valid or not. 
+
+- These exceptions play a vital role when creating, editing, and deleting accounts. 
 
 ## MainInterface
+- In this class, the interface is where the user can login/create an account. Additionally, in this class a user can utilize all the funcitonality of marketplace messaging system to buy turkeys. 
+
+- This class is important becuase the Main Interface is our bridge for this project. This is the class the user will run to start and initilize our program. 
 
 
 
 ## MessageManager
+- Message Manager is a class that handles the message sending for a particular user. It specifically add create,e dit, and remove message
+functionality as well as the means to export conversations into a .CSV file. 
 
+- This class plays a vital role in creating a message history and a message file between a customer and a seller. 
 
 
 ## Role
@@ -69,3 +83,8 @@ This class is necessary in Filter class as the program can notify user if the wo
 - Basic enum to separate between seller and customer
  
 ## User
+- Creates the Customer and Seller distinctions and includes unique funcitonalites such as viewing the stores, adding stores, and viewing customers. 
+This is vital for the seller role. 
+- This class also includes functionalities for reading stores froma. file and getting a seller name that is associated with a specific store. 
+
+- User.java is vital throughout this project as this is how it interacts with getting a specific seller that is associated with a store and viewing a list of customers that a seller can choose. 
