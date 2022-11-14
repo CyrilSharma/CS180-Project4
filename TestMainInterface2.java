@@ -46,10 +46,8 @@ public class TestMainInterface2 {
             file2.createNewFile();
             return passedTest;
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return false;

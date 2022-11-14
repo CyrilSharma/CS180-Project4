@@ -68,7 +68,6 @@ public class MessageInterface {
                 try {
                     message = mm.readTextFromFile(scanner.nextLine());
                 } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
                     System.out.println("That file does not exist. Please try again");
                     message = null;
                 }
@@ -109,7 +108,6 @@ public class MessageInterface {
         try {
             history = mm.getPersonalHistory(user.get("id"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             System.out.println("You don't seem to have any conversation history");
             return;
         }
@@ -140,6 +138,7 @@ public class MessageInterface {
         }
         System.out.println("Message History (oldest first):");
         if (on) {
+            System.out.println("GOT HERE");
             System.out.println(filter.filter(conversations.strip()));
         } else {
             System.out.println(conversations.strip());
@@ -167,7 +166,6 @@ public class MessageInterface {
                 System.out.println("You do not appear to have any conversations");
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             System.out.println("You don't have a conversation history at the moment");
         }
         return ids;
@@ -189,7 +187,6 @@ public class MessageInterface {
         try {
             mm.messagesToCSV(id, input);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             System.out.println("Unable to export those conversations to CSV");
         }
     }
@@ -226,7 +223,6 @@ public class MessageInterface {
             }
             System.out.println("\n" + conversations);
         } catch (IOException e) {
-            e.printStackTrace();
             System.out.println("There was a problem accessing your history");
         }
     }

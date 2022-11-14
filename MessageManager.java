@@ -62,16 +62,15 @@ public class MessageManager {
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public void messageUser(String senderID, String recipientID, String message, String store) {
         try {
             generalMessage(senderID, recipientID, message, "message", "", store);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("An error has occurred sending your message");
         }
     }
 
@@ -79,7 +78,7 @@ public class MessageManager {
         try {
             generalMessage(senderID, recipientID, message, "edit", messageId, "");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("An error has occurred sending your message");
         }
     }
 
@@ -87,7 +86,7 @@ public class MessageManager {
         try {
             generalMessage(senderID, recipientID, "", "delete", messageId, "");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("An error has occurred sending your message");
         }
     }
 
@@ -100,7 +99,6 @@ public class MessageManager {
                 if (messageID == null || messageID.equals("")) {
                     do {
                         messageID = "";
-                        //TODO: Add do-while loop to this
                         for (int i = 0; i < 14; i++) {
                             int num = random.nextInt(50);
                             messageID += (char)('0' + num);
@@ -189,7 +187,7 @@ public class MessageManager {
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("An error has occurred sending your message");
         }
         return text;
     }
@@ -219,5 +217,10 @@ public class MessageManager {
         pw.write(text.strip());
         pw.flush();
         pw.close();
+    }
+
+    public void removeHistory(String email) {
+        File file = new File(historyDir + "/" + db.get("email", email).get("id") + "-messageHistory.txt");
+        file.delete();
     }
 }

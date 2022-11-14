@@ -71,7 +71,7 @@ public class MainInterface {
                         HashMap<String, String> acct = db.get("email", email);
                         User user = new User(email, password, acct.get("role"), messageManager, db);
                         MessageInterface.missedMessages(scan, acct.get("id"), db, messageManager);
-                        Filter f = new Filter(email);
+                        Filter f = new Filter(email, db);
                         try {
                             db.modify(email, "lastOnline", Instant.now().toString());
                         } catch (InvalidUserException | InvalidKeyException e) {
@@ -231,7 +231,6 @@ public class MainInterface {
                                     try {
                                         user.addStores(storeName);
                                     } catch (InvalidUserException e) {
-                                        e.printStackTrace();
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
@@ -239,7 +238,7 @@ public class MainInterface {
                                 }
                             } else if (userAction == 11) {
                                 //view statistics
-                                Dashboard dashboard = new Dashboard(email, "");
+                                Dashboard dashboard = new Dashboard(email, "", db);
                                 dashboard.readDatabase();
                                 dashboard.printMyStatistic();
                                 dashboard.presentDashboard(scan);
@@ -253,6 +252,7 @@ public class MainInterface {
                                     if (db.verify(email, scan.nextLine())) {
                                         try {
                                             db.remove(email);
+                                            messageManager.removeHistory(email);
                                         } catch (InvalidUserException e) {
                                             System.out.println(e.getMessage());
                                             continue;
@@ -281,10 +281,11 @@ public class MainInterface {
             } else if (resp == 2) { //Creating Acct
                 String email;
                 do {
-                    System.out.println("Please enter your email: ");
+                    System.out.println("Please enter your email:");
                     email = scan.nextLine();
                     if (!db.validate(email, "email") || db.get("email", email) != null) {
                         System.out.println("Please enter a valid email");
+                        email = null;
                     }
                 } while (!db.validate(email, "email"));
                 String password;

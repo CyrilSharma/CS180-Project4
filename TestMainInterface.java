@@ -7,6 +7,11 @@ import java.util.HashMap;
 
 public class TestMainInterface {
     // Useful constants.
+    private static final String dbPath = "testMainInterface/databases/db.txt";
+    private static final String histPath = "testMainInterface/history";
+    private static final String inputPath = "testMainInterface/inputs";
+    private static final String outputPath = "testMainInterface/outputs.txt";
+    private static ArrayList<String> messageIDs = new ArrayList<String>();
     public static void main(String[] args) throws IOException {
         File dir = new File("testMainInterface/inputs");
         File[] files = dir.listFiles();
@@ -23,28 +28,11 @@ public class TestMainInterface {
                 commandArgs = new String[] {"/bin/bash", "-c", String.format("java MainInterface < testMainInterface/inputs/%s > testMainInterface/outputs/%s", name, name), "with", "args"};
             }
             Process proc = new ProcessBuilder(commandArgs).start();
-
-            // wait for process to finish.
-            try {
-                proc.waitFor();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-
-            File input = new File(String.format("testMainInterface/outputs/%s", name));
-            File expected = new File(String.format("testMainInterface/expected/%s", name));
-            boolean success = Files.mismatch(input.toPath(), expected.toPath()) == -1;
+            Path inputPath = new File(String.format("testMainInterface/outputs/%s", name)).toPath();
+            Path expectedPath = new File(String.format("testMainInterface/expected/%s", name)).toPath();
+            boolean success = Files.mismatch(inputPath, expectedPath) == -1;
             System.out.printf("Test %s %s\n", name.substring(0, name.length() - 4),
                 success ? "passed." : "failed.");
-
-            // Cleanup
-            File db = new File("testMainInterface/databases/db.txt");
-            db.delete();
-            File history = new File("testMainInterface/history");
-            for (File f: history.listFiles()) {
-                f.delete();
-            }
         }
     }
 }
