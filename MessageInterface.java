@@ -215,12 +215,17 @@ public class MessageInterface {
      * @param scanner, id, db, mm
      */
     public static void exportConversations(Scanner scanner, String id, Database db, MessageManager mm) {
-        if (listConversations(id, db, mm).isEmpty()) {
+        ArrayList<String> ids = listConversations(id, db, mm);
+        if (ids.isEmpty()) {
             return;
         }
         System.out.println("For which users would you like to export conversations (EMAIL, EMAIL):");
         String[] input = scanner.nextLine().split(", ");
         for (int i = 0; i < input.length; i++) {
+            try {
+                input[i] = ids.get(Integer.parseInt(input[i]) - 1);
+            } catch (Exception e) {
+            }
             input[i] = db.get("email", input[i]).get("id");
             if (input[i] == null) {
                 System.out.println("It looks like one of those emails is invalid");
@@ -229,6 +234,7 @@ public class MessageInterface {
         }
         try {
             mm.messagesToCSV(id, input);
+            System.out.println("CSV generated");
         } catch (IOException e) {
             System.out.println("Unable to export those conversations to CSV");
         }
