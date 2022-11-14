@@ -51,7 +51,7 @@ public class Dashboard {
         }
         id = map.get("id");
         textDatabase = new File("history/"+ id + "-messageHistory.txt");
-        System.out.println("Successfully loaded!");
+
     }
 
     /**
@@ -296,6 +296,10 @@ public class Dashboard {
         FileReader fr;
         BufferedReader bfr;
         try {
+            if (!textDatabase.exists()) {
+                System.out.println("No data here yet!");
+                return;
+            }
             fr = new FileReader(textDatabase);
             bfr = new BufferedReader(fr);
             while(true) {
@@ -348,6 +352,9 @@ public class Dashboard {
      * dashboard menu, user interface to use dashboard
      */
     public void presentDashboard(Scanner sc) {
+        if (!textDatabase.exists()) {
+            return;
+        }
         String MENU_MESSAGE = "what do you want to do? " +
                 "\n1. sort stores";
 
