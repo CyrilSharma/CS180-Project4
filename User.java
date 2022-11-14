@@ -84,7 +84,7 @@ public class User {
     public void addStores(String store) throws InvalidUserException {
         if (this.role.toLowerCase().equals("seller")) {
             try {
-                if (User.getEmailFromStore(store) != null) {
+                if (User.getEmailFromStore(store) != null || store.contains("-")) {
                     throw new InvalidUserException("That store name is not available");
                 }
                 File f = new File("Stores.txt");

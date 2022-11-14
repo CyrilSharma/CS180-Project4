@@ -269,7 +269,6 @@ public class MainInterface {
                                     try {
                                         user.addStores(storeName);
                                     } catch (InvalidUserException e) {
-                                        e.printStackTrace();
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
