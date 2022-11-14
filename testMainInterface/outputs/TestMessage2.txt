@@ -15,6 +15,18 @@ Would you like to...
 1. Login
 2. Create an account
 3. Exit
+Please enter your email: 
+Please enter your password:
+Please enter your role (Seller/Customer):
+Account created!
+How many stores would you like to create?
+How many stores would you like to create?
+What is the name of store 1?
+That store name is not available
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
 Please enter your email (type back to go back): 
 Please enter your password (type back to go back): 
 Login successful!
@@ -35,9 +47,6 @@ Would you like to...
 12. Open Filter
 13. Delete your account
 14. Logout
-Would you like to...
-1. Login
-2. Create an account
-3. Exit
-Thank you for shopping at the turkey store!
-Have a nice rest of your day!
+Stores:
+email@email.csd: Billy Bob's Ice Cream, Darth Vader's Respirators
+Jeremiah@gmail.com: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10

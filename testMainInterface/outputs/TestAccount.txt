@@ -8,16 +8,18 @@ Would you like to...
 2. Create an account
 3. Exit
 Please enter your email: 
+Please enter a valid email
 Please enter your password:
 Please enter your role (Seller/Customer):
-Account created!
+That email is already registered
 Would you like to...
 1. Login
 2. Create an account
 3. Exit
-Please enter your email: 
-Please enter your password: 
+Please enter your email (type back to go back): 
+Please enter your password (type back to go back): 
 Login successful!
+
 You don't have any missed messages
 Would you like to...
 1. Message a user
@@ -33,7 +35,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account
