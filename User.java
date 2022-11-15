@@ -18,7 +18,6 @@ public class User {
     private String role;
     private Database db;
     private ArrayList<String> stores;
-
     private String id; //user's personal ID
 
     /**
@@ -87,7 +86,7 @@ public class User {
                 if (User.getEmailFromStore(store) != null || store.contains("-")) {
                     throw new InvalidUserException("That store name is not available");
                 }
-                File f = new File("Stores.txt");
+                File f = new File(PathManager.storeDir + "Stores.txt");
                 f.createNewFile();
                 FileOutputStream fos = new FileOutputStream(f, true);
                 PrintWriter pw = new PrintWriter(fos);
@@ -138,7 +137,8 @@ public class User {
      * @return things as arraylist of strings with stores from the file
      */
     public static ArrayList<String> readStoresFromFile(String email) {
-        try (BufferedReader bfr = new BufferedReader(new FileReader(new File("Stores.txt")))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(
+                new File(PathManager.storeDir + "Stores.txt")))) {
             ArrayList<String> things = new ArrayList<String>();
             String line;
             while ((line = bfr.readLine()) != null) {
@@ -157,7 +157,8 @@ public class User {
      * Gets seller name from the associated store
      */
     public static String getEmailFromStore(String store) {
-        try (BufferedReader bfr = new BufferedReader(new FileReader(new File("Stores.txt")))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(
+                new File(PathManager.storeDir + "Stores.txt")))) {
             String line;
             while ((line = bfr.readLine()) != null) {
                 if (line.contains(store)) {

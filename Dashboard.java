@@ -49,8 +49,7 @@ public class Dashboard {
             System.out.println("DATABASE ERROR");
         }
         id = map.get("id");
-        textDatabase = new File("history/" + id + "-messageHistory.txt");
-
+        textDatabase = new File(PathManager.storeDir + "history/" + id + "-messageHistory.txt");
     }
 
     /**
@@ -307,7 +306,7 @@ public class Dashboard {
                     break;
                 }
                 ArrayList<String[]> conversation = new ArrayList<>();
-                String path = "history/" + line + "-messageHistory.txt";
+                String path = PathManager.storeDir + "history/" + line + "-messageHistory.txt";
                 String[] users = new String[3];
                 users[2] = "";
                 if (role == Role.Seller) {

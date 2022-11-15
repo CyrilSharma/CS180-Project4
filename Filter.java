@@ -25,7 +25,7 @@ public class Filter {
      */
     public Filter(String email, Database db) {
         map = db.get("email", email);
-        f = new File("UserFilter.txt");
+        f = new File(PathManager.storeDir + "UserFilter.txt");
         if (!f.exists()) {
             try {
                 f.createNewFile();

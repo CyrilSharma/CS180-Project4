@@ -30,9 +30,9 @@ public class Database {
      *
      * @param path of the database
      */
-    public Database(String path) {
-        databasePath = path;
-        database = readFromDatabase(path);
+    public Database() {
+        databasePath = String.format("%s/Database.txt", PathManager.storeDir);
+        database = readFromDatabase(databasePath);
         random = new Random();
     }
 

@@ -16,11 +16,8 @@ public class MainInterface {
     public static void main(String[] args) {
         // Lets you switch out defaults with command line arguments.
         // Testing purposes only.
-        String databasePath = "UserDatabase.txt";
-        String historyPath = "history";
-        if (args.length == 2) {
-            databasePath = args[0];
-            historyPath = args[1];
+        if (args.length == 1) {
+            PathManager.storeDir = args[0];
         }
 
         System.out.println("Welcome to the Turkey Store!\n" + 
@@ -29,7 +26,7 @@ public class MainInterface {
             "that you can buy our wonderful products from!\n"
         );
 
-        Database db = new Database(databasePath);
+        Database db = new Database();
         Scanner scan = new Scanner(System.in);
         boolean loop1 = true;
         boolean loop2 = false;
@@ -58,7 +55,7 @@ public class MainInterface {
                 }
             } while (resp == -1);
 
-            MessageManager messageManager = new MessageManager(db, historyPath);
+            MessageManager messageManager = new MessageManager(db);
             if (resp == 1) { //Login feature
                 boolean loggedIn = false;
                 String email = "";
@@ -102,7 +99,7 @@ public class MainInterface {
                                     "\n11. Dashboard" +
                                     "\n12. Open Filter" +
                                     "\n13. Delete your account" +
-                                    "\n14. Exit";
+                                    "\n14. Logout";
                             System.out.println(messagePrompt);
                             filter = f.getStatus();
                             int userAction = -1;

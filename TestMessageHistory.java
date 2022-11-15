@@ -11,8 +11,8 @@ import java.util.*;
  */
 public class TestMessageHistory {
     public static void main(String[] args) {
-        Database db = new Database("UserDatabase.txt");
-        MessageManager mm = new MessageManager(db, "history");
+        Database db = new Database();
+        MessageManager mm = new MessageManager(db);
         //MessageInterface.message(new Scanner(System.in), mm, db, "jkxjksksk");
         MessageInterface.viewMessageHistory(new Scanner(System.in), "qlT9G9Ui4stPQM", db, mm, false, null, true);
     }

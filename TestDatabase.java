@@ -11,10 +11,13 @@ import java.util.HashMap;
  * @version November 13, 2022
  *
  */
-public class TestDatabase {
-    private static final String FILEPATH = "testDatabase/testDatabase1.txt";
+public class TestDatabase {;
+    private static final String FILEPATH = "testDatabase/db.txt";
     private static File f = new File(FILEPATH);
     public static void main(String[] args) {
+        String FILEPATH = "testDatabase/db.txt";
+        File f = new File(FILEPATH);
+        PathManager.storeDir = "testDatabase/";
         System.out.println("Test " + (test1() ? "Passed" : "Failed"));
         System.out.println("Test " + (test2() ? "Passed" : "Failed"));
         System.out.println("Test " + (test3() ? "Passed" : "Failed"));
@@ -24,7 +27,7 @@ public class TestDatabase {
 
     public static boolean test1() {
         // Test get.
-        Database db1 = new Database(FILEPATH);
+        Database db1 = new Database();
         try {
             for (int i = 0; i < 10; i++) {
                 String username = String.format("User%d@gmail.com", i + 1);
@@ -37,7 +40,7 @@ public class TestDatabase {
             return false;
         }
 
-        Database db2 = new Database(FILEPATH);
+        Database db2 = new Database();
         for (int i = 0; i < 10; i++) {
             boolean valid = false;
             String username = String.format("User%d@gmail.com", i + 1);
@@ -54,7 +57,7 @@ public class TestDatabase {
 
     public static boolean test2() {
         // Test verify.
-        Database db = new Database(FILEPATH);
+        Database db = new Database();
         for (int i = 0; i < 10; i++) {
             String username = String.format("User%d@gmail.com", i + 1);
             String password = String.format("password%d", i + 1);
@@ -68,7 +71,7 @@ public class TestDatabase {
 
     public static boolean test3() {
         // Test modify.
-        Database db1 = new Database(FILEPATH);
+        Database db1 = new Database();
         for (int i = 6; i < 10; i++) {
             String username = String.format("User%d@gmail.com", i + 1);
             String password = String.format("password%d", i + 1);
@@ -81,7 +84,7 @@ public class TestDatabase {
         }
         db1.save();
 
-        Database db2 = new Database(FILEPATH);
+        Database db2 = new Database();
         for (int i = 6; i < 10; i++) {
             String username = String.format("User%d@gmail.com", i + 1);
             String password = String.format("password%dedited", i + 1);
@@ -95,7 +98,7 @@ public class TestDatabase {
 
     public static boolean test4() {
         // Test block.
-        Database db1 = new Database(FILEPATH);
+        Database db1 = new Database();
         for (int i = 0; i < 5; i++) {
             String username1 = String.format("User%d@gmail.com", i + 1);
             String username2 = String.format("User%d@gmail.com", i + 2);
@@ -108,7 +111,7 @@ public class TestDatabase {
         }
         db1.save();
 
-        Database db2 = new Database(FILEPATH);
+        Database db2 = new Database();
         for (int i = 0; i < 5; i++) {
             String username1 = String.format("User%d@gmail.com", i + 1);
             HashMap<String, String> user1 = db2.get("email", username1);

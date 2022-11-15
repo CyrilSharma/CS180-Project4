@@ -19,15 +19,17 @@ public class MessageManager {
     private Random random;
     private Database db;
     private String historyDir;
+    private String csvDir;
 
     /**
      * Initializes instance fields
      *
      * @param db, historyPath
      */
-    public MessageManager(Database db, String historyPath) {
+    public MessageManager(Database db) {
         this.db = db;
-        historyDir = historyPath;
+        historyDir = PathManager.storeDir + "history/";
+        csvDir = PathManager.storeDir + "csv/";
         random = new Random();
     }
 
@@ -47,7 +49,7 @@ public class MessageManager {
      * Returns the personal message history of the user
      */
     public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
-        File f = new File(historyDir + "/" + id + "-messageHistory.txt");
+        File f = new File(historyDir + id + "-messageHistory.txt");
         f.createNewFile();
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             ArrayList<HashMap<String, String>> history = new ArrayList<HashMap<String, String>>();
@@ -183,7 +185,7 @@ public class MessageManager {
                     }
                 }
             }
-            File f = new File(historyDir + "/" + id + "-messageHistory.txt");
+            File f = new File(historyDir + id + "-messageHistory.txt");
             PrintWriter pw = new PrintWriter(f);
             pw.write(formatMessages(history));
             pw.flush();
@@ -252,10 +254,10 @@ public class MessageManager {
             }
         }
         int count = 1;
-        File file = new File("csv/" + id + "-historyCSV.csv");
+        File file = new File(csvDir + id + "-historyCSV.csv");
         if (!file.createNewFile()) {
             while (!file.createNewFile()) {
-                file = new File("csv/" + id + "-historyCSV-" + count + ".csv");
+                file = new File(csvDir + id + "-historyCSV-" + count + ".csv");
                 count++;
             }
         }
@@ -266,7 +268,7 @@ public class MessageManager {
     }
 
     public void removeHistory(String email) {
-        File file = new File(historyDir + "/" + db.get("email", email).get("id") + "-messageHistory.txt");
+        File file = new File(historyDir + db.get("email", email).get("id") + "-messageHistory.txt");
         file.delete();
     }
 }

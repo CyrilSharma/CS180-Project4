@@ -10,7 +10,8 @@
  */
 public class Test {
     public static void main(String[] args) {
-        Database db = new Database("TestDatabase.txt");
+        PathManager.storeDir = "testDatabase/";
+        Database db = new Database();
         try {
             db.add("Cyril@bohemia.com", "password", Role.Customer);
         } catch (InvalidUserException e) {
