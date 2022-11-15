@@ -99,7 +99,7 @@ public class MainInterface {
                                     "\n11. Dashboard" +
                                     "\n12. Open Filter" +
                                     "\n13. Delete your account" +
-                                    "\n14. Logout";
+                                    "\n14. Exit";
                             System.out.println(messagePrompt);
                             filter = f.getStatus();
                             int userAction = -1;

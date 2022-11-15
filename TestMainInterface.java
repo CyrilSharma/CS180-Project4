@@ -25,12 +25,12 @@ public class TestMainInterface {
             String[] commandArgs = null;
             if (System.getProperty("os.name").equals("Windows 10")) {
                 commandArgs = new String[] {"cmd.exe", "/c", String.format("java MainInterface" 
-                + " testMainInterface/databases/db.txt testMainInterface/history < testMainInterface/inputs/%s" 
-                + " > testMainInterface/outputs/%s", "with", "args")};
+                + " testMainInterface/ < testMainInterface/inputs/%s" 
+                + " > testMainInterface/outputs/%s", name, name), "with", "args"};
             } else {
-                commandArgs = new String[] {"/bin/bash", "-c", 
-                    String.format("java MainInterface testMainInterface/databases/db.txt testMainInterface/history " 
-                    + "< testMainInterface/inputs/%s > testMainInterface/outputs/%s", name, name), "with", "args"};
+                commandArgs = new String[] {"/bin/bash", "-c", String.format("java MainInterface" 
+                + " testMainInterface/ < testMainInterface/inputs/%s" 
+                + " > testMainInterface/outputs/%s", name, name), "with", "args"};
             }
             Process proc = new ProcessBuilder(commandArgs).start();
             try {
@@ -38,18 +38,21 @@ public class TestMainInterface {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            // Just inspect the outputs: timesteps make exact comparisons impossible.
-            /* Path inputPath = new File(String.format("testMainInterface/outputs/%s", name)).toPath();
-            Path expectedPath = new File(String.format("testMainInterface/expected/%s", name)).toPath();
-            // Timesteps unfortunately make this impossible.
-            boolean success = Files.mismatch(inputPath, expectedPath) == -1;
-            System.out.printf("Test %s %s\n", name.substring(0, name.length() - 4),
-               success ? "passed." : "failed."); */
+
+            // Clean Up Environment.
+            File userFilter = new File("testMainInterface/UserFilter.txt");
+            File stores = new File("testMainInterface/Stores.txt");
             File history = new File("testMainInterface/history");
-            File db = new File("testMainInterface/databases/db.txt");
+            File csv = new File("testMainInterface/csv");
+            File db = new File("testMainInterface/Database.txt");
             for (File f: history.listFiles()) {
                 f.delete();
             }
+            for (File f: csv.listFiles()) {
+                f.delete();
+            }
+            userFilter.delete();
+            stores.delete();
             db.delete();
         }
     }

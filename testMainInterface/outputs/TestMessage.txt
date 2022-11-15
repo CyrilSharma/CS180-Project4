@@ -21,7 +21,8 @@ Please enter your role (Seller/Customer):
 Account created!
 How many stores would you like to create?
 What is the name of store 1?
-That store name is not available
+testMainInterface/Stores.txt (No such file or directory)
+Deli has been created!
 Would you like to...
 1. Login
 2. Create an account
@@ -45,12 +46,12 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Customers:
 userA1@gmail.com
 Who do you want to message:
 List of stores:
-Deli, Terrific Turkey Time
+Deli
 Which store would you like to send a message from:
 How would you like to send a message?
 1. Console
@@ -71,7 +72,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account
@@ -81,7 +82,7 @@ Please enter your password (type back to go back):
 Login successful!
 
 Missed Messages:
-userB1@gmail.com (Deli)->userA1@gmail.com at 23:32:09.538481: RELINQUISH YOUR TURKEY IMMEDIATELY.
+userB1@gmail.com (Deli)->userA1@gmail.com at 15:09:04.866518: RELINQUISH YOUR TURKEY IMMEDIATELY.
 
 Would you like to...
 1. Message a user
@@ -97,7 +98,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account

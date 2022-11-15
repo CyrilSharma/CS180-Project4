@@ -21,7 +21,8 @@ Please enter your role (Seller/Customer):
 Account created!
 How many stores would you like to create?
 What is the name of store 1?
-That store name is not available
+testMainInterface/Stores.txt (No such file or directory)
+Deli has been created!
 Would you like to...
 1. Login
 2. Create an account
@@ -45,10 +46,10 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Stores:
-userB1@gmail.com: Deli, Terrific Turkey Time
-Which store you like to send a message to?
+userB1@gmail.com: Deli
+Which store would you like to send a message to?
 How would you like to send a message?
 1. Console
 2. Text file
@@ -72,7 +73,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account
@@ -82,7 +83,7 @@ Please enter your password (type back to go back):
 Login successful!
 
 Missed Messages:
-userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:32:09.279519: RELINQUISH YOUR TURKEY IMMEDIATELY.
+userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 15:09:04.587142: RELINQUISH YOUR TURKEY IMMEDIATELY.
 
 Would you like to...
 1. Message a user
@@ -98,7 +99,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account
@@ -122,12 +123,12 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Your conversations:
 1. userB1@gmail.com
 Enter the number or email you wish to see message history for
 Message History (oldest first):
-1. userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:32:09.279088: RELINQUISH YOUR TURKEY IMMEDIATELY.
+1. userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 15:09:04.586716: RELINQUISH YOUR TURKEY IMMEDIATELY.
 Which message number would you like to edit?
 Enter a number please
 Which message number would you like to edit?
@@ -147,7 +148,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account
@@ -171,12 +172,12 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Your conversations:
 1. userA1@gmail.com
 Enter the number or email you wish to see message history for
 Message History (oldest first):
-1. userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 23:32:09.279519: Would you please relinquish thoust turkey?
+1. userA1@gmail.com->userB1@gmail.com (userB1@gmail.com) at 15:09:04.587142: Would you please relinquish thoust turkey?
 Would you like to...
 1. Message a user
 2. View messages
@@ -191,7 +192,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account

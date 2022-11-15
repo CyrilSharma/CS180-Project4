@@ -13,7 +13,8 @@ Please enter your role (Seller/Customer):
 Account created!
 How many stores would you like to create?
 What is the name of store 1?
-That store name is not available
+testMainInterface/Stores.txt (No such file or directory)
+Deli has been created!
 Would you like to...
 1. Login
 2. Create an account
@@ -37,9 +38,9 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 What is the name of the store you would like to add?
-That store name is not available
+Terrific Turkey Time has been created!
 Would you like to...
 1. Message a user
 2. View messages
@@ -54,7 +55,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account

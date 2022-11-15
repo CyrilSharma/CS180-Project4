@@ -21,7 +21,8 @@ Please enter your role (Seller/Customer):
 Account created!
 How many stores would you like to create?
 What is the name of store 1?
-That store name is not available
+testMainInterface/Stores.txt (No such file or directory)
+Deli has been created!
 Would you like to...
 1. Login
 2. Create an account
@@ -45,7 +46,9 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
+Stores:
+userB1@gmail.com: Deli
 Who would you like to block?
 Would you like to block them or become invisble to them (block/invisible)?
 userB1@gmail.com has been blocked!
@@ -63,10 +66,10 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Stores:
-userB1@gmail.com (invisible): Deli, Terrific Turkey Time
-Which store you like to send a message to?
+userB1@gmail.com (invisible): Deli
+Which store would you like to send a message to?
 You do not have permission to message that user
 Would you like to...
 1. Message a user
@@ -82,7 +85,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Input invalid, try again.
 Would you like to...
 1. Message a user
@@ -98,10 +101,10 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Stores:
-userB1@gmail.com (invisible): Deli, Terrific Turkey Time
-Which store you like to send a message to?
+userB1@gmail.com (invisible): Deli
+Which store would you like to send a message to?
 That is not a valid store
 Would you like to...
 1. Message a user
@@ -117,7 +120,7 @@ Would you like to...
 11. Dashboard
 12. Open Filter
 13. Delete your account
-14. Exit
+14. Logout
 Would you like to...
 1. Login
 2. Create an account
