@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 
 public class CreateAccountGUI implements Runnable {
     private JFrame board;
@@ -40,6 +37,9 @@ public class CreateAccountGUI implements Runnable {
         createButton.setSize(150,30);
         createButton.setBounds(board.getWidth()/2 - createButton.getWidth()/2, 205,
                 createButton.getWidth(), createButton.getHeight());
+        backButton.setSize(90, 30);
+        backButton.setBounds(20, 380,
+                backButton.getWidth(), backButton.getHeight());
     }
 
     public void createAndAdd(JPanel panel) {
@@ -47,18 +47,20 @@ public class CreateAccountGUI implements Runnable {
         emailField = new JTextField(10);
         passwordField = new JPasswordField(10);
         confirmPasswordField = new JPasswordField(10);
+        backButton = new JButton("Back");
         panel.setLayout(null);
         panel.add(emailField);
         panel.add(passwordField);
         panel.add(createButton);
         panel.add(confirmPasswordField);
+        panel.add(backButton);
     }
 
     public void run() {
         JPanel panel = new JPanel();
         container = board.getContentPane();
         container.setLayout(new BorderLayout());
-        board.setSize(350,350);
+        board.setSize(450,450);
         board.setLocationRelativeTo(null);
         board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         board.setVisible(true);
@@ -141,6 +143,14 @@ public class CreateAccountGUI implements Runnable {
                     f = String.format(f, email, password);
                     JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
                 }
+            }
+        });
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LogInGUI gui = new LogInGUI();
+                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                gui.show();
             }
         });
         container.add(panel, BorderLayout.CENTER);

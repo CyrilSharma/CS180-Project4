@@ -119,6 +119,7 @@ public class LogInGUI implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 CreateAccountGUI gui = new CreateAccountGUI();
                 gui.show();
+                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
         });
         container.add(panel, BorderLayout.CENTER);
