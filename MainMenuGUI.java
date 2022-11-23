@@ -6,6 +6,8 @@ public class MainMenuGUI implements Runnable {
     JFrame board;
     Container container;
 
+    JPanel bottomPanel;
+
     //14 user options
     JButton messageUser;
     JButton viewMessage;
@@ -42,6 +44,10 @@ public class MainMenuGUI implements Runnable {
         board.setLocationRelativeTo(null);
         board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         board.setVisible(true);
+
+        bottomPanel = new JPanel();
+        //figure out how to switch the bottom panel view when button is clicked
+        JScrollPane scroll = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         messageUser = new JButton("Message User");
         viewMessage = new JButton("View a Message");
         editMessage = new JButton("Edit Message");
@@ -70,12 +76,9 @@ public class MainMenuGUI implements Runnable {
         panel.add(openFilter);
         panel.add(deleteAccount);
         panel.add(exit);
-
-        //set size of the buttons after seeing how they look like
-        //set the bounds of the buttons
         //add method actions
 
 
-        container.add(panel, BorderLayout.CENTER);
+        container.add(scroll, BorderLayout.NORTH); //setting it to the top part of the GUI
     }
 }

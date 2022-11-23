@@ -30,5 +30,8 @@ public class TestGUI {
 
         //PeopleView gui = new PeopleView(users, Role.Seller);
         //gui.show();
+
+        MainMenuGUI mainMenu = new MainMenuGUI();
+        mainMenu.show();
     }
 }
