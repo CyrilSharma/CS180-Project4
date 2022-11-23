@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class TestGUI {
     public static void main(String[] args) {
-        //LogInGUI gui = new LogInGUI();
+        LogInGUI gui = new LogInGUI();
         ArrayList<String> users = new ArrayList<>();
         users.add("helloworld@gmail.com");
         users.add("hmmmm@gmail.com");
@@ -28,7 +28,7 @@ public class TestGUI {
         users.add("cs18111@gmail.com");
         users.add("cs1811111@gmail.com");
 
-        PeopleView gui = new PeopleView(users, Role.Seller);
-        gui.show();
+        //PeopleView gui = new PeopleView(users, Role.Seller);
+        //gui.show();
     }
 }
