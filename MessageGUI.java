@@ -13,7 +13,10 @@ public class MessageGUI implements Runnable {
     private JTextField messageText;
     private JScrollBar scroll;
     private JButton exit;
-    private JButton enter;
+    private JButton sendMessage;
+    private JButton deleteMessage;
+    private JButton editMessage;
+    private JButton button;
     private JLabel title;
     private String messageChoice;
     private String email;
@@ -21,7 +24,7 @@ public class MessageGUI implements Runnable {
     private String message;
     private String id;
     private JTextField messages;
-    private JLabel send;
+    private JLabel label;
 
     public MessageGUI(String messageChoice, String email) {
         this.messageBoard = new JFrame("Turkey Shop");
@@ -37,7 +40,25 @@ public class MessageGUI implements Runnable {
         SwingUtilities.invokeLater(this);
     }
 
-
+    public void addActionListeners() {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MessageInterfaceClient messageClient = new MessageInterfaceClient();
+                if (button == deleteMessage) {
+                    message = messageText.getText();
+                    messageClient.deleteMessage(id, messageID);
+                } else if (button == editMessage) {
+                    message = messageText.getText();
+                    messageClient.editMessage(id, messageID);
+                    //should be some parameter to take new message text?
+                } else if (button == sendMessage) {
+                    message = messageText.getText();
+                    messageClient.message(message, id);
+                }
+            }
+        });
+        };
     @Override
     public void run() {
         this.container = messageBoard.getContentPane();
@@ -47,23 +68,33 @@ public class MessageGUI implements Runnable {
         title = new JLabel();
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
         title.setFont(f);
-        send = new JLabel("Send: ");
+        JPanel panel = new JPanel();
+        JPanel panelExit = new JPanel();
+        //JPanel panel3 = new JPanel();
         if (messageChoice.equals("edit")) {
             title.setText("Edit Message");
             messageID = JOptionPane.showInputDialog(null, "Please enter the message # that you would like to edit", "Choice?", JOptionPane.QUESTION_MESSAGE);
             //TODO: check edit function and add String message as parameter?
-            client.editMessage(id, messageID);
+            editMessage = new JButton();
+            label = new JLabel("Edit: ");
+            button = editMessage;
+            //panel.add(editMessage);
+            //client.editMessage(id, messageID);
         } else if (messageChoice.equals("view")) {
             title.setText("View/Send Message");
             client.message(message, id);
+            sendMessage = new JButton();
+            button = sendMessage;
+            //panel.add(sendMessage);
         } else if (messageChoice.equals("delete")) {
             title.setText("Delete Message");
+            deleteMessage = new JButton();
             messageID = JOptionPane.showInputDialog(null, "Please enter the message # that you would like to delete", "Choice?", JOptionPane.QUESTION_MESSAGE);
-            client.deleteMessage(id, messageID);
+            button = deleteMessage;
+            //panel.add(deleteMessage);
+            // add action listener
+            //client.deleteMessage(id, messageID);
         }
-        JPanel panel = new JPanel();
-        JPanel panelExit = new JPanel();
-        JPanel panel3 = new JPanel();
         container.setLayout(new BorderLayout());
         messageBoard.setSize(600,400);
         messageBoard.setLocationRelativeTo(null);
@@ -71,9 +102,9 @@ public class MessageGUI implements Runnable {
         messageBoard.setVisible(true);
         exit = new JButton("Exit");
         messageText = new JTextField();
-        panel.add(send);
+        panel.add(label);
         panel.add(messageText);
-        panel.add(enter);
+        panel.add(button);
         panelExit.add(exit);
 
 
@@ -82,5 +113,4 @@ public class MessageGUI implements Runnable {
         container.add(panel, BorderLayout.SOUTH);
         container.add(panelExit, BorderLayout.NORTH);
     }
-
 }
