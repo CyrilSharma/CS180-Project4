@@ -30,6 +30,7 @@ public class MessageGUI implements Runnable {
 
     public MessageGUI(String messageChoice, String email) {
         this.messageBoard = new JFrame("Turkey Shop");
+        //TODO: Figure out how to take user ID
         Database db = new Database();
         HashMap<String, String> acct = db.get("email", email);
         String id = acct.get("id");
@@ -43,6 +44,7 @@ public class MessageGUI implements Runnable {
     }
 
     public void addActionListeners() {
+        //button that changes based on instance object
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,6 +67,7 @@ public class MessageGUI implements Runnable {
     public void run() {
         this.container = messageBoard.getContentPane();
         MessageInterfaceClient client = new MessageInterfaceClient();
+        //TODO: add scroll bar for conversation
         messages = new JTextField();
         messages.setText(client.getMessageHistory(id).toString());
         title = new JLabel();
@@ -76,6 +79,7 @@ public class MessageGUI implements Runnable {
         scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setPreferredSize(new Dimension(370,400));
         //JPanel panel3 = new JPanel();
+        //Based on instance perform send/view, edit, or delete task
         if (messageChoice.equals("edit")) {
             title.setText("Edit Message");
             messageID = JOptionPane.showInputDialog(null, "Please enter the message # that you would like to edit", "Choice?", JOptionPane.QUESTION_MESSAGE);
