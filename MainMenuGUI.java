@@ -31,7 +31,7 @@ public class MainMenuGUI implements Runnable {
         SwingUtilities.invokeLater(this);
     }
 
-    public void setFrame() {
+    public void addActionListeners() {
 
     }
 
@@ -77,7 +77,7 @@ public class MainMenuGUI implements Runnable {
         panel.add(deleteAccount);
         panel.add(exit);
         //add method actions
-
+        addActionListeners();
 
         container.add(scroll, BorderLayout.NORTH); //setting it to the top part of the GUI
     }
