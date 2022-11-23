@@ -1,37 +1,51 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class MainMenuGUI implements Runnable {
-    JFrame board;
-    Container container;
+    private JFrame board;
+    private Container container;
 
-    JPanel bottomPanel;
+    private JPanel upperPanel;
+    private JPanel bottomPanel;
+    private Role role;
+    private ArrayList<String> users;
+    private JLabel title;
 
-    //14 user options
-    JButton messageUser;
-    JButton viewMessage;
-    JButton editMessage;
-    JButton deleteMessage;
-    JButton exportConvo;
-    JButton blockUser;
-    JButton unblockUser;
-    JButton viewStores;
-    JButton viewCustomers;
-    JButton addStores;
-    JButton openDashboard;
-    JButton openFilter;
-    JButton deleteAccount;
-    JButton exit;
+    //2 User Options
+    private JButton peopleViewPressed;
+    private JButton accountManagerPressed;
 
-    public MainMenuGUI() {
+
+    public MainMenuGUI(ArrayList<String> users, Role role) {
         this.board = new JFrame("Turkey Shop");
+        this.role = role;
+        this.users = users;
     }
     public void show() {
         SwingUtilities.invokeLater(this);
     }
 
     public void addActionListeners() {
+        peopleViewPressed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PeopleView gui = new PeopleView(users, role);
+                gui.show();
+                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+            }
+        });
+        //TODO
+        accountManagerPressed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO: Must be changed to add the account manager GUI --> Not created YET
+                PeopleView gui = new PeopleView(users, role);
+                gui.show();
+                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+            }
+        });
 
     }
 
@@ -44,41 +58,25 @@ public class MainMenuGUI implements Runnable {
         board.setLocationRelativeTo(null);
         board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         board.setVisible(true);
-
+        title = new JLabel();
+        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
+        title.setFont(f);
+        if (role == Role.Customer) {
+            title.setText("Customer Menu");
+        } else if (role == Role.Seller) {
+            title.setText("Seller Menu");
+        }
+        upperPanel = new JPanel();
         bottomPanel = new JPanel();
-        //figure out how to switch the bottom panel view when button is clicked
-        JScrollPane scroll = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        messageUser = new JButton("Message User");
-        viewMessage = new JButton("View a Message");
-        editMessage = new JButton("Edit Message");
-        deleteMessage = new JButton("Delete Message");
-        exportConvo = new JButton("Export Conversations");
-        blockUser = new JButton("Block User");
-        unblockUser = new JButton("Unblock User");
-        viewStores = new JButton("View Stores");
-        viewCustomers = new JButton("View Customers");
-        addStores = new JButton("Add Store");
-        openDashboard = new JButton("Open Dashboard");
-        openFilter = new JButton("Open Filter");
-        deleteAccount = new JButton("Delete Account");
-        exit = new JButton("Exit");
-        panel.add(messageUser);
-        panel.add(viewMessage);
-        panel.add(editMessage);
-        panel.add(deleteMessage);
-        panel.add(exportConvo);
-        panel.add(blockUser);
-        panel.add(unblockUser);
-        panel.add(viewStores);
-        panel.add(viewCustomers);
-        panel.add(addStores);
-        panel.add(openDashboard);
-        panel.add(openFilter);
-        panel.add(deleteAccount);
-        panel.add(exit);
-        //add method actions
-        addActionListeners();
+        upperPanel.add(title);
+        panel.add(upperPanel);
 
-        container.add(scroll, BorderLayout.NORTH); //setting it to the top part of the GUI
+        peopleViewPressed = new JButton("Access Conversations");
+        accountManagerPressed = new JButton("Manage Account");
+        bottomPanel.add(peopleViewPressed);
+        bottomPanel.add(accountManagerPressed);
+        panel.add(bottomPanel);
+        addActionListeners();
+        container.add(panel, BorderLayout.CENTER);
     }
 }
