@@ -12,6 +12,8 @@ public class MessageGUI implements Runnable {
     private Container container;
     private JTextField messageText;
     private JScrollBar scroll;
+    private JScrollPane convPane;
+    private JScrollPane scrollPane;
     private JButton exit;
     private JButton sendMessage;
     private JButton deleteMessage;
@@ -70,6 +72,9 @@ public class MessageGUI implements Runnable {
         title.setFont(f);
         JPanel panel = new JPanel();
         JPanel panelExit = new JPanel();
+        convPane = new JScrollPane();
+        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setPreferredSize(new Dimension(370,400));
         //JPanel panel3 = new JPanel();
         if (messageChoice.equals("edit")) {
             title.setText("Edit Message");
@@ -103,6 +108,7 @@ public class MessageGUI implements Runnable {
         exit = new JButton("Exit");
         messageText = new JTextField();
         panel.add(label);
+        panel.add(messages);
         panel.add(messageText);
         panel.add(button);
         panelExit.add(exit);
