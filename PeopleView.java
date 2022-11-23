@@ -49,10 +49,10 @@ public class PeopleView implements Runnable {
         //people.setBackground(Color.gray);
         rightPanel = new JPanel();
         title = new JLabel();
-        blockButton = new JButton("block");
-        viewButton = new JButton("view");
-        editButton = new JButton("Edit");
-        deleteButton = new JButton("delete");
+        blockButton = new JButton("Block User");
+        viewButton = new JButton("View Message");
+        editButton = new JButton("Edit Message");
+        deleteButton = new JButton("Delete Message");
         backButton = new JButton("Log in");
         upperPanel = new JPanel();
         if (role == Role.Customer) {
@@ -76,7 +76,7 @@ public class PeopleView implements Runnable {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
         upperPanel.setLayout(null);
-        convPane.setSize(400,400);
+        convPane.setSize(500,400);
         //convPane.setBackground(Color.GRAY);
         scrollPane.setBounds(30,70,370,250);
 
@@ -87,12 +87,12 @@ public class PeopleView implements Runnable {
         title.setBounds(10,10, 200, 50);
         Font f = new Font("Helvetica", Font.BOLD, 25);
         title.setFont(f);
-        rightPanel.setBounds(400,0, 100, 400);
-        blockButton.setBounds(10, 20, 80,30);
-        viewButton.setBounds(10, 60, 80,30);
-        editButton.setBounds(10, 100, 80,30);
-        deleteButton.setBounds(10, 140, 80,30);
-        backButton.setBounds(10, 320, 80, 30);
+        rightPanel.setBounds(400,0, 200, 400);
+        blockButton.setBounds(20, 20, 160,30);
+        viewButton.setBounds(20, 60, 160,30);
+        editButton.setBounds(20, 100, 160,30);
+        deleteButton.setBounds(20, 140, 160,30);
+        backButton.setBounds(100, 320, 80, 30);
     }
 
     public void addActionListeners() {
@@ -139,7 +139,7 @@ public class PeopleView implements Runnable {
         });
     }
     public void run() {
-        board.setSize(500,400);
+        board.setSize(600,400);
         board.setLocationRelativeTo(null);
         board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         board.setVisible(true);

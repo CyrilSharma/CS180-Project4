@@ -51,7 +51,7 @@ public class TestMessageManager {
     public static boolean test1() {
         // tests messageUser.
         try {
-            MessageManager mm = new MessageManager(new Database(DB_PATH), HIST_PATH);
+            MessageManager mm = new MessageManager(new Database());
             ArrayList<HashMap<String, String>> history = mm.getPersonalHistory(IDS[0]);
             ArrayList<String> messages = new ArrayList<String>();
             for (HashMap<String, String> hist : history) {
