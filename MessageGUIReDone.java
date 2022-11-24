@@ -104,9 +104,11 @@ public class MessageGUIReDone implements Runnable {
         editMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = (String) messages.getSelectedValue();
-                String confirm = "Do you want to edit " + message + " ?";
-                int index = conversationHistory.indexOf(message);
+                //Having issue where sometimes index is -1 with below command (Resolved)
+                String originalMessage = "";
+                originalMessage = (String) messages.getSelectedValue();
+                String confirm = "Do you want to edit " + originalMessage + " ?";
+                int index = conversationHistory.indexOf(originalMessage);
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
@@ -126,9 +128,12 @@ public class MessageGUIReDone implements Runnable {
         deleteMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = (String) messages.getSelectedValue();
-                int index = conversationHistory.indexOf(message);
-                String confirm = "Do you want to delete " + message + " ?";
+                //Having issue where sometimes index is -1 with below command (specifically if an edit or delete is
+                // cancelled and then a delete/edit is attemped after (Resolved)
+                String deletedMessage = "";
+                deletedMessage = (String) messages.getSelectedValue();
+                int index = conversationHistory.indexOf(deletedMessage);
+                String confirm = "Do you want to delete " + deletedMessage + " ?";
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
                     //Test below
