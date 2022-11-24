@@ -121,7 +121,7 @@ public class MainInterface {
                                 } else if (acct.get("role").equals(Role.Seller.toString())) {
                                     user.viewCustomers();
                                 }
-                                MessageInterface.message(scan, messageManager, db, acct.get("id"));
+                                //MessageInterface.message(scan, messageManager, db, acct.get("id"));
                             } else if (userAction == 2) {
                                 //view message history
                                 MessageInterface.viewMessageHistory(scan, acct.get("id"), db, messageManager, 

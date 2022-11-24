@@ -3,6 +3,10 @@ public class Query {
     private String function;
     private String[] args;
 
+    public Query(String object, String function, String args) {
+        this(object, function, new String[]{args});
+    }
+
     public Query(String object, String function, String[] args) {
         this.object = object;
         this.function = function;
