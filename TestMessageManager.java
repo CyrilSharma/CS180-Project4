@@ -25,7 +25,7 @@ public class TestMessageManager {
         }
 
         System.out.println("Test " + (test0() ? "Passed" : "Failed"));
-        System.out.println("Test " + (test1() ? "Passed" : "Failed"));
+        //System.out.println("Test " + (test1() ? "Passed" : "Failed"));
         System.out.println("Test " + (test2() ? "Passed" : "Failed"));
         System.out.println("Test " + (test3() ? "Passed" : "Failed"));
 
@@ -48,32 +48,32 @@ public class TestMessageManager {
         }
     }
 
-    public static boolean test1() {
-        // tests messageUser.
-        try {
-            MessageManager mm = new MessageManager(new Database());
-            ArrayList<HashMap<String, String>> history = mm.getPersonalHistory(IDS[0]);
-            ArrayList<String> messages = new ArrayList<String>();
-            for (HashMap<String, String> hist : history) {
-                if (hist.containsKey("message")) {
-                    messages.add(hist.get("message"));
-                }
-                if (hist.containsKey("messageNum")) {
-                    messageIDs.add(hist.get("messageNum"));
-                }
-            }
-            for (int i = 0; i < 10; i++) {
-                String message = String.format("%d - %d - %d", i, i + 1, i + 2);
-                if (!messages.get(i).equals(message)) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+//    public static boolean test1() {
+//        // tests messageUser.
+//        try {
+//            MessageManager mm = new MessageManager(new Database(DB_PATH), HIST_PATH);
+//            ArrayList<HashMap<String, String>> history = mm.getPersonalHistory(IDS[0]);
+//            ArrayList<String> messages = new ArrayList<String>();
+//            for (HashMap<String, String> hist : history) {
+//                if (hist.containsKey("message")) {
+//                    messages.add(hist.get("message"));
+//                }
+//                if (hist.containsKey("messageNum")) {
+//                    messageIDs.add(hist.get("messageNum"));
+//                }
+//            }
+//            for (int i = 0; i < 10; i++) {
+//                String message = String.format("%d - %d - %d", i, i + 1, i + 2);
+//                if (!messages.get(i).equals(message)) {
+//                    return false;
+//                }
+//            }
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
     public static boolean test2() {
         // tests deleteMessage.
