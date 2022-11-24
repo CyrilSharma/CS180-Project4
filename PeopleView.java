@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,7 +18,6 @@ public class PeopleView implements Runnable {
     private JList people;
     private JList statusList;
     private JTextField searchBar;
-    private JButton searchButton;
     private JButton blockButton;
     private JButton viewButton;
     private JButton editButton;
@@ -26,6 +27,7 @@ public class PeopleView implements Runnable {
     private ArrayList<String> users;
     private Role role;
     private ArrayList<String> status;
+    private int leng;
 
     //pass a list of emails of users
     public PeopleView(ArrayList<String> emails, Role role) {
@@ -34,6 +36,7 @@ public class PeopleView implements Runnable {
         this.role = role;
         String[] ex = {"Online", "Offline", "Online"};
         status = new ArrayList<>(Arrays.asList(ex));
+        leng = 0;
     }
     public void show() {
         SwingUtilities.invokeLater(this);
@@ -58,7 +61,6 @@ public class PeopleView implements Runnable {
         upperPanel = new JPanel();
         searchBar = new JTextField("Search...");
         placeholder = new JButton();
-        searchButton = new JButton("Search");
         if (role == Role.Customer) {
             title.setText("Sellers");
         } else {
@@ -67,7 +69,6 @@ public class PeopleView implements Runnable {
         //rightPanel.setBackground(Color.RED);
         upperPanel.add(title);
         upperPanel.add(searchBar);
-        upperPanel.add(searchButton);
         upperPanel.add(placeholder);
         rightPanel.add(blockButton);
         rightPanel.add(viewButton);
@@ -79,6 +80,7 @@ public class PeopleView implements Runnable {
         convPane.add(scrollPane);
         //scrollPane.add(people);
     }
+
     public void setFrame() {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
@@ -86,7 +88,6 @@ public class PeopleView implements Runnable {
         convPane.setSize(500,400);
         //convPane.setBackground(Color.GRAY);
         scrollPane.setBounds(30,70,370,250);
-
         //scrollPane.setBackground(Color.green);
         upperPanel.setSize(400,70);
         people.setBounds(0,0,330,5000);
@@ -101,9 +102,8 @@ public class PeopleView implements Runnable {
         //deleteButton.setBounds(20, 140, 160,30);
         placeholder.setBounds(-1,-1,1,1);
         backButton.setBounds(100, 320, 80, 30);
-        searchBar.setBounds(150,25,180,20);
-
-        searchButton.setBounds(335,20,70,30);
+        searchBar.setBounds(200,25,200,20);
+        searchBar.setForeground(Color.GRAY);
     }
 
     public void addActionListeners() {
@@ -158,11 +158,17 @@ public class PeopleView implements Runnable {
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
         });
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        searchBar.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
                 searchUser();
             }
+            public void removeUpdate(DocumentEvent e) {
+                searchUser();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                searchUser();
+            }
+
         });
     }
     public void run() {
