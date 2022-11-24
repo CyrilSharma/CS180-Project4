@@ -4,13 +4,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class LogInGUI implements Runnable {
-    JFrame board;
-    Container container;
-    JButton logInButton;
-    JButton createAccountButton;
-    JTextField emailField;
-    JPasswordField passwordField;
-    ArrayList<String> users;
+    private JFrame board;
+    private Container container;
+    private JButton logInButton;
+    private JButton createAccountButton;
+    private JTextField emailField;
+    private JButton placeholder;
+    private JPasswordField passwordField;
+    private ArrayList<String> users;
 
     public LogInGUI() {
         board = new JFrame("Turkey Shop");
@@ -51,6 +52,9 @@ public class LogInGUI implements Runnable {
         emailField = new JTextField(10);
         passwordField = new JPasswordField(10);
         createAccountButton = new JButton("Create Account");
+        placeholder = new JButton();
+        panel.add(placeholder);
+        placeholder.setBounds(-1,-1,1,1);
         panel.setLayout(null);
         panel.add(emailField);
         panel.add(passwordField);

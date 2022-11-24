@@ -12,6 +12,7 @@ public class CreateAccountGUI implements Runnable {
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
     private ArrayList<String> users;
+    private JButton placeholder;
 
     public CreateAccountGUI() {
         board = new JFrame("Turkey Store");
@@ -25,7 +26,8 @@ public class CreateAccountGUI implements Runnable {
         SwingUtilities.invokeLater(this);
     }
     public void setFrame() {
-        emailField.setSize(150,30);
+        placeholder = new JButton();
+
         emailField.setBounds(board.getWidth()/2 - emailField.getWidth()/2, 100,
                 emailField.getWidth(), emailField.getHeight());
         emailField.setForeground(Color.GRAY);
@@ -54,12 +56,16 @@ public class CreateAccountGUI implements Runnable {
         passwordField = new JPasswordField(10);
         confirmPasswordField = new JPasswordField(10);
         backButton = new JButton("Back");
+        placeholder = new JButton();
         panel.setLayout(null);
         panel.add(emailField);
         panel.add(passwordField);
         panel.add(createButton);
         panel.add(confirmPasswordField);
         panel.add(backButton);
+        panel.add(placeholder);
+        placeholder.setBounds(-1,-1,1,1);
+        emailField.setSize(150,30);
     }
 
     public void run() {

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class TestGUI {
     public static void main(String[] args) {
-        LogInGUI gui = new LogInGUI();
+        //LogInGUI gui = new LogInGUI();
         ArrayList<String> users = new ArrayList<>();
         users.add("helloworld@gmail.com");
         users.add("hmmmm@gmail.com");
@@ -27,14 +27,14 @@ public class TestGUI {
         users.add("cs1811@gmail.com");
         users.add("cs18111@gmail.com");
         users.add("cs1811111@gmail.com");
-
-        //PeopleView gui = new PeopleView(users, Role.Seller);
-        //gui.show();
+        //LogInGUI gui = new LogInGUI(users);
+        PeopleView gui = new PeopleView(users, Role.Seller);
+        gui.show();
 
 //        LogInGUI mainMenu = new LogInGUI(users);
 //        mainMenu.show();
 
-        MessageGUIReDone message = new MessageGUIReDone("view", "cs183@purdue.edu");
-        message.show();
+        //MessageGUIReDone message = new MessageGUIReDone("view", "cs183@purdue.edu");
+        //message.show();
     }
 }
