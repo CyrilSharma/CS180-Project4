@@ -31,10 +31,7 @@ public class MessageGUI implements Runnable {
     public MessageGUI(String messageChoice, String email) {
         this.messageBoard = new JFrame("Turkey Shop");
         //TODO: Figure out how to take user ID
-        Database db = new Database();
-        HashMap<String, String> acct = db.get("email", email);
-        String id = acct.get("id");
-        this.id = id;
+        //this.id = id;
         this.email = email;
         this.messageChoice = messageChoice;
     }
@@ -51,14 +48,20 @@ public class MessageGUI implements Runnable {
                 MessageInterfaceClient messageClient = new MessageInterfaceClient();
                 if (button == deleteMessage) {
                     message = messageText.getText();
-                    messageClient.deleteMessage(id, messageID);
+                    //Pull ID for user and recipient
+                    //messageClient.deleteMessage(id, recipientID, messageID);
+                    JOptionPane.showMessageDialog(null, "Delete");
                 } else if (button == editMessage) {
                     message = messageText.getText();
-                    messageClient.editMessage(id, messageID);
+                    //Pull ID for user and recipient
+                    //messageClient.editMessage(id, recipientID, newMessage, messageID);
+                    JOptionPane.showMessageDialog(null, "Edit");
                     //should be some parameter to take new message text?
                 } else if (button == sendMessage) {
                     message = messageText.getText();
-                    messageClient.message(message, id);
+                    //Pull ID for user and recipient
+                    //messageClient.message(message, id, recipientID, store);
+                    JOptionPane.showMessageDialog(null, "Send/View");
                 }
             }
         });
@@ -69,7 +72,8 @@ public class MessageGUI implements Runnable {
         MessageInterfaceClient client = new MessageInterfaceClient();
         //TODO: add scroll bar for conversation
         messages = new JTextField();
-        messages.setText(client.getMessageHistory(id).toString());
+        //messages.setText(client.getMessageHistory(id).toString());
+        messages.setText("insert message here (constant)");
         title = new JLabel();
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
         title.setFont(f);
@@ -83,15 +87,13 @@ public class MessageGUI implements Runnable {
         if (messageChoice.equals("edit")) {
             title.setText("Edit Message");
             messageID = JOptionPane.showInputDialog(null, "Please enter the message # that you would like to edit", "Choice?", JOptionPane.QUESTION_MESSAGE);
-            //TODO: check edit function and add String message as parameter?
             editMessage = new JButton();
             label = new JLabel("Edit: ");
             button = editMessage;
             //panel.add(editMessage);
-            //client.editMessage(id, messageID);
         } else if (messageChoice.equals("view")) {
             title.setText("View/Send Message");
-            client.message(message, id);
+            //client.message(message, id);
             sendMessage = new JButton();
             button = sendMessage;
             //panel.add(sendMessage);
@@ -102,7 +104,6 @@ public class MessageGUI implements Runnable {
             button = deleteMessage;
             //panel.add(deleteMessage);
             // add action listener
-            //client.deleteMessage(id, messageID);
         }
         container.setLayout(new BorderLayout());
         messageBoard.setSize(600,400);
