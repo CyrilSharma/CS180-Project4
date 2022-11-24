@@ -93,11 +93,13 @@ public class MessageGUIReDone implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 String message = (String) messages.getSelectedValue();
                 String confirm = "Do you want to edit " + message + " ?";
+                int index = conversationHistory.indexOf(message);
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
                     //TODO: edit the message in database
-                    //TODO: edit the message shown on screen
+                    //TODO: edit the message shown on screen --> maybe done just have to test
+                    conversationHistory.set(index, editedMessage);
                 }
                 //else if no don't do anything
 
@@ -107,11 +109,13 @@ public class MessageGUIReDone implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String message = (String) messages.getSelectedValue();
+                int index = conversationHistory.indexOf(message);
                 String confirm = "Do you want to delete " + message + " ?";
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
-                    //TODO: delete the message
-                    //delete in the databse
+                    conversationHistory.remove(index); //removes the message from the conversationHistory
+                    //when the run method is called again it should update the Jlist entirely
+                    //TODO: delete in the database
                 }
                 //else if no don't do anything
             }
