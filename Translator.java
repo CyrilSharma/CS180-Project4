@@ -3,13 +3,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-public class Client {
+public class Translator {
     private static Socket socket;
     private String typeSeperator = "***";
     private String elementSeperator = ",,,";
     private String ansSeperator = "&&&";
 
-    public Client() {
+    public Translator() {
         // There is only socket active at any time.
         if (socket == null) {
             try {

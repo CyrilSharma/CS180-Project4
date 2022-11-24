@@ -6,11 +6,11 @@ import javax.swing.*;
 public class MainInterfaceGUI implements Runnable {
     
     JFrame frame;
-    Client client;
+    Translator client;
     Boolean loggedIn;
 
     public MainInterfaceGUI() {
-        client = new Client();
+        client = new Translator();
         loggedIn = true;
     }
 
@@ -28,7 +28,7 @@ public class MainInterfaceGUI implements Runnable {
             MessageGUI messageGUI = new MessageGUI("edit", "avadakedavera@gmail.com");
             messageGUI.run();
         } else {
-            LoginGUI loginGUI = new LoginGUI();
+            LogInGUI loginGUI = new LogInGUI();
             loginGUI.run();
         }
     }

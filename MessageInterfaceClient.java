@@ -3,9 +3,9 @@ import java.io.*;
 import java.time.Instant;
 
 public class MessageInterfaceClient {
-    private Client client;
+    private Translator client;
     public MessageInterfaceClient() {
-        client = new Client();
+        client = new Translator();
     }
     public String message(String message, String id, String recipientId, String store) {
         String object = "MessageManager";
@@ -54,7 +54,7 @@ public class MessageInterfaceClient {
         return (ArrayList<HashMap<String, String>>) o;
     }
     
-    public ArrayList<HashMap<String, String>> missedMessages(Scanner scanner, String id, Client client) {
+    public ArrayList<HashMap<String, String>> missedMessages(Scanner scanner, String id, Translator client) {
         Instant lastOnline = Instant.parse(client.get("id", id).get("lastOnline"));
         try {
             ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
