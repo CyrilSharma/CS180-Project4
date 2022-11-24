@@ -13,7 +13,9 @@ public class MessageGUIReDone implements Runnable {
     private JScrollPane scrollPane;
     private JButton deleteMessage;
     private JButton sendMessage;
+    //list of messages
     private JList messages;
+    //where user enters the message to send
     private JTextField messageText;
     private JPanel leftPanel; //houses the buttons
     private JPanel upperPanel; //title text (recipient name)
@@ -23,6 +25,7 @@ public class MessageGUIReDone implements Runnable {
     private String emailSelected;
     private String messageChoice;
     private String id;
+    //allows for GUI to update after each send/edit/delete
     private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<String> conversationHistory;
 
@@ -44,15 +47,12 @@ public class MessageGUIReDone implements Runnable {
         messageBoard.setSize(600,450);
         messageBoard.setLocationRelativeTo(null);
         messageBoard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        /**Test
+        //TODO: pull conversationHistory from database for two people
+        /**Test conversation, should usually pull conversation from database
          * conversationHistory.add("hello");
          * conversationHistory.add(, "meme");
          * conversationHistory.add("insert message here");
-         * Had to repush
          */
-        conversationHistory.add("hello");
-        conversationHistory.add("meme");
-        conversationHistory.add("insert message here");
         String[] msg = conversationHistory.toArray(new String[0]);
         messageList.addAll(List.of(msg));
         messages = new JList(messageList);
@@ -70,7 +70,6 @@ public class MessageGUIReDone implements Runnable {
         upperPanel = new JPanel();
         rightPanel = new JPanel();
         leftPanel = new JPanel();
-
         upperPanel.add(recipientText);
         editMessage = new JButton("Edit Message");
         deleteMessage = new JButton("Delete Message");
@@ -84,7 +83,7 @@ public class MessageGUIReDone implements Runnable {
         panel.add(leftPanel);
         rightPanel.add(scrollPane);
         panel.add(rightPanel);
-
+    /** Not needed unless these options exist from peopleview
         if (messageChoice.equals("edit")) {
             JOptionPane.showMessageDialog(null, "Select a message to edit", "Message", JOptionPane.INFORMATION_MESSAGE);
         } else if (messageChoice.equals("view")) {
@@ -93,6 +92,7 @@ public class MessageGUIReDone implements Runnable {
         } else if (messageChoice.equals("delete")) {
             JOptionPane.showMessageDialog(null, "Select a message to delete", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
+     */
         messageBoard.setVisible(true);
         addActionListeners();
         container.add(panel, BorderLayout.CENTER);
@@ -101,19 +101,18 @@ public class MessageGUIReDone implements Runnable {
     }
 
     private void addActionListeners() {
+        //Select message and edit
         editMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Having issue where sometimes index is -1 with below command (Resolved)
-                String originalMessage = "";
-                originalMessage = (String) messages.getSelectedValue();
+                String originalMessage = (String) messages.getSelectedValue();
                 String confirm = "Do you want to edit " + originalMessage + " ?";
                 int index = conversationHistory.indexOf(originalMessage);
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
                     //TODO: edit the message in database
-                    //TODO: edit the message shown on screen --> maybe done just have to test
+                    //edit the message shown on screen --> maybe done just have to test
                     //Test below
                     messageList.set(index, editedMessage);
                     //messages.add(messageText);
@@ -125,6 +124,7 @@ public class MessageGUIReDone implements Runnable {
 
             }
         });
+        //Select message and delete
         deleteMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,7 +142,6 @@ public class MessageGUIReDone implements Runnable {
                     messages.updateUI();
                     JOptionPane.showMessageDialog(null, "Message Deleted");
                     conversationHistory.remove(index);
-                    //messages.remove(index);
                     //removes the message from the conversationHistory
                     //when the run method is called again it should update the Jlist entirely
                     //TODO: delete in the database
@@ -150,19 +149,19 @@ public class MessageGUIReDone implements Runnable {
                 //else if no don't do anything
             }
         });
+        //Send a new message
         sendMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: do smth
                 String message = messageText.getText();
                 //Test below
                 messageList.addElement(message);
-                //messages.add(messageText);
+                //Update GUI to show changes
                 messages.updateUI();
                 conversationHistory.add(message);
                 JOptionPane.showMessageDialog(null, "Message Sent");
-                //TODO: store back in the databse of the new message --> do thsis functionality
-                //TODO: add the message on the screen --> should be done automatically if adding the message to the arraylist
+                //TODO: store back in the database of the new message --> do this functionality
+                //add the message on the screen --> should be done automatically if adding the message to the arraylist
 
             }
         });
