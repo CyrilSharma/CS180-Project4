@@ -48,6 +48,7 @@ public class MessageGUIReDone implements Runnable {
          * conversationHistory.add("hello");
          * conversationHistory.add(, "meme");
          * conversationHistory.add("insert message here");
+         * Had to repush
          */
         conversationHistory.add("hello");
         conversationHistory.add("meme");
