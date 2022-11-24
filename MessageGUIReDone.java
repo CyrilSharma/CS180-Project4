@@ -159,6 +159,7 @@ public class MessageGUIReDone implements Runnable {
                 messageList.addElement(message);
                 //messages.add(messageText);
                 messages.updateUI();
+                conversationHistory.add(message);
                 JOptionPane.showMessageDialog(null, "Message Sent");
                 //TODO: store back in the databse of the new message --> do thsis functionality
                 //TODO: add the message on the screen --> should be done automatically if adding the message to the arraylist
