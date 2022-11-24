@@ -96,12 +96,14 @@ public class MessageGUI implements Runnable {
             //client.message(message, id);
             sendMessage = new JButton();
             button = sendMessage;
+            label = new JLabel("View: ");
             //panel.add(sendMessage);
         } else if (messageChoice.equals("delete")) {
             title.setText("Delete Message");
             deleteMessage = new JButton();
             messageID = JOptionPane.showInputDialog(null, "Please enter the message # that you would like to delete", "Choice?", JOptionPane.QUESTION_MESSAGE);
             button = deleteMessage;
+            label = new JLabel("Delete: ");
             //panel.add(deleteMessage);
             // add action listener
         }
@@ -112,6 +114,7 @@ public class MessageGUI implements Runnable {
         messageBoard.setVisible(true);
         exit = new JButton("Exit");
         messageText = new JTextField();
+        addActionListeners();
         panel.add(label);
         panel.add(messages);
         panel.add(messageText);
