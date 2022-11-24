@@ -16,7 +16,6 @@ public class MessageGUIReDone implements Runnable {
     private JTextField messageText;
     private JPanel leftPanel; //houses the buttons
     private JPanel upperPanel; //title text (recipient name)
-    private JPanel bottomPanel; //has the text field and the send text button
     private JPanel rightPanel; //houses the message history
     private JLabel recipientText;
 
@@ -40,18 +39,18 @@ public class MessageGUIReDone implements Runnable {
     @Override
     public void run() {
         JPanel panel = new JPanel();
-        messageBoard.setSize(600,400);
+        messageBoard.setSize(600,450);
         messageBoard.setLocationRelativeTo(null);
         messageBoard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         messageBoard.setVisible(true);
         String[] msg = conversationHistory.toArray(new String[0]);
         messages = new JList(msg);
         scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(370,400));
+        scrollPane.setPreferredSize(new Dimension(370,300));
         this.container = messageBoard.getContentPane();
         container.setLayout(new BorderLayout());
         recipientText = new JLabel();
-        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
+        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 20);
         recipientText.setFont(f);
         recipientText.setText("Sending message to " + this.emailSelected);
         messageText = new JTextField(12);
@@ -59,26 +58,21 @@ public class MessageGUIReDone implements Runnable {
         messageText.setText("Insert Message...");
         upperPanel = new JPanel();
         rightPanel = new JPanel();
-        rightPanel.setBounds(400,0,200,400);
         leftPanel = new JPanel();
-        bottomPanel = new JPanel();
 
         upperPanel.add(recipientText);
         editMessage = new JButton("Edit Message");
         deleteMessage = new JButton("Delete Message");
         sendMessage = new JButton("Send Message");
+        leftPanel.add(messageText);
+        leftPanel.add(sendMessage);
         leftPanel.add(editMessage);
         leftPanel.add(deleteMessage);
-        //leftPanel.add(sendMessage);
-
-        bottomPanel.add(messageText);
-        bottomPanel.add(sendMessage);
 
         panel.add(upperPanel);
-        panel.add(bottomPanel);
         panel.add(leftPanel);
         rightPanel.add(scrollPane);
-        panel.add(scrollPane);
+        panel.add(rightPanel);
         if (messageChoice.equals("edit")) {
             JOptionPane.showMessageDialog(null, "Select a message to edit", "Message", JOptionPane.INFORMATION_MESSAGE);
         } else if (messageChoice.equals("view")) {
@@ -97,14 +91,13 @@ public class MessageGUIReDone implements Runnable {
         editMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: do smth
                 String message = (String) messages.getSelectedValue();
                 String confirm = "Do you want to edit " + message + " ?";
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
-                    //TODO: edit the message
-                    //ask for the new message and edit the message shown
-                    //edit in the databse
+                    String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
+                    //TODO: edit the message in database
+                    //TODO: edit the message shown on screen
                 }
                 //else if no don't do anything
 
@@ -127,9 +120,10 @@ public class MessageGUIReDone implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: do smth
-                //get value from the text field
-                //TODO: store back in the databse of the new message
-                //conversationHistory.add(newMessage);
+                String message = messageText.getText();
+                //TODO: store back in the databse of the new message --> do thsis functionality
+                //TODO: add the message on the screen --> should be done automatically if adding the message to the arraylist
+                conversationHistory.add(message);
             }
         });
     }

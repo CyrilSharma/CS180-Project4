@@ -31,7 +31,10 @@ public class TestGUI {
         //PeopleView gui = new PeopleView(users, Role.Seller);
         //gui.show();
 
-        LogInGUI mainMenu = new LogInGUI(users);
-        mainMenu.show();
+//        LogInGUI mainMenu = new LogInGUI(users);
+//        mainMenu.show();
+
+        MessageGUIReDone message = new MessageGUIReDone("view", "cs183@purdue.edu");
+        message.show();
     }
 }
