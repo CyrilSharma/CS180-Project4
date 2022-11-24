@@ -8,8 +8,8 @@ public class MessageInterfaceClient {
         client = new Client();
     }
     public String message(String message, String id, String recipientId, String store) {
-        String object = "messageManager";
-        String function = "message";
+        String object = "MessageManager";
+        String function = "messageUser";
         String[] args = {id, recipientId, message, store};
         Object o = client.query(new Query(object, function, args));
         if (o == null) {
@@ -20,7 +20,7 @@ public class MessageInterfaceClient {
     }
 
     public String editMessage(String id, String recipientId, String newMessage, String messageID) {
-        String object = "messageManager";
+        String object = "MessageManager";
         String function = "editMessage";
         String[] args = {id, recipientId, newMessage, messageID};
         Object o = client.query(new Query(object, function, args));
@@ -32,7 +32,7 @@ public class MessageInterfaceClient {
     }
 
     public String deleteMessage(String id, String recipientId, String messageID) {
-        String object = "messageManager";
+        String object = "MessageManager";
         String function = "deleteMessage";
         String[] args = {id, recipientId, messageID};
         Object o = client.query(new Query(object, function, args));
@@ -44,7 +44,7 @@ public class MessageInterfaceClient {
     }
 
     public ArrayList<HashMap<String, String>> getPersonalHistory(String id) {
-        String object = "messageManager";
+        String object = "MessageManager";
         String function = "getPersonalHistory";
         String[] args = {id};
         Object o = client.query(new Query(object, function, args));
@@ -94,7 +94,7 @@ public class MessageInterfaceClient {
     }
 
     public void exportConversations(String id) {
-        String object = "messageManager";
+        String object = "MessageManager";
         String function = "exportConversations";
         String[] args = new String[]{id};
         client.query(new Query(object, function, args));
