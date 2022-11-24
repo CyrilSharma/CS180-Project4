@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageGUIReDone implements Runnable {
     private JFrame messageBoard;
@@ -22,6 +23,7 @@ public class MessageGUIReDone implements Runnable {
     private String emailSelected;
     private String messageChoice;
     private String id;
+    private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<String> conversationHistory;
 
     public MessageGUIReDone(String messageChoice, String email) {
@@ -42,9 +44,17 @@ public class MessageGUIReDone implements Runnable {
         messageBoard.setSize(600,450);
         messageBoard.setLocationRelativeTo(null);
         messageBoard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        messageBoard.setVisible(true);
+        /**Test
+         * conversationHistory.add("hello");
+         * conversationHistory.add(, "meme");
+         * conversationHistory.add("insert message here");
+         */
+        conversationHistory.add("hello");
+        conversationHistory.add("meme");
+        conversationHistory.add("insert message here");
         String[] msg = conversationHistory.toArray(new String[0]);
-        messages = new JList(msg);
+        messageList.addAll(List.of(msg));
+        messages = new JList(messageList);
         scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setPreferredSize(new Dimension(370,300));
         this.container = messageBoard.getContentPane();
@@ -73,6 +83,7 @@ public class MessageGUIReDone implements Runnable {
         panel.add(leftPanel);
         rightPanel.add(scrollPane);
         panel.add(rightPanel);
+
         if (messageChoice.equals("edit")) {
             JOptionPane.showMessageDialog(null, "Select a message to edit", "Message", JOptionPane.INFORMATION_MESSAGE);
         } else if (messageChoice.equals("view")) {
@@ -81,6 +92,7 @@ public class MessageGUIReDone implements Runnable {
         } else if (messageChoice.equals("delete")) {
             JOptionPane.showMessageDialog(null, "Select a message to delete", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
+        messageBoard.setVisible(true);
         addActionListeners();
         container.add(panel, BorderLayout.CENTER);
 
@@ -99,6 +111,11 @@ public class MessageGUIReDone implements Runnable {
                     String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
                     //TODO: edit the message in database
                     //TODO: edit the message shown on screen --> maybe done just have to test
+                    //Test below
+                    messageList.set(index, editedMessage);
+                    //messages.add(messageText);
+                    messages.updateUI();
+                    JOptionPane.showMessageDialog(null, "Message Edited");
                     conversationHistory.set(index, editedMessage);
                 }
                 //else if no don't do anything
@@ -113,7 +130,14 @@ public class MessageGUIReDone implements Runnable {
                 String confirm = "Do you want to delete " + message + " ?";
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
-                    conversationHistory.remove(index); //removes the message from the conversationHistory
+                    //Test below
+                    messageList.removeElementAt(index);
+                    //messages.add(messageText);
+                    messages.updateUI();
+                    JOptionPane.showMessageDialog(null, "Message Deleted");
+                    conversationHistory.remove(index);
+                    //messages.remove(index);
+                    //removes the message from the conversationHistory
                     //when the run method is called again it should update the Jlist entirely
                     //TODO: delete in the database
                 }
@@ -125,9 +149,14 @@ public class MessageGUIReDone implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 //TODO: do smth
                 String message = messageText.getText();
+                //Test below
+                messageList.addElement(message);
+                //messages.add(messageText);
+                messages.updateUI();
+                JOptionPane.showMessageDialog(null, "Message Sent");
                 //TODO: store back in the databse of the new message --> do thsis functionality
                 //TODO: add the message on the screen --> should be done automatically if adding the message to the arraylist
-                conversationHistory.add(message);
+
             }
         });
     }
