@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class CreateAccountGUI implements Runnable {
     private JFrame board;
@@ -10,9 +11,14 @@ public class CreateAccountGUI implements Runnable {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
+    private ArrayList<String> users;
 
     public CreateAccountGUI() {
         board = new JFrame("Turkey Store");
+    }
+    public CreateAccountGUI(ArrayList<String> users) {
+        board = new JFrame("Turkey Store");
+        this.users = users;
     }
 
     public void show() {
@@ -139,9 +145,13 @@ public class CreateAccountGUI implements Runnable {
                 } else if (!password.equals(cp)) {
                     JOptionPane.showMessageDialog(null, "Password does not match!", "Error", JOptionPane.WARNING_MESSAGE, null);
                 } else {
-                    String f = "Trying to create an account with credential {email: %s, pw: %s}\n";
-                    f = String.format(f, email, password);
-                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
+                    //THIS DOES NOT CHECK CREDENTIALS YET
+//                    String f = "Trying to create an account with credential {email: %s, pw: %s}\n";
+//                    f = String.format(f, email, password);
+//                    JOptionPane.showMessageDialog(null, f, "Message", JOptionPane.INFORMATION_MESSAGE);
+                    MainMenuGUI gui = new MainMenuGUI(users, Role.Seller);
+                    gui.show();
+                    board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                 }
             }
         });

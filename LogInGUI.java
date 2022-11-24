@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class LogInGUI implements Runnable {
     JFrame board;
@@ -9,9 +10,17 @@ public class LogInGUI implements Runnable {
     JButton createAccountButton;
     JTextField emailField;
     JPasswordField passwordField;
+    ArrayList<String> users;
 
     public LogInGUI() {
         board = new JFrame("Turkey Shop");
+        users = new ArrayList<>();
+    }
+
+    public LogInGUI(ArrayList<String> exUsers) {
+        board = new JFrame("Turkey Shop");
+        users = exUsers;
+
     }
 
     public void show() {
@@ -102,22 +111,27 @@ public class LogInGUI implements Runnable {
         logInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //THIS DOES NOT CHECK CREDENTIALS YET
                 String email = emailField.getText();
                 String password = passwordField.getText();
                 if ((email.isEmpty() || email.equals("Email...")) ||
                         (password.isEmpty() || password.equals("Password..."))) {
                     JOptionPane.showMessageDialog(null, "Please fill out the text fields!", "Error", JOptionPane.WARNING_MESSAGE, null);
                 } else {
-                    String f = "Trying to log in with credential {email: %s, pw: %s}\n";
-                    f = String.format(f, email, password);
-                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
+//                    String f = "Trying to log in with credential {email: %s, pw: %s}\n";
+//                    f = String.format(f, email, password);
+//                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
+                    MainMenuGUI menu = new MainMenuGUI(users, Role.Seller);
+                    menu.show();
+                    board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+
                 }
             }
         });
         createAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CreateAccountGUI gui = new CreateAccountGUI();
+                CreateAccountGUI gui = new CreateAccountGUI(users);
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }

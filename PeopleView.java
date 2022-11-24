@@ -49,11 +49,11 @@ public class PeopleView implements Runnable {
         //people.setBackground(Color.gray);
         rightPanel = new JPanel();
         title = new JLabel();
-        blockButton = new JButton("Block User");
-        viewButton = new JButton("View Message");
+        blockButton = new JButton("Block");
+        viewButton = new JButton("Message");
         editButton = new JButton("Edit Message");
         deleteButton = new JButton("Delete Message");
-        backButton = new JButton("Log in");
+        backButton = new JButton("Back");
         upperPanel = new JPanel();
         if (role == Role.Customer) {
             title.setText("Sellers");
@@ -90,8 +90,8 @@ public class PeopleView implements Runnable {
         rightPanel.setBounds(400,0, 200, 400);
         blockButton.setBounds(20, 20, 160,30);
         viewButton.setBounds(20, 60, 160,30);
-        editButton.setBounds(20, 100, 160,30);
-        deleteButton.setBounds(20, 140, 160,30);
+        //editButton.setBounds(20, 100, 160,30);
+        //deleteButton.setBounds(20, 140, 160,30);
         backButton.setBounds(100, 320, 80, 30);
     }
 
@@ -142,7 +142,7 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //will change to mainGUI if it is uploaded
-                LogInGUI gui = new LogInGUI();
+                MainMenuGUI gui = new MainMenuGUI(users, role);
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
