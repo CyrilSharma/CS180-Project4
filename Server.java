@@ -50,6 +50,8 @@ public class Server implements Runnable {
                     } else if (parameters[0].equals("Filter")) {
                         o = filter;
                     }
+                } else {
+                    continue;
                 }
                 function = parameters[1];
                 if (parameters[2] != null) {
@@ -87,17 +89,21 @@ public class Server implements Runnable {
         }
     }
 
-    private <T> HashMap<String, Method> generateClasses(Object obj) {
+    private <T> Method generateClasses(Object obj, String function, String[] args) {
         Method[] methods = obj.getClass().getMethods();
-        HashMap<String, Method> methodNames = new HashMap<>();
         for (Method method : methods) {
-            methodNames.put(method.getName(), method);
+            if (method.getName().equals(function) && method.getParameterTypes().length == args.length) {
+                return method;
+            }
         }
-        return methodNames;
+        return null;
     }
 
     private Object executeMethod(Object o, String function, String[] args) {
-        Method method = generateClasses(o).get(function);
+        Method method = generateClasses(o, function, args);
+        if (method == null) {
+            return null;
+        }
         Object result = null;
         if (method != null) {
             Class[] methodParameterTypes = method.getParameterTypes();
