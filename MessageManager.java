@@ -45,6 +45,14 @@ public class MessageManager {
         return names;
     }
 
+    public String getHistoryLocation(String id) {
+        return historyDir + id + "-messageHistory.txt";
+    }
+
+    public String getCSVDir() {
+        return csvDir;
+    }
+
     /**
      * Returns the personal message history of the user
      */

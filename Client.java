@@ -3,13 +3,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-public class Translator {
+public class Client {
     private static Socket socket;
     private String typeSeperator = "***";
     private String elementSeperator = ",,,";
     private String ansSeperator = "&&&";
 
-    public Translator() {
+    public Client() {
         // There is only socket active at any time.
         if (socket == null) {
             try {
@@ -20,7 +20,7 @@ public class Translator {
         }
     }
 
-    public String[] query(Query q) {
+    public Object query(Query q) {
         try {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             String args = String.join(elementSeperator, q.getArgs());
@@ -29,17 +29,16 @@ public class Translator {
             writer.println();
             writer.flush();
             
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String result = null;
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            Object result = null;
             try {
-                result = reader.readLine();
+                result = ois.readObject();
             } catch (Exception e) {
                 // CONNECTION ERROR. Custom exception?
                 e.printStackTrace();
                 return null;
             }
-            String[] response = result.split(ansSeperator);
-            return response;
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,5 +81,16 @@ public class Translator {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /*
+     * Rewritten methods for convenience
+     */
+    public HashMap<String, String> get(String key, String value) {
+        Object o = query(new Query("database", "get", new String[]{key, value}));
+        if (o == null) {
+            return null;
+        }
+        return (HashMap<String, String>) o;
     }
 }
