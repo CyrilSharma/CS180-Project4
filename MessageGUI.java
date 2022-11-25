@@ -1,130 +1,180 @@
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageGUI implements Runnable {
     private JFrame messageBoard;
     private Container container;
-    private JTextField messageText;
-    private JScrollBar scroll;
-    private JScrollPane convPane;
-    private JScrollPane scrollPane;
-    private JButton exit;
-    private JButton sendMessage;
-    private JButton deleteMessage;
     private JButton editMessage;
-    private JButton button;
-    private JLabel title;
-    private String messageChoice;
-    private String email;
-    private String messageID;
-    private String message;
-    private String id;
-    private JTextField messages;
-    private JLabel label;
+    private JScrollPane scrollPane;
+    private JButton deleteMessage;
+    private JButton sendMessage;
+    //list of messages
+    private JList messages;
+    //where user enters the message to send
+    private JTextField messageText;
+    private JPanel leftPanel; //houses the buttons
+    private JPanel upperPanel; //title text (recipient name)
+    private JPanel rightPanel; //houses the message history
+    private JLabel recipientText;
 
+    private String emailSelected;
+    private String messageChoice;
+    private String id;
+    //allows for GUI to update after each send/edit/delete
+    private DefaultListModel messageList = new DefaultListModel();
+    private ArrayList<String> conversationHistory;
+    private String username;
     public MessageGUI(String messageChoice, String email) {
-        this.messageBoard = new JFrame("Turkey Shop");
-        //TODO: Figure out how to take user ID
+        messageBoard = new JFrame("Turkey Shop");
+        //TODO: Figure out how to take the user ID and username
         //this.id = id;
-        this.email = email;
+        //this.username = username
+        this.username = "Robot #1";
+        this.conversationHistory = new ArrayList<>();
+        this.emailSelected = email;
         this.messageChoice = messageChoice;
+        //TODO: get the conversationHistory from the translator module
+        //stored in a ArrayListString
+    }
+
+
+    @Override
+    public void run() {
+        JPanel panel = new JPanel();
+        messageBoard.setSize(600,450);
+        messageBoard.setLocationRelativeTo(null);
+        messageBoard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //TODO: pull conversationHistory from database for two people
+        /**Test conversation, should usually pull conversation from database
+         * conversationHistory.add("hello");
+         * conversationHistory.add(, "meme");
+         * conversationHistory.add("insert message here");
+         */
+        String[] msg = conversationHistory.toArray(new String[0]);
+        messageList.addAll(List.of(msg));
+        messages = new JList(messageList);
+        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setPreferredSize(new Dimension(370,300));
+        this.container = messageBoard.getContentPane();
+        container.setLayout(new BorderLayout());
+        recipientText = new JLabel();
+        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 20);
+        recipientText.setFont(f);
+        recipientText.setText("Sending message to " + this.emailSelected);
+        messageText = new JTextField(12);
+        messageText.setForeground(Color.GRAY);
+        messageText.setText("Insert Message...");
+        upperPanel = new JPanel();
+        rightPanel = new JPanel();
+        leftPanel = new JPanel();
+        upperPanel.add(recipientText);
+        editMessage = new JButton("Edit Message");
+        deleteMessage = new JButton("Delete Message");
+        sendMessage = new JButton("Send Message");
+        leftPanel.add(messageText);
+        leftPanel.add(sendMessage);
+        leftPanel.add(editMessage);
+        leftPanel.add(deleteMessage);
+
+        panel.add(upperPanel);
+        panel.add(leftPanel);
+        rightPanel.add(scrollPane);
+        panel.add(rightPanel);
+    /** Not needed unless these options exist from peopleview
+        if (messageChoice.equals("edit")) {
+            JOptionPane.showMessageDialog(null, "Select a message to edit", "Message", JOptionPane.INFORMATION_MESSAGE);
+        } else if (messageChoice.equals("view")) {
+            String tempMsg = "You are viewing chats with " + this.emailSelected;
+            JOptionPane.showMessageDialog(null, tempMsg, "Message", JOptionPane.INFORMATION_MESSAGE);
+        } else if (messageChoice.equals("delete")) {
+            JOptionPane.showMessageDialog(null, "Select a message to delete", "Message", JOptionPane.INFORMATION_MESSAGE);
+        }
+     */
+        messageBoard.setVisible(true);
+        addActionListeners();
+        container.add(panel, BorderLayout.CENTER);
+
+
+    }
+
+    private void addActionListeners() {
+        //Select message and edit
+        editMessage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String originalMessage = (String) messages.getSelectedValue();
+                String confirm = "Do you want to edit " + originalMessage + " ?";
+                //int index = conversationHistory.indexOf(originalMessage);
+                int index = messages.getSelectedIndex();
+                int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
+                if (ans == JOptionPane.YES_OPTION) {
+                    String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
+                    if (editedMessage != null) {
+                        editedMessage = username + ": " + editedMessage;
+                        //TODO: edit the message in database
+                        //edit the message shown on screen --> maybe done just have to test
+                        //Test below
+                        messageList.set(index, editedMessage + " (Edited Message)");
+                        //messages.add(messageText);
+                        messages.updateUI();
+                        JOptionPane.showMessageDialog(null, "Message Edited");
+                        conversationHistory.set(index, editedMessage);
+                    }
+                }
+                //else if no don't do anything
+
+            }
+        });
+        //Select message and delete
+        deleteMessage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Having issue where sometimes index is -1 with below command (specifically if an edit or delete is
+                // cancelled and then a delete/edit is attemped after (Resolved)
+                String deletedMessage = "";
+                deletedMessage = (String) messages.getSelectedValue();
+                //int index = conversationHistory.indexOf(deletedMessage);
+                int index = messages.getSelectedIndex();
+                String confirm = "Do you want to delete " + deletedMessage + " ?";
+                int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
+                if (ans == JOptionPane.YES_OPTION) {
+                    //Test below
+                    messageList.removeElementAt(index);
+                    //messages.add(messageText);
+                    messages.updateUI();
+                    JOptionPane.showMessageDialog(null, "Message Deleted");
+                    conversationHistory.remove(index);
+                    //removes the message from the conversationHistory
+                    //when the run method is called again it should update the Jlist entirely
+                    //TODO: delete in the database
+                }
+                //else if no don't do anything
+            }
+        });
+        //Send a new message
+        sendMessage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String message = username + ": " + messageText.getText();
+                //Test below
+                messageList.addElement(message);
+                //Update GUI to show changes
+                messages.updateUI();
+                conversationHistory.add(message);
+                JOptionPane.showMessageDialog(null, "Message Sent");
+                //TODO: store back in the database of the new message --> do this functionality
+                //add the message on the screen --> should be done automatically if adding the message to the arraylist
+
+            }
+        });
     }
 
     public void show() {
         SwingUtilities.invokeLater(this);
     }
-
-    public void addActionListeners() {
-        //button that changes based on instance object
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MessageInterfaceClient messageClient = new MessageInterfaceClient();
-                if (button == deleteMessage) {
-                    message = messageText.getText();
-                    //Pull ID for user and recipient
-                    //messageClient.deleteMessage(id, recipientID, messageID);
-                    JOptionPane.showMessageDialog(null, "Delete");
-                } else if (button == editMessage) {
-                    message = messageText.getText();
-                    //Pull ID for user and recipient
-                    //messageClient.editMessage(id, recipientID, newMessage, messageID);
-                    JOptionPane.showMessageDialog(null, "Edit");
-                    //should be some parameter to take new message text?
-                } else if (button == sendMessage) {
-                    message = messageText.getText();
-                    //Pull ID for user and recipient
-                    //messageClient.message(message, id, recipientID, store);
-                    JOptionPane.showMessageDialog(null, "Send/View");
-                }
-            }
-        });
-        };
-    @Override
-    public void run() {
-        this.container = messageBoard.getContentPane();
-        MessageInterfaceClient client = new MessageInterfaceClient();
-        //TODO: add scroll bar for conversation
-        messages = new JTextField();
-        //messages.setText(client.getMessageHistory(id).toString());
-        messages.setText("insert message here (constant)");
-        title = new JLabel();
-        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
-        title.setFont(f);
-        JPanel panel = new JPanel();
-        JPanel panelExit = new JPanel();
-        convPane = new JScrollPane();
-        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(370,400));
-        //JPanel panel3 = new JPanel();
-        //Based on instance perform send/view, edit, or delete task
-        if (messageChoice.equals("edit")) {
-            title.setText("Edit Message");
-            messageID = JOptionPane.showInputDialog(null, "Please enter the message # that you would like to edit", "Choice?", JOptionPane.QUESTION_MESSAGE);
-            editMessage = new JButton();
-            label = new JLabel("Edit: ");
-            button = editMessage;
-            //panel.add(editMessage);
-        } else if (messageChoice.equals("view")) {
-            title.setText("View/Send Message");
-            //client.message(message, id);
-            sendMessage = new JButton();
-            button = sendMessage;
-            label = new JLabel("View: ");
-            //panel.add(sendMessage);
-        } else if (messageChoice.equals("delete")) {
-            title.setText("Delete Message");
-            deleteMessage = new JButton();
-            messageID = JOptionPane.showInputDialog(null, "Please enter the message # that you would like to delete", "Choice?", JOptionPane.QUESTION_MESSAGE);
-            button = deleteMessage;
-            label = new JLabel("Delete: ");
-            //panel.add(deleteMessage);
-            // add action listener
-        }
-        container.setLayout(new BorderLayout());
-        messageBoard.setSize(600,400);
-        messageBoard.setLocationRelativeTo(null);
-        messageBoard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        messageBoard.setVisible(true);
-        exit = new JButton("Exit");
-        messageText = new JTextField();
-        addActionListeners();
-        panel.add(label);
-        panel.add(messages);
-        panel.add(messageText);
-        panel.add(button);
-        panelExit.add(exit);
-
-
-        // add action listeners and update method actions
-
-        container.add(panel, BorderLayout.SOUTH);
-        container.add(panelExit, BorderLayout.NORTH);
-    }
 }
+
