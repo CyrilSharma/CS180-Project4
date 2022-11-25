@@ -29,11 +29,13 @@ public class MessageGUI implements Runnable {
     //allows for GUI to update after each send/edit/delete
     private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<String> conversationHistory;
-    public MessageGUI(String messageChoice, String email, String username) {
+    private String selectedStore;
+    public MessageGUI(String messageChoice, String email, String username, String selectedStore) {
         messageBoard = new JFrame("Turkey Shop");
         this.currentUser = username;
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email;
+        this.selectedStore = selectedStore;
         this.messageChoice = messageChoice;
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
@@ -60,9 +62,9 @@ public class MessageGUI implements Runnable {
         this.container = messageBoard.getContentPane();
         container.setLayout(new BorderLayout());
         recipientText = new JLabel();
-        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 20);
+        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
         recipientText.setFont(f);
-        recipientText.setText("Sending message to " + this.emailSelected);
+        recipientText.setText(this.selectedStore + "Sending message to " + this.emailSelected);
         messageText = new JTextField(12);
         messageText.setForeground(Color.GRAY);
         messageText.setText("Insert Message...");
