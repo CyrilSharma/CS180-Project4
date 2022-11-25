@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LogInGUI implements Runnable {
     private JFrame board;
@@ -12,16 +13,16 @@ public class LogInGUI implements Runnable {
     private JButton placeholder;
     private JPasswordField passwordField;
     private ArrayList<String> users;
+    private LoginInterface loginInterface;
 
     public LogInGUI() {
-        board = new JFrame("Turkey Shop");
-        users = new ArrayList<>();
+        this(new ArrayList<>());
     }
 
     public LogInGUI(ArrayList<String> exUsers) {
         board = new JFrame("Turkey Shop");
         users = exUsers;
-
+        loginInterface = new LoginInterface();
     }
 
     public void show() {
@@ -125,10 +126,16 @@ public class LogInGUI implements Runnable {
 //                    String f = "Trying to log in with credential {email: %s, pw: %s}\n";
 //                    f = String.format(f, email, password);
 //                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
-                    MainMenuGUI menu = new MainMenuGUI(users, Role.Seller);
-                    menu.show();
-                    board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
-
+                    if (loginInterface.verify(email, password)) {
+                        JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
+                        LogInGUI loginGUI = new LogInGUI();
+                        loginGUI.show();
+                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                    } else {
+                        MainMenuGUI menu = new MainMenuGUI(users, Role.Seller);
+                        menu.show();
+                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                    }
                 }
             }
         });

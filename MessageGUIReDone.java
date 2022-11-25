@@ -26,6 +26,8 @@ public class MessageGUIReDone implements Runnable {
     private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<String> conversationHistory;
 
+    private MessageInterfaceClient messageInterfaceClient;
+
     public MessageGUIReDone(String messageChoice, String email) {
         messageBoard = new JFrame("Turkey Shop");
         //TODO: Figure out how to take the user ID
@@ -35,6 +37,7 @@ public class MessageGUIReDone implements Runnable {
         this.messageChoice = messageChoice;
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
+        
     }
 
 

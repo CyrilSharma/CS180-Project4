@@ -13,13 +13,15 @@ public class CreateAccountGUI implements Runnable {
     private JPasswordField confirmPasswordField;
     private ArrayList<String> users;
     private JButton placeholder;
+    private CreateAccountInterface createAccountInterface;
 
     public CreateAccountGUI() {
-        board = new JFrame("Turkey Store");
+        this(new ArrayList<>());
     }
     public CreateAccountGUI(ArrayList<String> users) {
         board = new JFrame("Turkey Store");
         this.users = users;
+        createAccountInterface = new CreateAccountInterface();
     }
 
     public void show() {
@@ -155,9 +157,17 @@ public class CreateAccountGUI implements Runnable {
 //                    String f = "Trying to create an account with credential {email: %s, pw: %s}\n";
 //                    f = String.format(f, email, password);
 //                    JOptionPane.showMessageDialog(null, f, "Message", JOptionPane.INFORMATION_MESSAGE);
-                    MainMenuGUI gui = new MainMenuGUI(users, Role.Seller);
-                    gui.show();
-                    board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                    try {
+                        createAccountInterface.add(email, password, cp);
+                        MainMenuGUI gui = new MainMenuGUI(users, Role.Seller);
+                        gui.show();
+                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                    } catch (InvalidUserException e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        CreateAccountGUI createAccountGUI = new CreateAccountGUI();
+                        createAccountGUI.show();
+                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                    }
                 }
             }
         });
