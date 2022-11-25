@@ -12,12 +12,16 @@ public class Translator {
     private String ansSeperator = "&&&";
     //TODO: use this for... something
     private static boolean connected;
+    private static PrintWriter writer;
+    private static ObjectInputStream ois;
 
     public Translator() {
         // There is only socket active at any time.
         if (socket == null) {
             try {
                 socket = new Socket("localhost", 7000);
+                writer = new PrintWriter(socket.getOutputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
                 connected = true;
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "We can't connect to the server right now. Please try again later", "Error", JOptionPane.ERROR_MESSAGE);
@@ -28,10 +32,8 @@ public class Translator {
 
     public Object query(Query q) {
         try {
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
             String args = String.join(elementSeperator, q.getArgs());
             String message = q.getObject() + typeSeperator + q.getFunction() + typeSeperator + args;
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             Object result = null;
             writer.write(message);
             writer.println();

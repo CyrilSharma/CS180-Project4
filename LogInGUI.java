@@ -126,7 +126,7 @@ public class LogInGUI implements Runnable {
 //                    String f = "Trying to log in with credential {email: %s, pw: %s}\n";
 //                    f = String.format(f, email, password);
 //                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
-                    if (loginInterface.verify(email, password)) {
+                    if (!loginInterface.verify(email, password)) {
                         JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
                         LogInGUI loginGUI = new LogInGUI();
                         loginGUI.show();

@@ -34,6 +34,9 @@ public class Server implements Runnable {
             String line;
             while (true) {
                 line = bfr.readLine();
+                if (line.isEmpty()) {
+                    continue;
+                }
                 System.out.println(line);
                 String[] parameters = line.split(typeSeperator);
                 Object o = null;
