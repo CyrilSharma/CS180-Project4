@@ -21,19 +21,17 @@ public class MessageGUI implements Runnable {
     private JPanel rightPanel; //houses the message history
     private JLabel recipientText;
 
+    private String currentUser;
+
     private String emailSelected;
     private String messageChoice;
     private String id;
     //allows for GUI to update after each send/edit/delete
     private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<String> conversationHistory;
-    private String username;
-    public MessageGUI(String messageChoice, String email) {
+    public MessageGUI(String messageChoice, String email, String username) {
         messageBoard = new JFrame("Turkey Shop");
-        //TODO: Figure out how to take the user ID and username
-        //this.id = id;
-        //this.username = username
-        this.username = "Robot #1";
+        this.currentUser = username;
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email;
         this.messageChoice = messageChoice;
@@ -114,7 +112,7 @@ public class MessageGUI implements Runnable {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
                     if (editedMessage != null) {
-                        editedMessage = username + ": " + editedMessage;
+                        editedMessage = currentUser + ": " + editedMessage;
                         //TODO: edit the message in database
                         //edit the message shown on screen --> maybe done just have to test
                         //Test below
@@ -159,7 +157,7 @@ public class MessageGUI implements Runnable {
         sendMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = username + ": " + messageText.getText();
+                String message = currentUser + ": " + messageText.getText();
                 //Test below
                 messageList.addElement(message);
                 //Update GUI to show changes
