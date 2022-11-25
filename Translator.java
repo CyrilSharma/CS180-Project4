@@ -3,34 +3,41 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
+
 public class Translator {
     private static Socket socket;
     private String typeSeperator = "***";
     private String elementSeperator = ",,,";
     private String ansSeperator = "&&&";
+    //TODO: use this for... something
+    private static boolean connected;
+    private static PrintWriter writer;
+    private static ObjectInputStream ois;
 
     public Translator() {
         // There is only socket active at any time.
         if (socket == null) {
             try {
                 socket = new Socket("localhost", 7000);
+                writer = new PrintWriter(socket.getOutputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
+                connected = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "We can't connect to the server right now. Please try again later", "Error", JOptionPane.ERROR_MESSAGE);
+                connected = false;
             }
         }
     }
 
     public Object query(Query q) {
         try {
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
             String args = String.join(elementSeperator, q.getArgs());
             String message = q.getObject() + typeSeperator + q.getFunction() + typeSeperator + args;
+            Object result = null;
             writer.write(message);
             writer.println();
             writer.flush();
-            
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            Object result = null;
             try {
                 result = ois.readObject();
             } catch (Exception e) {
@@ -87,7 +94,7 @@ public class Translator {
      * Rewritten methods for convenience
      */
     public HashMap<String, String> get(String key, String value) {
-        Object o = query(new Query("database", "get", new String[]{key, value}));
+        Object o = query(new Query("Database", "get", new String[]{key, value}));
         if (o == null) {
             return null;
         }

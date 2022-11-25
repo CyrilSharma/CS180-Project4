@@ -94,6 +94,17 @@ public class MessageManager {
         }
     }
 
+    public ArrayList<HashMap<String, String>> getConversation(String id, String otherID) throws IOException {
+        ArrayList<HashMap<String, String>> personalHistory = getPersonalHistory(id);
+        ArrayList<HashMap<String, String>> messages = new ArrayList<>();
+        for (HashMap<String, String> message : personalHistory) {
+            if (message.get("sender").equals(otherID) || message.get("recipient").equals(otherID)) {
+                messages.add(message);
+            }
+        }
+        return messages;
+    }
+
     /**
      * Allows the user to message other users (Customers to Sellers and vv, 
      * NOT Customers to Customers or Sellers to Sellers

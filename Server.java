@@ -14,7 +14,7 @@ public class Server implements Runnable {
     private Filter filter;
     private boolean loggedIn;
 
-    private String typeSeperator = "***";
+    private String typeSeperator = "\\*\\*\\*";
     private String elementSeperator = ",,,";
 
     public Server(Socket socket, MessageManager mm, Database db) {
@@ -34,6 +34,10 @@ public class Server implements Runnable {
             String line;
             while (true) {
                 line = bfr.readLine();
+                if (line.isEmpty()) {
+                    continue;
+                }
+                System.out.println(line);
                 String[] parameters = line.split(typeSeperator);
                 Object o = null;
                 String function = null;
@@ -65,7 +69,8 @@ public class Server implements Runnable {
                     dashboard = new Dashboard(args[0], mm.getHistoryLocation(db.get("email", args[0]).get("id")), db);
                     filter = new Filter(args[0], db);
                 }
-                oos.writeObject(db);
+                oos.writeObject(result);
+                oos.flush();
             }
         } catch (IOException e) {
             // TODO: Change this
