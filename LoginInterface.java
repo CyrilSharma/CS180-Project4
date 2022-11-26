@@ -1,13 +1,11 @@
-public class LoginInterface {
+public class LoginInterface extends Translator {
     
-    Translator translator;
-
     public LoginInterface() {
-        translator = new Translator();
+        super();
     }
 
     public boolean verify(String email, String password) {
-        return ((Boolean) translator.query(new Query("Database", "verify", new String[]{email, password}))).booleanValue();
+        return ((Boolean) query(new Query("Database", "verify", new String[]{email, password}))).booleanValue();
     }
 
 }

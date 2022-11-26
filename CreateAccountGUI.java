@@ -110,8 +110,8 @@ public class CreateAccountGUI implements Runnable {
 //                    f = String.format(f, email, password);
 //                    JOptionPane.showMessageDialog(null, f, "Message", JOptionPane.INFORMATION_MESSAGE);
                     try {
-                        createAccountInterface.add(email, password, cp);
-                        MainMenuGUI gui = new MainMenuGUI(users, Role.Seller);
+                        createAccountInterface.add(email, password, role.toString());
+                        MainMenuGUI gui = new MainMenuGUI(users, role);
                         gui.show();
                         board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                     } catch (InvalidUserException e1) {

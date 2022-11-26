@@ -103,7 +103,7 @@ public class Database {
         if (get("email", name) != null) {
             throw new InvalidUserException("That email is already registered");
         } else if (!validate(name, keys[1])) {
-            throw new InvalidUserException("Your email cannot include special characters");
+            throw new InvalidUserException("You must enter a valid email");
         } else if (!validate(password, keys[2])) {
             throw new InvalidUserException("Your password cannot include special characters");
         }
