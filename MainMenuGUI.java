@@ -62,9 +62,9 @@ public class MainMenuGUI implements Runnable {
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
         title.setFont(f);
         if (role == Role.Customer) {
-            title.setText("Customer Main Menu: Select an option to continue");
+            title.setText("Welcome to the Turkey Shop! Customer Main Menu: Select an option to continue");
         } else if (role == Role.Seller) {
-            title.setText("Seller Main Menu: Select an option to continue");
+            title.setText("Welcome to the Turkey Shop! Seller Main Menu: Select an option to continue");
         }
         upperPanel = new JPanel();
         bottomPanel = new JPanel();
