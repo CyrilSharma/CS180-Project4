@@ -23,8 +23,6 @@ public class PeopleView implements Runnable {
     private JList storeList;
     private JButton blockButton;
     private JButton viewButton;
-    private JButton editButton;
-    private JButton deleteButton;
     private JButton placeholder;
     private JButton backButton;
     private ArrayList<String> users;
@@ -32,7 +30,6 @@ public class PeopleView implements Runnable {
     private ArrayList<String> status;
 
     private JScrollPane scroll2;
-    private int leng;
 
     private Database db;
     private HashMap<String, String> map;
@@ -45,7 +42,6 @@ public class PeopleView implements Runnable {
         this.role = role;
         String[] ex = {"Online", "Offline", "Online"};
         status = new ArrayList<>(Arrays.asList(ex));
-        leng = 0;
 //        db = new Database();
         map = stores;
     }
@@ -66,8 +62,6 @@ public class PeopleView implements Runnable {
         title = new JLabel();
         blockButton = new JButton("Block");
         viewButton = new JButton("Message");
-        editButton = new JButton("Edit Message");
-        deleteButton = new JButton("Delete Message");
         backButton = new JButton("Back");
         upperPanel = new JPanel();
         searchBar = new JTextField("Search...");
@@ -87,8 +81,6 @@ public class PeopleView implements Runnable {
         upperPanel.add(placeholder);
         rightPanel.add(blockButton);
         rightPanel.add(viewButton);
-        rightPanel.add(editButton);
-        rightPanel.add(deleteButton);
         rightPanel.add(backButton);
         convPane.add(upperPanel);
         convPane.add(rightPanel);
@@ -99,11 +91,13 @@ public class PeopleView implements Runnable {
     }
 
     public void testAdd() {
-        String[] stores = new String[10];
+        //String[] stores = new String[10];
+        HashMap<String, String> stores = new HashMap<>();
         for (int i = 0; i < 10; i++) {
-            stores[i] = "Store" + i;
+            stores.put("Store" + i, "" + i);
         }
-        storeList.setListData(stores);
+        map = stores;
+        storeList.setListData(stores.keySet().toArray(new String[0]));
         storeList.updateUI();
     }
     public void setFrame() {
@@ -145,6 +139,7 @@ public class PeopleView implements Runnable {
     }
 
     public ArrayList<String> getUserStores(String email) {
+        //Need a translator here
         HashMap<String, String> data = db.get("email", email);
         String id = data.get("id");
         ArrayList<String> stores = new ArrayList<>();
@@ -177,28 +172,6 @@ public class PeopleView implements Runnable {
 
             }
         });
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = (String) people.getSelectedValue();
-                String msg = "Trying to edit a conversation with " + email;
-                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                MessageGUI gui = new MessageGUI("edit", email,"test","test");
-                gui.show();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
-            }
-        });
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = (String) people.getSelectedValue();
-                String msg = "Trying to delete a conversation with " + email;
-                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                MessageGUI gui = new MessageGUI("delete", email,"test","test");
-                gui.show();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
-            }
-        });
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -217,6 +190,18 @@ public class PeopleView implements Runnable {
             }
             public void insertUpdate(DocumentEvent e) {
                 searchUser();
+            }
+
+        });
+        storeSearchBar.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                searchStore();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                searchStore();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                searchStore();
             }
 
         });
@@ -279,14 +264,32 @@ public class PeopleView implements Runnable {
             people.updateUI();
             return;
         }
-        String text = searchBar.getText();
+        String text = searchBar.getText().toLowerCase();
         ArrayList<String> updated = new ArrayList<>();
         for (String user: users) {
-            if (user.contains(text)) {
+            if (user.toLowerCase().contains(text)) {
                 updated.add(user);
             }
         }
         people.setListData(updated.toArray());
         people.updateUI();
+    }
+
+    public void searchStore() {
+        if (storeSearchBar.getText().equals("Search stores...") || storeSearchBar.getText().isEmpty()) {
+            //JOptionPane.showMessageDialog(null, "Please enter an email!", "Alert", JOptionPane.ERROR_MESSAGE);
+            storeList.setListData(map.keySet().toArray());
+            storeList.updateUI();
+            return;
+        }
+        String text = storeSearchBar.getText().toLowerCase();
+        ArrayList<String> updated = new ArrayList<>();
+        for (String store: map.keySet()) {
+            if (store.toLowerCase().contains(text)) {
+                updated.add(store);
+            }
+        }
+        storeList.setListData(updated.toArray());
+        storeList.updateUI();
     }
 }
