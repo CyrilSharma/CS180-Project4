@@ -121,6 +121,8 @@ public class Server implements Runnable {
                     } catch (ClassCastException e) {
                         //Add all the things that can't be cast as parameters here with if statements or something
                         params[i] = Role.valueOf(args[i]);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
