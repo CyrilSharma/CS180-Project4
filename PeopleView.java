@@ -121,7 +121,7 @@ public class PeopleView implements Runnable {
                 String email = (String) people.getSelectedValue();
                 String msg = "Trying to view a conversation with " + email;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                MessageGUI gui = new MessageGUI("view", email);
+                MessageGUI gui = new MessageGUI("view", email, "test", "test");
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
 
@@ -133,7 +133,7 @@ public class PeopleView implements Runnable {
                 String email = (String) people.getSelectedValue();
                 String msg = "Trying to edit a conversation with " + email;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                MessageGUI gui = new MessageGUI("edit", email);
+                MessageGUI gui = new MessageGUI("edit", email,"test","test");
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
@@ -144,7 +144,7 @@ public class PeopleView implements Runnable {
                 String email = (String) people.getSelectedValue();
                 String msg = "Trying to delete a conversation with " + email;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                MessageGUI gui = new MessageGUI("delete", email);
+                MessageGUI gui = new MessageGUI("delete", email,"test","test");
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
