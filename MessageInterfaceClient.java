@@ -74,25 +74,6 @@ public class MessageInterfaceClient {
         }
     }
 
-    public ArrayList<String> listConversations(String id) {
-        ArrayList<String> ids = new ArrayList<String>();
-        System.out.println("Your conversations:");
-        ArrayList<HashMap<String, String>> conversations = getPersonalHistory(id);
-        int x = 1;
-        for (int i = 0; i < conversations.size(); i++) {
-            HashMap<String, String> convo = conversations.get(i);
-            if (convo.size() == 1 && !convo.containsKey("messageBreak")) {
-                String otherID = client.get("id", convo.get("recipient")).get("email");
-                ids.add(otherID);
-                x++;
-            }
-        }
-        if (x == 1) {
-            System.out.println("You do not appear to have any conversations");
-        }
-        return ids;
-    }
-
     public void exportConversations(String id) {
         String object = "MessageManager";
         String function = "exportConversations";

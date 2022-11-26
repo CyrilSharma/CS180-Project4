@@ -13,7 +13,7 @@ public class LogInGUI implements Runnable {
     private JButton placeholder;
     private JPasswordField passwordField;
     private ArrayList<String> users;
-    private LoginInterface loginInterface;
+    private Translator translator;
 
     public LogInGUI() {
         this(new ArrayList<>());
@@ -22,7 +22,7 @@ public class LogInGUI implements Runnable {
     public LogInGUI(ArrayList<String> exUsers) {
         board = new JFrame("Turkey Shop");
         users = exUsers;
-        loginInterface = new LoginInterface();
+        translator = new Translator();
     }
 
     public void show() {
@@ -126,13 +126,16 @@ public class LogInGUI implements Runnable {
 //                    String f = "Trying to log in with credential {email: %s, pw: %s}\n";
 //                    f = String.format(f, email, password);
 //                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
-                    if (!loginInterface.verify(email, password)) {
+                    if (!((Boolean) translator.query(new Query("Database", "verify", new String[]{email, password})))) {
                         JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
                         LogInGUI loginGUI = new LogInGUI();
                         loginGUI.show();
                         board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                     } else {
-                        MainMenuGUI menu = new MainMenuGUI(users, Role.Seller);
+                        HashMap<String, String> loggedIn = translator.get("email", email);
+                        Role role = Role.valueOf(loggedIn.get("role"));
+                        ArrayList<String> users = (ArrayList<String>) translator.query(new Query("MessageManager", "listConversations", new String[]{loggedIn.get("id")}));
+                        MainMenuGUI menu = new MainMenuGUI(users, role);
                         menu.show();
                         board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                     }

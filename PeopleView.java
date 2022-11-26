@@ -46,7 +46,7 @@ public class PeopleView implements Runnable {
         String[] ex = {"Online", "Offline", "Online"};
         status = new ArrayList<>(Arrays.asList(ex));
         leng = 0;
-        db = new Database();
+//        db = new Database();
         map = stores;
     }
     public void show() {

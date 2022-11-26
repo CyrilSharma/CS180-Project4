@@ -105,6 +105,19 @@ public class MessageManager {
         return messages;
     }
 
+    public ArrayList<String> listConversations(String id) throws IOException {
+        ArrayList<String> ids = new ArrayList<String>();
+        ArrayList<HashMap<String, String>> conversations = getPersonalHistory(id);
+        for (int i = 0; i < conversations.size(); i++) {
+            HashMap<String, String> convo = conversations.get(i);
+            if (convo.size() == 1 && !convo.containsKey("messageBreak")) {
+                String otherID = db.get("id", convo.get("recipient")).get("email");
+                ids.add(otherID);
+            }
+        }
+        return ids;
+    }
+
     /**
      * Allows the user to message other users (Customers to Sellers and vv, 
      * NOT Customers to Customers or Sellers to Sellers

@@ -62,19 +62,19 @@ public class Server implements Runnable {
                     args = parameters[2].split(elementSeperator);
                 }
                 Object result = executeMethod(o, function, args);
-                //TODO: Add logout function
                 if (function.equals("verify") && (Boolean) result) {
                     loggedIn = true;
                     user = new User(args[0], args[1], db.get("email", args[0]).get("role"), mm, db);
                     dashboard = new Dashboard(args[0], mm.getHistoryLocation(db.get("email", args[0]).get("id")), db);
                     filter = new Filter(args[0], db);
+                } else if (function.equals("logout")) {
+                    loggedIn = false;
                 }
                 oos.writeObject(result);
                 oos.flush();
             }
         } catch (IOException e) {
-            // TODO: Change this
-            e.printStackTrace();
+            return;
         }
     }
 
