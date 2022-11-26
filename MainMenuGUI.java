@@ -31,7 +31,7 @@ public class MainMenuGUI implements Runnable {
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PeopleView gui = new PeopleView(users, role);
+                PeopleView gui = new PeopleView(users, role, null);
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
@@ -41,7 +41,7 @@ public class MainMenuGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
-                PeopleView gui = new PeopleView(users, role);
+                PeopleView gui = new PeopleView(users, role, null);
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }

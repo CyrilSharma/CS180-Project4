@@ -64,7 +64,7 @@ public class MessageGUI implements Runnable {
         recipientText = new JLabel();
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
         recipientText.setFont(f);
-        recipientText.setText(this.selectedStore + "Sending message to " + this.emailSelected);
+        recipientText.setText(this.selectedStore + " Sending message to " + this.emailSelected);
         messageText = new JTextField(12);
         messageText.setForeground(Color.GRAY);
         messageText.setText("Insert Message...");

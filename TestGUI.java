@@ -27,8 +27,8 @@ public class TestGUI {
         users.add("cs1811@gmail.com");
         users.add("cs18111@gmail.com");
         users.add("cs1811111@gmail.com");
-        LogInGUI gui = new LogInGUI(users);
-        //PeopleView gui = new PeopleView(users, Role.Seller);
+        //LogInGUI gui = new LogInGUI(users);
+        PeopleView gui = new PeopleView(users, Role.Seller, null);
         gui.show();
 
 //        LogInGUI mainMenu = new LogInGUI(users);

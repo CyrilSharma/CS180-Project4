@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class PeopleView implements Runnable {
     private JFrame board;
@@ -18,6 +19,8 @@ public class PeopleView implements Runnable {
     private JList people;
     private JList statusList;
     private JTextField searchBar;
+    private JTextField storeSearchBar;
+    private JList storeList;
     private JButton blockButton;
     private JButton viewButton;
     private JButton editButton;
@@ -27,16 +30,24 @@ public class PeopleView implements Runnable {
     private ArrayList<String> users;
     private Role role;
     private ArrayList<String> status;
+
+    private JScrollPane scroll2;
     private int leng;
 
+    private Database db;
+    private HashMap<String, String> map;
+
     //pass a list of emails of users
-    public PeopleView(ArrayList<String> emails, Role role) {
+    //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
+    public PeopleView(ArrayList<String> emails, Role role, HashMap<String, String> stores) {
         board = new JFrame("Turkey Shop");
         users = emails;
         this.role = role;
         String[] ex = {"Online", "Offline", "Online"};
         status = new ArrayList<>(Arrays.asList(ex));
         leng = 0;
+        db = new Database();
+        map = stores;
     }
     public void show() {
         SwingUtilities.invokeLater(this);
@@ -60,7 +71,11 @@ public class PeopleView implements Runnable {
         backButton = new JButton("Back");
         upperPanel = new JPanel();
         searchBar = new JTextField("Search...");
+        storeSearchBar = new JTextField("Search stores...");
+        //storeList = new JList(map.keySet().toArray(new String[0]));
+        storeList = new JList();
         placeholder = new JButton();
+        scroll2 = new JScrollPane(storeList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         if (role == Role.Customer) {
             title.setText("Sellers");
         } else {
@@ -78,34 +93,68 @@ public class PeopleView implements Runnable {
         convPane.add(upperPanel);
         convPane.add(rightPanel);
         convPane.add(scrollPane);
+        convPane.add(storeSearchBar);
+        convPane.add(scroll2);
         //scrollPane.add(people);
     }
 
+    public void testAdd() {
+        String[] stores = new String[10];
+        for (int i = 0; i < 10; i++) {
+            stores[i] = "Store" + i;
+        }
+        storeList.setListData(stores);
+        storeList.updateUI();
+    }
     public void setFrame() {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
         upperPanel.setLayout(null);
         convPane.setSize(500,400);
         //convPane.setBackground(Color.GRAY);
+        storeSearchBar.setForeground(Color.GRAY);
         scrollPane.setBounds(30,70,370,250);
         //scrollPane.setBackground(Color.green);
         upperPanel.setSize(400,70);
         people.setBounds(0,0,330,5000);
         convPane.setPreferredSize(new Dimension(370, 800));
+        storeSearchBar.setBounds(30, 340, 300, 20);
         title.setBounds(10,10, 200, 50);
         Font f = new Font("Helvetica", Font.BOLD, 25);
         title.setFont(f);
-        rightPanel.setBounds(400,0, 200, 400);
+        rightPanel.setBounds(400,0, 200, 530);
         blockButton.setBounds(20, 20, 160,30);
         viewButton.setBounds(20, 60, 160,30);
         //editButton.setBounds(20, 100, 160,30);
         //deleteButton.setBounds(20, 140, 160,30);
         placeholder.setBounds(-1,-1,1,1);
-        backButton.setBounds(100, 320, 80, 30);
+        backButton.setBounds(100, 450, 80, 30);
         searchBar.setBounds(200,25,200,20);
+        scroll2.setBounds(30, 370, 370, 100);
         searchBar.setForeground(Color.GRAY);
     }
 
+    public ArrayList<String> getMyStores(String myid) {
+        ArrayList<String> stores = new ArrayList<>();
+        for (String store: map.keySet()) {
+            if (myid.equals(map.get(store))) {
+                stores.add(store);
+            }
+        }
+        return stores;
+    }
+
+    public ArrayList<String> getUserStores(String email) {
+        HashMap<String, String> data = db.get("email", email);
+        String id = data.get("id");
+        ArrayList<String> stores = new ArrayList<>();
+        for (String store: map.keySet()) {
+            if (id.equals(map.get(store))) {
+                stores.add(store);
+            }
+        }
+        return stores;
+    }
     public void addActionListeners() {
         blockButton.addActionListener(new ActionListener() {
             @Override
@@ -119,9 +168,10 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = (String) people.getSelectedValue();
-                String msg = "Trying to view a conversation with " + email;
+                String store = (String) storeList.getSelectedValue();
+                String msg = "Trying to view a conversation with " + email + " with " + store;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                MessageGUI gui = new MessageGUI("view", email, "test", "test");
+                MessageGUI gui = new MessageGUI("view", email, "test", store);
                 gui.show();
                 board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
 
@@ -172,13 +222,14 @@ public class PeopleView implements Runnable {
         });
     }
     public void run() {
-        board.setSize(600,400);
+        board.setSize(600,530);
         board.setLocationRelativeTo(null);
         board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         board.setVisible(true);
         createAndAdd();
         setFrame();
         addActionListeners();
+        testAdd();
         searchBar.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -194,6 +245,25 @@ public class PeopleView implements Runnable {
                 if (searchBar.getText().isEmpty()) {
                     searchBar.setForeground(Color.GRAY);
                     searchBar.setText("Search...");
+                }
+            }
+
+        });
+        storeSearchBar.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                JTextField field = (JTextField)e.getComponent();
+                if (field.getText().equals("Search stores...")) {
+                    field.setText("");
+                }
+                field.setForeground(Color.BLACK);
+                //field.removeFocusListener(this);
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (storeSearchBar.getText().isEmpty()) {
+                    storeSearchBar.setForeground(Color.GRAY);
+                    storeSearchBar.setText("Search stores...");
                 }
             }
 
