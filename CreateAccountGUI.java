@@ -18,7 +18,7 @@ public class CreateAccountGUI implements Runnable {
     private JButton customerButton;
     private JButton sellerButton;
     private JLabel userSelectionLabel;
-    private CreateAccountInterface createAccountInterface;
+    private Translator translator;
 
     public CreateAccountGUI() {
         this(new ArrayList<>());
@@ -26,7 +26,7 @@ public class CreateAccountGUI implements Runnable {
     public CreateAccountGUI(ArrayList<String> users) {
         board = new JFrame("Turkey Store");
         this.users = users;
-        createAccountInterface = new CreateAccountInterface();
+        translator = new Translator();
     }
 
     public void show() {
@@ -110,11 +110,15 @@ public class CreateAccountGUI implements Runnable {
 //                    f = String.format(f, email, password);
 //                    JOptionPane.showMessageDialog(null, f, "Message", JOptionPane.INFORMATION_MESSAGE);
                     try {
-                        createAccountInterface.add(email, password, role.toString());
-                        MainMenuGUI gui = new MainMenuGUI(users, role);
-                        gui.show();
-                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
-                    } catch (InvalidUserException e1) {
+                        Object o = translator.query(new Query("Database", "add", new String[]{email, password, role.toString()}));
+                        if (!(o instanceof Exception)) {
+                            MainMenuGUI gui = new MainMenuGUI(users, role);
+                            gui.show();
+                            board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                        } else {
+                            throw new InvalidUserException(((Exception) o).getMessage());
+                        }
+                    } catch (Exception e1) {
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         CreateAccountGUI createAccountGUI = new CreateAccountGUI();
                         createAccountGUI.show();
