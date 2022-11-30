@@ -13,9 +13,7 @@ public class MainInterfaceGUI implements Runnable {
     JButton createAccount;
     JButton exit;
 
-    public MainInterfaceGUI() {
-        translator = new Translator();
-    }
+    public MainInterfaceGUI() {}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new MainInterfaceGUI());

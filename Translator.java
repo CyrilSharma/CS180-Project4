@@ -19,7 +19,7 @@ public class Translator {
         // There is only socket active at any time.
         if (socket == null) {
             try {
-                socket = new Socket("localhost", 7000);
+                socket = new Socket("localhost", Constants.port);
                 writer = new PrintWriter(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
                 connected = true;
@@ -96,6 +96,7 @@ public class Translator {
     /*
      * Rewritten methods for convenience
      */
+    @SuppressWarnings("unchecked")
     public HashMap<String, String> get(String key, String value) {
         Object o = query(new Query("Database", "get", new String[]{key, value}));
         System.out.println(o);
