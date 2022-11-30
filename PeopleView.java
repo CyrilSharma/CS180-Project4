@@ -168,10 +168,12 @@ public class PeopleView implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 String email = (String) people.getSelectedValue();
                 String store = (String) storeList.getSelectedValue();
-                String msg = "Trying to view a conversation with " + email + " with " + store;
-                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                MessageGUI gui = new MessageGUI("view", email, "test", store);
-                gui.show();
+                if (email != null) {
+                    String msg = "Trying to view a conversation with " + email + " with " + store;
+                    JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
+                    MessageGUI gui = new MessageGUI("view", email, "test", store);
+                    gui.show();
+                }
             }
         });
         backButton.addActionListener(new ActionListener() {
@@ -208,10 +210,6 @@ public class PeopleView implements Runnable {
         });
     }
     public void run() {
-        board.setSize(600,530);
-        board.setLocationRelativeTo(null);
-        board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        board.setVisible(true);
         createAndAdd();
         setFrame();
         addActionListeners();

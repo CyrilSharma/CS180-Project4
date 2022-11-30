@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainMenuGUI {
     private JFrame board;
@@ -16,12 +17,15 @@ public class MainMenuGUI {
     //2 User Options
     private JButton peopleViewPressed;
     private JButton accountManagerPressed;
+    
+    private Translator translator;
 
 
     public MainMenuGUI(JFrame frame, ArrayList<String> users, Role role) {
         this.board = frame;
         this.role = role;
         this.users = users;
+        translator = new Translator();
     }
     public void show() {
         board.setContentPane(new Container());
@@ -34,7 +38,7 @@ public class MainMenuGUI {
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PeopleView gui = new PeopleView(board, users, role, null);
+                PeopleView gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
                 gui.show();
             }
         });
@@ -43,7 +47,7 @@ public class MainMenuGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
-                PeopleView gui = new PeopleView(board, users, role, null);
+                PeopleView gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
                 gui.show();
             }
         });
@@ -54,10 +58,6 @@ public class MainMenuGUI {
         JPanel panel = new JPanel();
         this.container = board.getContentPane();
         container.setLayout(new BorderLayout());
-        board.setSize(600,400);
-        board.setLocationRelativeTo(null);
-        board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        board.setVisible(true);
         title = new JLabel();
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
         title.setFont(f);

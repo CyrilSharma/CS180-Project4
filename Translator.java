@@ -33,6 +33,9 @@ public class Translator {
     public Object query(Query q) {
         try {
             String args = String.join(elementSeperator, q.getArgs());
+            if (q.getArgs() == null || q.getArgs().length == 0) {
+                args = null;
+            }
             String message = q.getObject() + typeSeperator + q.getFunction() + typeSeperator + args;
             Object result = null;
             writer.write(message);
