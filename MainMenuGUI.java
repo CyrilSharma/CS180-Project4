@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class MainMenuGUI implements Runnable {
+public class MainMenuGUI {
     private JFrame board;
     private Container container;
 
@@ -18,22 +18,24 @@ public class MainMenuGUI implements Runnable {
     private JButton accountManagerPressed;
 
 
-    public MainMenuGUI(ArrayList<String> users, Role role) {
-        this.board = new JFrame("Turkey Shop");
+    public MainMenuGUI(JFrame frame, ArrayList<String> users, Role role) {
+        this.board = frame;
         this.role = role;
         this.users = users;
     }
     public void show() {
-        SwingUtilities.invokeLater(this);
+        board.setContentPane(new Container());
+        run();
+        board.revalidate();
+        board.repaint();
     }
 
     public void addActionListeners() {
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PeopleView gui = new PeopleView(users, role, null);
+                PeopleView gui = new PeopleView(board, users, role, null);
                 gui.show();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
         });
         //TODO
@@ -41,15 +43,13 @@ public class MainMenuGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
-                PeopleView gui = new PeopleView(users, role, null);
+                PeopleView gui = new PeopleView(board, users, role, null);
                 gui.show();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
         });
 
     }
 
-    @Override
     public void run() {
         JPanel panel = new JPanel();
         this.container = board.getContentPane();

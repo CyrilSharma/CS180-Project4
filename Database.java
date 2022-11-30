@@ -316,7 +316,7 @@ public class Database {
     private boolean validateKey(String key) {
         boolean keyExists = false;
         for (String k: keys) {
-            if (k == key) {
+            if (k.equals(key)) {
                 keyExists = true;
                 break;
             }

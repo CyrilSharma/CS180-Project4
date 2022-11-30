@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class LogInGUI implements Runnable {
+public class LogInGUI {
     private JFrame board;
     private Container container;
     private JButton logInButton;
@@ -15,18 +15,21 @@ public class LogInGUI implements Runnable {
     private ArrayList<String> users;
     private Translator translator;
 
-    public LogInGUI() {
-        this(new ArrayList<>());
+    public LogInGUI(JFrame frame) {
+        this(frame, new ArrayList<>());
     }
 
-    public LogInGUI(ArrayList<String> exUsers) {
-        board = new JFrame("Turkey Shop");
+    public LogInGUI(JFrame frame, ArrayList<String> exUsers) {
+        board = frame;
         users = exUsers;
         translator = new Translator();
     }
 
     public void show() {
-        SwingUtilities.invokeLater(this);
+        board.setContentPane(new Container());
+        run();
+        board.revalidate();
+        board.repaint();
     }
 
     public void setFrame() {
@@ -66,11 +69,6 @@ public class LogInGUI implements Runnable {
         JPanel panel = new JPanel();
         container = board.getContentPane();
         container.setLayout(new BorderLayout());
-
-        board.setSize(600,400);
-        board.setLocationRelativeTo(null);
-        board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        board.setVisible(true);
         createAndAdd(panel);
         setFrame();
         passwordField.setEchoChar((char)0);
@@ -128,16 +126,12 @@ public class LogInGUI implements Runnable {
 //                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
                     if (!((Boolean) translator.query(new Query("Database", "verify", new String[]{email, password})))) {
                         JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
-                        LogInGUI loginGUI = new LogInGUI();
-                        loginGUI.show();
-                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                     } else {
                         HashMap<String, String> loggedIn = translator.get("email", email);
                         Role role = Role.valueOf(loggedIn.get("role"));
                         ArrayList<String> users = (ArrayList<String>) translator.query(new Query("MessageManager", "listConversations", new String[]{loggedIn.get("id")}));
-                        MainMenuGUI menu = new MainMenuGUI(users, role);
+                        MainMenuGUI menu = new MainMenuGUI(board, users, role);
                         menu.show();
-                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                     }
                 }
             }
@@ -145,11 +139,11 @@ public class LogInGUI implements Runnable {
         createAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CreateAccountGUI gui = new CreateAccountGUI(users);
+                CreateAccountGUI gui = new CreateAccountGUI(board, users);
                 gui.show();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
         });
         container.add(panel, BorderLayout.CENTER);
+        board.setContentPane(container);
     }
 }

@@ -20,17 +20,20 @@ public class CreateAccountGUI implements Runnable {
     private JLabel userSelectionLabel;
     private Translator translator;
 
-    public CreateAccountGUI() {
-        this(new ArrayList<>());
+    public CreateAccountGUI(JFrame frame) {
+        this(frame, new ArrayList<>());
     }
-    public CreateAccountGUI(ArrayList<String> users) {
-        board = new JFrame("Turkey Store");
+    public CreateAccountGUI(JFrame frame, ArrayList<String> users) {
+        board = frame;
         this.users = users;
         translator = new Translator();
     }
 
     public void show() {
-        SwingUtilities.invokeLater(this);
+        board.setContentPane(new Container());
+        run();
+        board.revalidate();
+        board.repaint();
     }
     public void setFrame() {
         placeholder = new JButton();
@@ -112,7 +115,7 @@ public class CreateAccountGUI implements Runnable {
                     try {
                         Object o = translator.query(new Query("Database", "add", new String[]{email, password, role.toString()}));
                         if (!(o instanceof Exception)) {
-                            MainMenuGUI gui = new MainMenuGUI(users, role);
+                            MainMenuGUI gui = new MainMenuGUI(board, users, role);
                             gui.show();
                             board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                         } else {
@@ -120,9 +123,8 @@ public class CreateAccountGUI implements Runnable {
                         }
                     } catch (Exception e1) {
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        CreateAccountGUI createAccountGUI = new CreateAccountGUI();
+                        CreateAccountGUI createAccountGUI = new CreateAccountGUI(board);
                         createAccountGUI.show();
-                        board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                     }
                 }
             }
@@ -130,8 +132,7 @@ public class CreateAccountGUI implements Runnable {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LogInGUI gui = new LogInGUI();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
+                LogInGUI gui = new LogInGUI(board);
                 gui.show();
             }
         });

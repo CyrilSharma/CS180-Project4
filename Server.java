@@ -127,6 +127,7 @@ public class Server implements Runnable {
                 }
             }
             try {
+                System.out.println(o.toString());
                 result = method.invoke(o, params);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 System.out.println(e.getCause());

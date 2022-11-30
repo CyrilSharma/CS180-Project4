@@ -48,31 +48,33 @@ public class User {
      *
      * @return hasAccount boolean
      */
-    public void viewStores() {
+    public HashMap<String, String> viewStores() {
         ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", Role.Seller.toString());
+        HashMap<String, String> stores = new HashMap<>();
         if (this.role.toLowerCase().equals(Role.Customer.toString().toLowerCase())) {
             System.out.println("Stores:");
             for (HashMap<String, String> sellerBlocked : getSellers) {
-                ArrayList<String> stores2 = User.readStoresFromFile(sellerBlocked.get("email"));
-                String storeString = "";
-                for (String store : stores2) {
-                    storeString += store + ", ";
-                }
-                if (storeString.length() > 2)
-                    storeString = storeString.substring(0, storeString.length() - 2);
-                if (!sellerBlocked.get("blocked").contains(id) 
-                    && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
-                    && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
-                    System.out.println(sellerBlocked.get("email") + ": " + storeString);
-                } else if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
-                    && !sellerBlocked.get("invisible").contains(id)) {
-                    System.out.println(sellerBlocked.get("email") + " (blocked): " + storeString);
-                } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
-                    && !sellerBlocked.get("invisible").contains(id)) {
-                    System.out.println(sellerBlocked.get("email") + " (invisible): " + storeString);
+                if (!sellerBlocked.get("blocked").contains(id) && !sellerBlocked.get("invisible").contains(id)) {
+                    ArrayList<String> stores2 = User.readStoresFromFile(sellerBlocked.get("email"));
+                    String id = sellerBlocked.get("id");
+                    if (!sellerBlocked.get("blocked").contains(id) 
+                        && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                        && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
+                        id = sellerBlocked.get("id");
+                    } if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                        && !sellerBlocked.get("invisible").contains(id)) {
+                        id += " (blocked)";
+                    } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                        && !sellerBlocked.get("invisible").contains(id)) {
+                        id += " (invisible)";
+                    }
+                    for (String store : stores2) {
+                        stores.put(store, id);
+                    }
                 }
             }
         }
+        return stores;
     }
 
     /**
@@ -103,6 +105,7 @@ public class User {
      */
     public void viewCustomers() {
         ArrayList<HashMap<String, String>> getCustomers = db.getSelection("role", Role.Customer.toString());
+        HashMap<String, String> customers;
         if (this.role.toLowerCase().equals(Role.Seller.toString().toLowerCase())) {
             System.out.println("Customers:");
             HashMap<String, String> thisUser = db.get("id", id);

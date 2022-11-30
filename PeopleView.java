@@ -31,22 +31,26 @@ public class PeopleView implements Runnable {
 
     private JScrollPane scroll2;
 
-    private Database db;
+    private Translator translator;
     private HashMap<String, String> map;
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
-    public PeopleView(ArrayList<String> emails, Role role, HashMap<String, String> stores) {
-        board = new JFrame("Turkey Shop");
+    public PeopleView(JFrame frame, ArrayList<String> emails, Role role, HashMap<String, String> stores) {
+        board = frame;
         users = emails;
         this.role = role;
         String[] ex = {"Online", "Offline", "Online"};
         status = new ArrayList<>(Arrays.asList(ex));
 //        db = new Database();
         map = stores;
+        translator = new Translator();
     }
     public void show() {
-        SwingUtilities.invokeLater(this);
+        board.setContentPane(new Container());
+        run();
+        board.revalidate();
+        board.repaint();
     }
     public void createAndAdd() {
         content = board.getContentPane();
@@ -140,7 +144,7 @@ public class PeopleView implements Runnable {
 
     public ArrayList<String> getUserStores(String email) {
         //Need a translator here
-        HashMap<String, String> data = db.get("email", email);
+        HashMap<String, String> data = translator.get("email", email);
         String id = data.get("id");
         ArrayList<String> stores = new ArrayList<>();
         for (String store: map.keySet()) {
@@ -168,17 +172,14 @@ public class PeopleView implements Runnable {
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 MessageGUI gui = new MessageGUI("view", email, "test", store);
                 gui.show();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
-
             }
         });
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //will change to mainGUI if it is uploaded
-                MainMenuGUI gui = new MainMenuGUI(users, role);
+                MainMenuGUI gui = new MainMenuGUI(board, users, role);
                 gui.show();
-                board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
             }
         });
         searchBar.getDocument().addDocumentListener(new DocumentListener() {

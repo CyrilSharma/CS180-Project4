@@ -51,18 +51,16 @@ public class MainInterfaceGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                LogInGUI loginGUI = new LogInGUI();
+                LogInGUI loginGUI = new LogInGUI(frame);
                 loginGUI.show();
-                frame.dispose();
             }
         });
         createAccount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                CreateAccountGUI createAccountGUI = new CreateAccountGUI();
+                CreateAccountGUI createAccountGUI = new CreateAccountGUI(frame);
                 createAccountGUI.show();
-                frame.dispose();
             }
         });
         exit.addActionListener(new ActionListener() {

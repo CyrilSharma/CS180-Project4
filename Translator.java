@@ -95,6 +95,7 @@ public class Translator {
      */
     public HashMap<String, String> get(String key, String value) {
         Object o = query(new Query("Database", "get", new String[]{key, value}));
+        System.out.println(o);
         if (o == null) {
             return null;
         }
