@@ -32,9 +32,9 @@ public class MessageGUI implements Runnable {
     private String selectedStore;
     public MessageGUI(String messageChoice, String email, String username, String selectedStore) {
         messageBoard = new JFrame("Turkey Shop");
-        this.currentUser = username;
+        this.currentUser = username; //logged in user
         this.conversationHistory = new ArrayList<>();
-        this.emailSelected = email;
+        this.emailSelected = email; //selected user
         this.selectedStore = selectedStore;
         this.messageChoice = messageChoice;
         //TODO: get the conversationHistory from the translator module
