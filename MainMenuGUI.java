@@ -22,6 +22,7 @@ public class MainMenuGUI {
 
 
     public MainMenuGUI(JFrame frame, ArrayList<String> users, Role role) {
+        frame.setSize(600,400);
         this.board = frame;
         this.role = role;
         this.users = users;

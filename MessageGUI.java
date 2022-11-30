@@ -30,8 +30,9 @@ public class MessageGUI implements Runnable {
     private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<String> conversationHistory;
     private String selectedStore;
-    public MessageGUI(String messageChoice, String email, String username, String selectedStore) {
-        messageBoard = new JFrame("Turkey Shop");
+    public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore) {
+        board.setSize(600,500);
+        messageBoard = board;
         this.currentUser = username; //logged in user
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email; //selected user
@@ -45,9 +46,6 @@ public class MessageGUI implements Runnable {
     @Override
     public void run() {
         JPanel panel = new JPanel();
-        messageBoard.setSize(600,450);
-        messageBoard.setLocationRelativeTo(null);
-        messageBoard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //TODO: pull conversationHistory from database for two people
         /**Test conversation, should usually pull conversation from database
          * conversationHistory.add("hello");
