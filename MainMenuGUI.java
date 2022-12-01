@@ -47,8 +47,9 @@ public class MainMenuGUI {
         accountManagerPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AccountManagerGUI gui = new AccountManagerGUI(board, "testUserName");
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
-                PeopleView gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
+                //PeopleView gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
                 gui.show();
             }
         });
