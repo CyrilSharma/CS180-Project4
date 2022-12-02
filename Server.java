@@ -87,7 +87,8 @@ public class Server implements Runnable {
 
     public static void main(String[] args) throws Exception {
         try {
-            ServerSocket ss = new ServerSocket(7000);
+            ServerSocket ss = new ServerSocket(Constants.port);
+            System.out.println("🥳!");
             Database db = new Database();
             MessageManager mm = new MessageManager(db);
             while (true) {

@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,6 +11,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class PeopleView implements Runnable {
+    //TODO 1: remove html after user checks that message
+    //TODO 2: remove html tag when transferring data
+    //TODO 3: check each store in hashmap, if val = ArrayList(size = 0), remove the key
     private JFrame board;
     private Container content;
     private JScrollPane convPane;
@@ -25,6 +30,7 @@ public class PeopleView implements Runnable {
     private JButton viewButton;
     private JButton placeholder;
     private JButton backButton;
+    private JButton testButton;
     private ArrayList<String> users;
     private Role role;
     private ArrayList<String> status;
@@ -34,9 +40,14 @@ public class PeopleView implements Runnable {
     private Translator translator;
     private HashMap<String, String> map;
 
+    private ArrayList<String> newUserNotif;
+    private ArrayList<String> newStoreNotif;
+    private HashMap<String, ArrayList<String>> userNotifications;
+
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
     public PeopleView(JFrame frame, ArrayList<String> emails, Role role, HashMap<String, String> stores) {
+        frame.setSize(600,540);
         board = frame;
         users = emails;
         this.role = role;
@@ -67,6 +78,7 @@ public class PeopleView implements Runnable {
         blockButton = new JButton("Block");
         viewButton = new JButton("Message");
         backButton = new JButton("Back");
+        testButton = new JButton("test");
         upperPanel = new JPanel();
         searchBar = new JTextField("Search...");
         storeSearchBar = new JTextField("Search stores...");
@@ -86,6 +98,7 @@ public class PeopleView implements Runnable {
         rightPanel.add(blockButton);
         rightPanel.add(viewButton);
         rightPanel.add(backButton);
+        rightPanel.add(testButton);
         convPane.add(upperPanel);
         convPane.add(rightPanel);
         convPane.add(scrollPane);
@@ -94,6 +107,10 @@ public class PeopleView implements Runnable {
         //scrollPane.add(people);
     }
 
+
+    public void updateNotif(HashMap<String, ArrayList<String>> notif) {
+        userNotifications = notif;
+    }
     public void testAdd() {
         //String[] stores = new String[10];
         HashMap<String, String> stores = new HashMap<>();
@@ -104,6 +121,48 @@ public class PeopleView implements Runnable {
         storeList.setListData(stores.keySet().toArray(new String[0]));
         storeList.updateUI();
     }
+
+    public String storeHTMLRemover(String str) {
+        str = str.substring(str.indexOf(">") + 1);
+        str = str.substring(str.indexOf(">") + 1);
+        str = str.substring(str.indexOf(">") + 1);
+        str = str.substring(0, str.indexOf("<"));
+        return str;
+    }
+    public void updateUserUI(String store) {
+        String[] newArray = new String[users.size()];
+        int index = 0;
+        if (userNotifications.get(store) == null) {
+            return;
+        }
+        for (String user: users) {
+            if (userNotifications.get(store).contains(user)) {
+                String newData = "<html><b><font color=blue>";
+                newData += user + "</font></b></html>";
+                newArray[index] = newData;
+            } else {
+                newArray[index] = user;
+            }
+            index++;
+        }
+        people.setListData(newArray);
+    }
+    public void updateStoreUI() {
+        String[] newArray = new String[map.keySet().size()];
+        int index = 0;
+        for (String store: map.keySet()) {
+            if (userNotifications.keySet().contains(store)) {
+                String newData = "<html><b><font color=blue>";
+                newData += store + "</font></b></html>";
+                newArray[index] = newData;
+            } else {
+                newArray[index] = store;
+            }
+            index++;
+        }
+        storeList.setListData(newArray);
+    }
+
     public void setFrame() {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
@@ -122,6 +181,7 @@ public class PeopleView implements Runnable {
         title.setFont(f);
         rightPanel.setBounds(400,0, 200, 530);
         blockButton.setBounds(20, 20, 160,30);
+        testButton.setBounds(20, 100, 160,30);
         viewButton.setBounds(20, 60, 160,30);
         //editButton.setBounds(20, 100, 160,30);
         //deleteButton.setBounds(20, 140, 160,30);
@@ -174,6 +234,18 @@ public class PeopleView implements Runnable {
                     MessageGUI gui = new MessageGUI(board, "view", email, "test", store);
                     gui.show();
                 }
+            }
+        });
+        testButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HashMap<String, ArrayList<String>> map = new HashMap<>();
+                ArrayList<String> userrr = new ArrayList<>();
+                userrr.add("helloworld@gmail.com");
+                map.put("Store1", userrr);
+                updateNotif(map);
+                //updateUserUI();
+                updateStoreUI();
             }
         });
         backButton.addActionListener(new ActionListener() {
@@ -251,6 +323,17 @@ public class PeopleView implements Runnable {
                 }
             }
 
+        });
+        storeList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                //STORE NAME MUST NOT HAVE A SPECIAL CHARACTER
+                String store = (String) storeList.getSelectedValue();
+                if (store.indexOf("<") != -1) {
+                    store = storeHTMLRemover(store);
+                }
+                updateUserUI(store);
+            }
         });
         //people.setBackground(Color.GREEN);
         content.add(convPane, BorderLayout.CENTER);

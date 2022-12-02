@@ -31,11 +31,12 @@ public class MessageGUI implements Runnable {
     private ArrayList<Message> conversationHistory;
     private String selectedStore;
     private MessageInterfaceClient mic;
-    public MessageGUI(JFrame frame, String messageChoice, String email, String username, String selectedStore) {
-        messageBoard = frame;
-        this.currentUser = username;
+    public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore) {
+        board.setSize(600,500);
+        messageBoard = board;
+        this.currentUser = username; //logged in user
         this.conversationHistory = new ArrayList<>();
-        this.emailSelected = email;
+        this.emailSelected = email; //selected user
         this.selectedStore = selectedStore;
         this.messageChoice = messageChoice;
         this.mic = new MessageInterfaceClient();

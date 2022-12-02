@@ -22,6 +22,7 @@ public class MainMenuGUI {
 
 
     public MainMenuGUI(JFrame frame, ArrayList<String> users, Role role) {
+        frame.setSize(600,400);
         this.board = frame;
         this.role = role;
         this.users = users;
@@ -52,6 +53,7 @@ public class MainMenuGUI {
         accountManagerPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AccountManagerGUI accountGUI = new AccountManagerGUI(board, "testUserName");
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
                 PeopleView gui;
                 try {
