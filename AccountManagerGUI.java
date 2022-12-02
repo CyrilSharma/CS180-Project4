@@ -15,11 +15,13 @@ public class AccountManagerGUI implements Runnable {
     private JButton signOutButton;
     private JButton deleteAccountButton;
     private String currentUserName;
+    private ArrayList<String> users;
 
-    public AccountManagerGUI(JFrame board, String currentUserName) {
+    public AccountManagerGUI(JFrame board, String currentUserName, ArrayList<String> users) {
         board.setSize(600,500);
         accountBoard = board;
         this.currentUserName = currentUserName;
+        this.users = users;
     }
 
     public void addActionListeners() {
@@ -30,7 +32,9 @@ public class AccountManagerGUI implements Runnable {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedUsername = (String) (JOptionPane.showInputDialog(null, "Please enter your edited username: ", "Username", JOptionPane.QUESTION_MESSAGE));
                     if (editedUsername != null) {
+                        int index = users.indexOf(currentUserName);
                         currentUserName = editedUsername;
+                        users.set(index, editedUsername);
                         //TODO: Access dashboard to edit the username
                         JOptionPane.showMessageDialog(null, "Username Edited");
                     }
@@ -40,12 +44,12 @@ public class AccountManagerGUI implements Runnable {
         editPasswordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int ans = JOptionPane.showConfirmDialog(null, "Do you want to edit your password? ", "Edit Username", JOptionPane.INFORMATION_MESSAGE);
+                int ans = JOptionPane.showConfirmDialog(null, "Do you want to edit your password? ", "Edit Password", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedPassword = (String) (JOptionPane.showInputDialog(null, "Please enter your edited password: ", "Username", JOptionPane.QUESTION_MESSAGE));
                     if (editedPassword != null) {
                         //TODO: Access dashboard to edit the password
-                        JOptionPane.showMessageDialog(null, "Username Edited");
+                        JOptionPane.showMessageDialog(null, "Password Edited");
                     }
                 }
             }
@@ -89,6 +93,7 @@ public class AccountManagerGUI implements Runnable {
         this.container = accountBoard.getContentPane();
         container.setLayout(new BorderLayout());
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
+        loginName = new JLabel();
         loginName.setFont(f);
         loginName.setText(currentUserName);
         JPanel rightPanel = new JPanel();
