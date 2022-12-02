@@ -71,7 +71,7 @@ public class Server implements Runnable {
                 if (function.equals("verify") && (Boolean) result) {
                     String[] argsString = (String[]) args;
                     loggedIn = true;
-                    user = new User(argsString[0], argsString[1], db.get("email", argsString[0]).get("role"), mm, db);
+                    user = new User(argsString[0], argsString[1], Role.valueOf(db.get("email", argsString[0]).get("role")), mm, db);
                     dashboard = new Dashboard(argsString[0], mm.getHistoryLocation(db.get("email", argsString[0]).get("id")), db);
                     filter = new Filter(argsString[0], db);
                 } else if (function.equals("logout")) {
@@ -88,7 +88,6 @@ public class Server implements Runnable {
     public static void main(String[] args) throws Exception {
         try {
             ServerSocket ss = new ServerSocket(Constants.port);
-            System.out.println("🥳!");
             Database db = new Database();
             MessageManager mm = new MessageManager(db);
             while (true) {

@@ -98,7 +98,7 @@ public class MessageManager {
         ArrayList<HashMap<String, String>> personalHistory = getPersonalHistory(id);
         ArrayList<Message> messages = new ArrayList<>();
         for (HashMap<String, String> message : personalHistory) {
-            if ((message.get("sender").equals(otherID) || message.get("recipient").equals(otherID)) && message.get("store").equals(store)) {
+            if (message.size() > 1 && (message.get("sender").equals(otherID) || message.get("recipient").equals(otherID)) && message.get("store").equals(store)) {
                 String messageContent = message.get("message");
                 String messageNum = message.get("messageNum");
                 String messageSender = message.get("sender");

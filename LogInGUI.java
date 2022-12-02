@@ -130,13 +130,7 @@ public class LogInGUI {
                         } else {
                             HashMap<String, String> loggedIn = translator.get("email", email);
                             Role role = Role.valueOf(loggedIn.get("role"));
-                            ArrayList<String> users = new ArrayList<>();
-                            if (role.equals(Role.Customer)) {
-                                HashMap<String, String> userHashMap = (HashMap<String, String>) translator.query(new Query("User", "viewStores"));
-                                users.addAll(userHashMap.keySet());
-                            } else {
-                                users = (ArrayList<String>) translator.query(new Query("User", "viewCustomers"));
-                            }
+                            ArrayList<String> users = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
                             MainMenuGUI menu = new MainMenuGUI(board, users, role);
                             menu.show();
                         }

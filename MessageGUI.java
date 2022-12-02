@@ -25,7 +25,6 @@ public class MessageGUI implements Runnable {
 
     private String emailSelected;
     private String messageChoice;
-    private String id;
     //allows for GUI to update after each send/edit/delete
     private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<Message> conversationHistory;
@@ -43,7 +42,7 @@ public class MessageGUI implements Runnable {
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
         try {
-            conversationHistory = mic.getConversation(mic.getTranslator().get("email", email).get("id"));
+            conversationHistory = mic.getConversation(mic.getTranslator().get("email", email).get("id"), selectedStore);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -128,8 +127,9 @@ public class MessageGUI implements Runnable {
                         //messages.add(messageText);
                         messages.updateUI();
                         JOptionPane.showMessageDialog(null, "Message Edited");
+                        emailSelected = emailSelected.split(" ")[0];
                         try {
-                            mic.editMessage(id, mic.getTranslator().get("email", emailSelected).get("id"), editedMessage, conversationHistory.get(index).getMessageID());
+                            mic.editMessage(mic.getID(), emailSelected, editedMessage, conversationHistory.get(index).getMessageID());
                         } catch (Exception e1) {
                             // TODO Auto-generated catch block
                             JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -162,7 +162,8 @@ public class MessageGUI implements Runnable {
                     //when the run method is called again it should update the Jlist entirely
                     //TODO: delete in the database
                     try {
-                        mic.deleteMessage(id, mic.getTranslator().get("email", emailSelected).get("id"), conversationHistory.get(index).getMessageID());
+                        emailSelected = emailSelected.split(" ")[0];
+                        mic.deleteMessage(mic.getID(), mic.getTranslator().get("email", emailSelected).get("id"), conversationHistory.get(index).getMessageID());
                         conversationHistory.remove(index);
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block
@@ -178,15 +179,16 @@ public class MessageGUI implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 String message = currentUser + ": " + messageText.getText();
                 //Test below
-                messageList.addElement(message);
-                //Update GUI to show changes
-                messages.updateUI();
-                JOptionPane.showMessageDialog(null, "Message Sent");
                 //TODO: store back in the database of the new message --> do this functionality
                 //add the message on the screen --> should be done automatically if adding the message to the arraylist
                 try {
-                    mic.message(message, id, mic.getTranslator().get("email", emailSelected).get("id"), selectedStore);
-                    conversationHistory = mic.getConversation(mic.getTranslator().get("email", emailSelected).get("id"));
+                    emailSelected = emailSelected.split(" ")[0];
+                    mic.message(message, mic.getID(), emailSelected, selectedStore);
+                    conversationHistory = mic.getConversation(emailSelected, selectedStore);
+                    messageList.addElement(message);
+                    //Update GUI to show changes
+                    messages.updateUI();
+                    JOptionPane.showMessageDialog(null, "Message Sent");
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

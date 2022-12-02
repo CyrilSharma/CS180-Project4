@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.time.Instant;
 
-public class Message {
+public class Message implements Serializable {
     
     private String message;
     private String sender;

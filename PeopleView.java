@@ -111,6 +111,7 @@ public class PeopleView implements Runnable {
     public void updateNotif(HashMap<String, ArrayList<String>> notif) {
         userNotifications = notif;
     }
+    /*
     public void testAdd() {
         //String[] stores = new String[10];
         HashMap<String, String> stores = new HashMap<>();
@@ -121,6 +122,7 @@ public class PeopleView implements Runnable {
         storeList.setListData(stores.keySet().toArray(new String[0]));
         storeList.updateUI();
     }
+    */
 
     public String storeHTMLRemover(String str) {
         str = str.substring(str.indexOf(">") + 1);
@@ -132,7 +134,7 @@ public class PeopleView implements Runnable {
     public void updateUserUI(String store) {
         String[] newArray = new String[users.size()];
         int index = 0;
-        if (userNotifications.get(store) == null) {
+        if (userNotifications == null || userNotifications.get(store) == null) {
             return;
         }
         for (String user: users) {
@@ -204,7 +206,7 @@ public class PeopleView implements Runnable {
 
     public ArrayList<String> getUserStores(String email) throws Exception {
         //Need a translator here
-        HashMap<String, String> data = translator.get("email", email);
+        HashMap<String, String> data = translator.get("email", email.split(" ")[0]);
         String id = data.get("id");
         ArrayList<String> stores = new ArrayList<>();
         for (String store: map.keySet()) {
@@ -227,12 +229,19 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = (String) people.getSelectedValue();
+                email = email.split(" ")[0];
                 String store = (String) storeList.getSelectedValue();
                 if (email != null) {
                     String msg = "Trying to view a conversation with " + email + " with " + store;
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                    MessageGUI gui = new MessageGUI(board, "view", email, "test", store);
-                    gui.show();
+                    MessageGUI gui;
+                    try {
+                        gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store);
+                        gui.show();
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
@@ -285,7 +294,8 @@ public class PeopleView implements Runnable {
         createAndAdd();
         setFrame();
         addActionListeners();
-        testAdd();
+        storeList.setListData(map.keySet().toArray(new String[0]));
+        //testAdd();
         searchBar.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {

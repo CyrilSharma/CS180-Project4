@@ -111,10 +111,10 @@ public class MessageInterfaceClient {
         return (String) translator.query(new Query("User", "getID"));
     }
 
-    public ArrayList<Message> getConversation(String id) throws Exception {
+    public ArrayList<Message> getConversation(String id, String store) throws Exception {
         String object = "MessageManager";
         String function = "getConversation";
-        String[] args = new String[]{getID(), id};
+        String[] args = new String[]{getID(), id, store};
         return (ArrayList<Message>) translator.query(new Query(object, function, args));
     }
 

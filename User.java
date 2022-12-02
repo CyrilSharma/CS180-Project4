@@ -11,11 +11,11 @@ import java.util.HashMap;
  * @version November 13, 2022
  *
  */
-public class User {
+public class User implements Serializable {
     //Instance fields
     private String email;
     private boolean hasAccount;
-    private String role;
+    private Role role;
     private Database db;
     private ArrayList<String> stores;
     private String id; //user's personal ID
@@ -25,7 +25,7 @@ public class User {
      *
      * @param email, password, role, manager
      */
-    public User(String email, String password, String role, MessageManager manager, Database db) {
+    public User(String email, String password, Role role, MessageManager manager, Database db) {
         this.email = email;
         this.role = role;
         this.hasAccount = true;
@@ -52,7 +52,7 @@ public class User {
     }
 
     public Role getRole() {
-        return Role.valueOf(role);
+        return role;
     }
 
     /**
@@ -64,25 +64,22 @@ public class User {
     public HashMap<String, String> viewStores() throws Exception {
         ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", Role.Seller.toString());
         HashMap<String, String> stores = new HashMap<>();
-        if (this.role.toLowerCase().equals(Role.Customer.toString().toLowerCase())) {
+        if (role.equals(Role.Customer)) {
             for (HashMap<String, String> sellerBlocked : getSellers) {
                 if (!sellerBlocked.get("blocked").contains(id) && !sellerBlocked.get("invisible").contains(id)) {
                     ArrayList<String> stores2 = User.readStoresFromFile(sellerBlocked.get("email"));
+                    String email = sellerBlocked.get("email");
                     String id = sellerBlocked.get("id");
-                    if (!sellerBlocked.get("blocked").contains(id) 
-                        && !db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
-                        && !db.get("id", id).get("invisible").contains(sellerBlocked.get("id"))) {
-                        id = sellerBlocked.get("id");
-                    } if (!db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                    if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
                         && !sellerBlocked.get("invisible").contains(id)) {
-                        id += " (blocked)";
-                    } else if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
+                        email += " (blocked)";
+                    } if (db.get("id", id).get("invisible").contains(sellerBlocked.get("id")) 
                         && !sellerBlocked.get("invisible").contains(id)) {
-                        id += " (invisible)";
+                        email += " (invisible)";
                     }
                     //TODO: fix so that invisible people aren't added to the list
                     for (String store : stores2) {
-                        stores.put(store, id);
+                        stores.put(store, email);
                     }
                 }
             }
@@ -97,7 +94,7 @@ public class User {
      * @throws Exception
      */
     public void addStores(String store) throws Exception {
-        if (this.role.toLowerCase().equals("seller")) {
+        if (role.equals(Role.Seller)) {
             try {
                 if (User.getEmailFromStore(store) != null || store.contains("-")) {
                     throw new InvalidUserException("That store name is not available");
@@ -122,18 +119,14 @@ public class User {
     public ArrayList<String> viewCustomers() {
         ArrayList<HashMap<String, String>> getCustomers = db.getSelection("role", Role.Customer.toString());
         ArrayList<String> customers = new ArrayList<>();
-        if (this.role.toLowerCase().equals(Role.Seller.toString().toLowerCase())) {
+        if (role.equals(Role.Seller)) {
             HashMap<String, String> thisUser = db.get("id", id);
             for (HashMap<String, String> sellerBlocked : getCustomers) {
                 String id = sellerBlocked.get("id");
-                if (!sellerBlocked.get("invisible").contains(id) 
-                    && !thisUser.get("blocked").contains(sellerBlocked.get("id")) 
-                    && !thisUser.get("invisible").contains(sellerBlocked.get("id"))) {
-                    id = sellerBlocked.get("id");
-                } else if (thisUser.get("blocked").contains(sellerBlocked.get("id")) 
+                if (thisUser.get("blocked").contains(sellerBlocked.get("id")) 
                     && !sellerBlocked.get("invisible").contains(id)) {
                     id += " (blocked)";
-                } else if (!thisUser.get("blocked").contains(sellerBlocked.get("id")) 
+                } if (thisUser.get("invisible").contains(sellerBlocked.get("id")) 
                     && !sellerBlocked.get("invisible").contains(id)) {
                     id += " (invisible)";
                 }
@@ -191,5 +184,19 @@ public class User {
             throw new Exception(e.getMessage());
         }
         return null;
+    }
+
+    public ArrayList<String> getUsers() throws Exception {
+        ArrayList<String> userList = new ArrayList<>();
+        if (role.equals(Role.Customer)) {
+            HashMap<String, String> users = viewStores();
+            userList.addAll(users.values());
+            for (int i = 0; i < userList.size(); i++) {
+                userList.set(i, userList.get(i).split(" ")[0]);
+            }
+        } else {
+            userList = viewCustomers();
+        }
+        return userList;
     }
 }
