@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class TestDatabase {;
     private static final String FILEPATH = "testDatabase/db.txt";
     private static File f = new File(FILEPATH);
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String FILEPATH = "testDatabase/db.txt";
         File f = new File(FILEPATH);
         PathManager.storeDir = "testDatabase/";
@@ -25,7 +25,7 @@ public class TestDatabase {;
         f.delete();
     }
 
-    public static boolean test1() {
+    public static boolean test1() throws Exception {
         // Test get.
         Database db1 = new Database();
         try {
@@ -55,7 +55,7 @@ public class TestDatabase {;
         return true;
     }
 
-    public static boolean test2() {
+    public static boolean test2() throws Exception {
         // Test verify.
         Database db = new Database();
         for (int i = 0; i < 10; i++) {
@@ -69,7 +69,7 @@ public class TestDatabase {;
         return true;
     }
 
-    public static boolean test3() {
+    public static boolean test3() throws Exception {
         // Test modify.
         Database db1 = new Database();
         for (int i = 6; i < 10; i++) {
@@ -96,7 +96,7 @@ public class TestDatabase {;
         return true;
     }
 
-    public static boolean test4() {
+    public static boolean test4() throws Exception {
         // Test block.
         Database db1 = new Database();
         for (int i = 0; i < 5; i++) {

@@ -38,8 +38,14 @@ public class MainMenuGUI {
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PeopleView gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
-                gui.show();
+                PeopleView gui;
+                try {
+                    gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
+                    gui.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         //TODO
@@ -47,8 +53,14 @@ public class MainMenuGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
-                PeopleView gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
-                gui.show();
+                PeopleView gui;
+                try {
+                    gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
+                    gui.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 

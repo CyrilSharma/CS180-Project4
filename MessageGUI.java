@@ -28,33 +28,39 @@ public class MessageGUI implements Runnable {
     private String id;
     //allows for GUI to update after each send/edit/delete
     private DefaultListModel messageList = new DefaultListModel();
-    private ArrayList<String> conversationHistory;
+    private ArrayList<Message> conversationHistory;
     private String selectedStore;
-    public MessageGUI(String messageChoice, String email, String username, String selectedStore) {
-        messageBoard = new JFrame("Turkey Shop");
+    private MessageInterfaceClient mic;
+    public MessageGUI(JFrame frame, String messageChoice, String email, String username, String selectedStore) {
+        messageBoard = frame;
         this.currentUser = username;
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email;
         this.selectedStore = selectedStore;
         this.messageChoice = messageChoice;
+        this.mic = new MessageInterfaceClient();
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
+        try {
+            conversationHistory = mic.getConversation(mic.getTranslator().get("email", email).get("id"));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 
     @Override
     public void run() {
         JPanel panel = new JPanel();
-        messageBoard.setSize(600,450);
-        messageBoard.setLocationRelativeTo(null);
-        messageBoard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //TODO: pull conversationHistory from database for two people
         /**Test conversation, should usually pull conversation from database
          * conversationHistory.add("hello");
          * conversationHistory.add(, "meme");
          * conversationHistory.add("insert message here");
          */
-        String[] msg = conversationHistory.toArray(new String[0]);
+        //TODO: Change to only take in the message text parameters
+        String[] msg = mic.messagesToArray(conversationHistory);
         messageList.addAll(List.of(msg));
         messages = new JList(messageList);
         scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -94,7 +100,6 @@ public class MessageGUI implements Runnable {
             JOptionPane.showMessageDialog(null, "Select a message to delete", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
      */
-        messageBoard.setVisible(true);
         addActionListeners();
         container.add(panel, BorderLayout.CENTER);
 
@@ -122,7 +127,12 @@ public class MessageGUI implements Runnable {
                         //messages.add(messageText);
                         messages.updateUI();
                         JOptionPane.showMessageDialog(null, "Message Edited");
-                        conversationHistory.set(index, editedMessage);
+                        try {
+                            mic.editMessage(id, mic.getTranslator().get("email", emailSelected).get("id"), editedMessage, conversationHistory.get(index).getMessageID());
+                        } catch (Exception e1) {
+                            // TODO Auto-generated catch block
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 }
                 //else if no don't do anything
@@ -147,10 +157,16 @@ public class MessageGUI implements Runnable {
                     //messages.add(messageText);
                     messages.updateUI();
                     JOptionPane.showMessageDialog(null, "Message Deleted");
-                    conversationHistory.remove(index);
                     //removes the message from the conversationHistory
                     //when the run method is called again it should update the Jlist entirely
                     //TODO: delete in the database
+                    try {
+                        mic.deleteMessage(id, mic.getTranslator().get("email", emailSelected).get("id"), conversationHistory.get(index).getMessageID());
+                        conversationHistory.remove(index);
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
                 //else if no don't do anything
             }
@@ -164,17 +180,25 @@ public class MessageGUI implements Runnable {
                 messageList.addElement(message);
                 //Update GUI to show changes
                 messages.updateUI();
-                conversationHistory.add(message);
                 JOptionPane.showMessageDialog(null, "Message Sent");
                 //TODO: store back in the database of the new message --> do this functionality
                 //add the message on the screen --> should be done automatically if adding the message to the arraylist
-
+                try {
+                    mic.message(message, id, mic.getTranslator().get("email", emailSelected).get("id"), selectedStore);
+                    conversationHistory = mic.getConversation(mic.getTranslator().get("email", emailSelected).get("id"));
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
 
     public void show() {
-        SwingUtilities.invokeLater(this);
+        messageBoard.setContentPane(new Container());
+        run();
+        messageBoard.revalidate();
+        messageBoard.repaint();
     }
 }
 

@@ -124,14 +124,25 @@ public class LogInGUI {
 //                    String f = "Trying to log in with credential {email: %s, pw: %s}\n";
 //                    f = String.format(f, email, password);
 //                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
-                    if (!((Boolean) translator.query(new Query("Database", "verify", new String[]{email, password})))) {
-                        JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        HashMap<String, String> loggedIn = translator.get("email", email);
-                        Role role = Role.valueOf(loggedIn.get("role"));
-                        ArrayList<String> users = (ArrayList<String>) translator.query(new Query("MessageManager", "listConversations", new String[]{loggedIn.get("id")}));
-                        MainMenuGUI menu = new MainMenuGUI(board, users, role);
-                        menu.show();
+                    try {
+                        if (!((Boolean) translator.query(new Query("Database", "verify", new String[]{email, password})))) {
+                            JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            HashMap<String, String> loggedIn = translator.get("email", email);
+                            Role role = Role.valueOf(loggedIn.get("role"));
+                            ArrayList<String> users = new ArrayList<>();
+                            if (role.equals(Role.Customer)) {
+                                HashMap<String, String> userHashMap = (HashMap<String, String>) translator.query(new Query("User", "viewStores"));
+                                users.addAll(userHashMap.keySet());
+                            } else {
+                                users = (ArrayList<String>) translator.query(new Query("User", "viewCustomers"));
+                            }
+                            MainMenuGUI menu = new MainMenuGUI(board, users, role);
+                            menu.show();
+                        }
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }

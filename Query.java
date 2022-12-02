@@ -1,7 +1,9 @@
-public class Query {
+import java.io.Serializable;
+
+public class Query implements Serializable {
     private String object;
     private String function;
-    private String[] args;
+    private Object[] args;
 
     public Query(String object, String function) {
         this(object, function, new String[]{});
@@ -11,7 +13,7 @@ public class Query {
         this(object, function, new String[]{args});
     }
 
-    public Query(String object, String function, String[] args) {
+    public Query(String object, String function, Object[] args) {
         this.object = object;
         this.function = function;
         this.args = args;
@@ -25,7 +27,7 @@ public class Query {
         return this.function;
     }
 
-    public String[] getArgs() {
+    public Object[] getArgs() {
         return this.args;
     }
 }

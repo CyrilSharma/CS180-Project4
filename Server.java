@@ -17,6 +17,10 @@ public class Server implements Runnable {
     private String typeSeperator = "\\*\\*\\*";
     private String elementSeperator = ",,,";
 
+    private ObjectOutputStream oos;
+    private BufferedReader bfr;
+    private ObjectInputStream ois;
+
     public Server(Socket socket, MessageManager mm, Database db) {
         this.socket = socket;
         this.mm = mm;
@@ -24,61 +28,64 @@ public class Server implements Runnable {
         this.dashboard = null;
         this.filter = null;
         this.loggedIn = false;
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            ois = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            run();
+        }
     }
 
     @Override
     public void run() {
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String line;
             while (true) {
-                line = bfr.readLine();
-                if (line.isEmpty()) {
+                Object input = ois.readObject();
+                if (input == null) {
                     continue;
                 }
-                System.out.println(line);
-                String[] parameters = line.split(typeSeperator);
+                Query query = (Query) input;
                 Object o = null;
                 String function = null;
-                String[] args = null;
-                if (parameters[0].equals("Database")) {
+                Object[] args = null;
+                if (query.getObject().equals("Database")) {
                     o = db;
-                } else if (parameters[0].equals("MessageManager")) {
+                } else if (query.getObject().equals("MessageManager")) {
                     o = mm;
                 } else if (loggedIn) {
-                    if (parameters[0].equals("User")) {
+                    if (query.getObject().equals("User")) {
                         o = user;
-                    } else if (parameters[0].equals("Dashboard")) {
+                    } else if (query.getObject().equals("Dashboard")) {
                         o = dashboard;
-                    } else if (parameters[0].equals("Filter")) {
+                    } else if (query.getObject().equals("Filter")) {
                         o = filter;
                     }
                 } else {
                     continue;
                 }
-                function = parameters[1];
-                if (parameters[2] != null) {
-                    args = parameters[2].split(elementSeperator);
-                }
+                function = query.getFunction();
+                args = query.getArgs();
                 Object result = executeMethod(o, function, args);
                 if (function.equals("verify") && (Boolean) result) {
+                    String[] argsString = (String[]) args;
                     loggedIn = true;
-                    user = new User(args[0], args[1], db.get("email", args[0]).get("role"), mm, db);
-                    dashboard = new Dashboard(args[0], mm.getHistoryLocation(db.get("email", args[0]).get("id")), db);
-                    filter = new Filter(args[0], db);
+                    user = new User(argsString[0], argsString[1], db.get("email", argsString[0]).get("role"), mm, db);
+                    dashboard = new Dashboard(argsString[0], mm.getHistoryLocation(db.get("email", argsString[0]).get("id")), db);
+                    filter = new Filter(argsString[0], db);
                 } else if (function.equals("logout")) {
                     loggedIn = false;
                 }
                 oos.writeObject(result);
                 oos.flush();
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             return;
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         try {
             ServerSocket ss = new ServerSocket(7000);
             Database db = new Database();
@@ -94,7 +101,7 @@ public class Server implements Runnable {
         }
     }
 
-    private <T> Method generateClasses(Object obj, String function, String[] args) {
+    private <T> Method generateClasses(Object obj, String function, Object[] args) {
         Method[] methods = obj.getClass().getMethods();
         for (Method method : methods) {
             if (method.getName().equals(function) && method.getParameterTypes().length == args.length) {
@@ -104,7 +111,7 @@ public class Server implements Runnable {
         return null;
     }
 
-    private Object executeMethod(Object o, String function, String[] args) {
+    private Object executeMethod(Object o, String function, Object[] args) {
         Method method = generateClasses(o, function, args);
         if (method == null) {
             return null;
@@ -120,16 +127,15 @@ public class Server implements Runnable {
                         params[i] = methodParameterTypes[i].cast(args[i]);
                     } catch (ClassCastException e) {
                         //Add all the things that can't be cast as parameters here with if statements or something
-                        params[i] = Role.valueOf(args[i]);
+                        params[i] = Role.valueOf((String) args[i]);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        return null;
                     }
                 }
             }
             try {
                 result = method.invoke(o, params);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                System.out.println(e.getCause());
                 result = e.getCause();
             }
         }

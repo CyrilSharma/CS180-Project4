@@ -117,14 +117,11 @@ public class CreateAccountGUI implements Runnable {
                         if (!(o instanceof Exception)) {
                             MainMenuGUI gui = new MainMenuGUI(board, users, role);
                             gui.show();
-                            board.dispatchEvent(new WindowEvent(board, WindowEvent.WINDOW_CLOSING));
                         } else {
                             throw new InvalidUserException(((Exception) o).getMessage());
                         }
                     } catch (Exception e1) {
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        CreateAccountGUI createAccountGUI = new CreateAccountGUI(board);
-                        createAccountGUI.show();
                     }
                 }
             }

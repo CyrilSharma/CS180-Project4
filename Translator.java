@@ -14,6 +14,7 @@ public class Translator {
     private static boolean connected;
     private static PrintWriter writer;
     private static ObjectInputStream ois;
+    private static ObjectOutputStream oos;
 
     public Translator() {
         // There is only socket active at any time.
@@ -22,6 +23,7 @@ public class Translator {
                 socket = new Socket("localhost", 7000);
                 writer = new PrintWriter(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
+                oos = new ObjectOutputStream(socket.getOutputStream());
                 connected = true;
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "We can't connect to the server right now. Please try again later", "Error", JOptionPane.ERROR_MESSAGE);
@@ -30,29 +32,22 @@ public class Translator {
         }
     }
 
-    public Object query(Query q) {
-        try {
+    public Object query(Query q) throws Exception {
+        try {/*
             String args = String.join(elementSeperator, q.getArgs());
             if (q.getArgs() == null || q.getArgs().length == 0) {
                 args = null;
             }
             String message = q.getObject() + typeSeperator + q.getFunction() + typeSeperator + args;
+            */
             Object result = null;
-            writer.write(message);
-            writer.println();
-            writer.flush();
-            try {
-                result = ois.readObject();
-            } catch (Exception e) {
-                // CONNECTION ERROR. Custom exception?
-                e.printStackTrace();
-                return null;
-            }
+            oos.writeObject(q);
+            oos.flush();
+            result = ois.readObject();
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("We are having trouble connecting to the server");
         }
-        return null;
     }
 
     public void respond(String[] data) {
@@ -96,9 +91,8 @@ public class Translator {
     /*
      * Rewritten methods for convenience
      */
-    public HashMap<String, String> get(String key, String value) {
+    public HashMap<String, String> get(String key, String value) throws Exception {
         Object o = query(new Query("Database", "get", new String[]{key, value}));
-        System.out.println(o);
         if (o == null) {
             return null;
         }

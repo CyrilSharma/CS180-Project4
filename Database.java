@@ -24,8 +24,9 @@ public class Database {
      * initializes the instance field variables
      *
      * @param path of the database
+     * @throws Exception
      */
-    public Database() {
+    public Database() throws Exception {
         databasePath = String.format("%s/Database.txt", PathManager.storeDir);
         database = readFromDatabase(databasePath);
         random = new Random();
@@ -37,12 +38,12 @@ public class Database {
      * @param path of the fileName
      * @return ArrayList<HashMap<String, String>> userlist
      */
-    private ArrayList<HashMap<String, String>> readFromDatabase(String path) {
+    private ArrayList<HashMap<String, String>> readFromDatabase(String path) throws Exception {
         File f = new File(path);
         try {
             f.createNewFile();
         } catch (Exception e) {
-            System.out.println("An error has occurred reading from the database");
+            throw new Exception("An error has occurred reading from the database");
         }
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             ArrayList<HashMap<String, String>> userList = new ArrayList<HashMap<String, String>>();
@@ -131,7 +132,7 @@ public class Database {
      *
      * @param name
      */
-    public void remove(String name) throws InvalidUserException {
+    public void remove(String name) throws InvalidUserException, InvalidKeyException {
         HashMap<String, String> toBeRemoved = get("email", name);
         if (toBeRemoved == null) {
             throw new InvalidUserException("That email does not exist");
@@ -139,7 +140,7 @@ public class Database {
         try {
             modify(name, "role", Role.Deleted.toString());
         } catch (InvalidKeyException e) {
-            System.out.println("Something went wrong trying to delete your account");
+            throw new InvalidKeyException("Something went wrong trying to delete your account");
         }
         save();
     }

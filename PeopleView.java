@@ -142,7 +142,7 @@ public class PeopleView implements Runnable {
         return stores;
     }
 
-    public ArrayList<String> getUserStores(String email) {
+    public ArrayList<String> getUserStores(String email) throws Exception {
         //Need a translator here
         HashMap<String, String> data = translator.get("email", email);
         String id = data.get("id");
@@ -171,7 +171,7 @@ public class PeopleView implements Runnable {
                 if (email != null) {
                     String msg = "Trying to view a conversation with " + email + " with " + store;
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                    MessageGUI gui = new MessageGUI("view", email, "test", store);
+                    MessageGUI gui = new MessageGUI(board, "view", email, "test", store);
                     gui.show();
                 }
             }

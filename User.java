@@ -43,16 +43,28 @@ public class User {
         return this.hasAccount;
     }
 
+    public String getID() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Role getRole() {
+        return Role.valueOf(role);
+    }
+
     /**
      * checks if the account exists
      *
      * @return hasAccount boolean
+     * @throws Exception
      */
-    public HashMap<String, String> viewStores() {
+    public HashMap<String, String> viewStores() throws Exception {
         ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", Role.Seller.toString());
         HashMap<String, String> stores = new HashMap<>();
         if (this.role.toLowerCase().equals(Role.Customer.toString().toLowerCase())) {
-            System.out.println("Stores:");
             for (HashMap<String, String> sellerBlocked : getSellers) {
                 if (!sellerBlocked.get("blocked").contains(id) && !sellerBlocked.get("invisible").contains(id)) {
                     ArrayList<String> stores2 = User.readStoresFromFile(sellerBlocked.get("email"));
@@ -68,6 +80,7 @@ public class User {
                         && !sellerBlocked.get("invisible").contains(id)) {
                         id += " (invisible)";
                     }
+                    //TODO: fix so that invisible people aren't added to the list
                     for (String store : stores2) {
                         stores.put(store, id);
                     }
@@ -81,8 +94,9 @@ public class User {
      * Allows seller to create a store under their name that is visible to all
      * unblocked customers
      * @param store
+     * @throws Exception
      */
-    public void addStores(String store) throws InvalidUserException {
+    public void addStores(String store) throws Exception {
         if (this.role.toLowerCase().equals("seller")) {
             try {
                 if (User.getEmailFromStore(store) != null || store.contains("-")) {
@@ -96,33 +110,38 @@ public class User {
                 stores.add(store);
                 pw.close();
             } catch (IOException e) {
-                System.out.println("An error has occurred creating your store");
+                throw new IOException("An error has occurred creating your store");
             }
         }
     }
     /**
      * Seller can view list of customers that they can send messages to
      */
-    public void viewCustomers() {
+
+    //TODO: Test this function, repeatedly
+    public ArrayList<String> viewCustomers() {
         ArrayList<HashMap<String, String>> getCustomers = db.getSelection("role", Role.Customer.toString());
-        HashMap<String, String> customers;
+        ArrayList<String> customers = new ArrayList<>();
         if (this.role.toLowerCase().equals(Role.Seller.toString().toLowerCase())) {
-            System.out.println("Customers:");
             HashMap<String, String> thisUser = db.get("id", id);
             for (HashMap<String, String> sellerBlocked : getCustomers) {
+                String id = sellerBlocked.get("id");
                 if (!sellerBlocked.get("invisible").contains(id) 
                     && !thisUser.get("blocked").contains(sellerBlocked.get("id")) 
                     && !thisUser.get("invisible").contains(sellerBlocked.get("id"))) {
-                    System.out.println(sellerBlocked.get("email"));
-                } else if (!thisUser.get("blocked").contains(sellerBlocked.get("id")) 
-                    && !sellerBlocked.get("invisible").contains(id)) {
-                    System.out.println(sellerBlocked.get("email") + " (invisible)");
+                    id = sellerBlocked.get("id");
                 } else if (thisUser.get("blocked").contains(sellerBlocked.get("id")) 
                     && !sellerBlocked.get("invisible").contains(id)) {
-                    System.out.println(sellerBlocked.get("email") + " (blocked)");
+                    id += " (blocked)";
+                } else if (!thisUser.get("blocked").contains(sellerBlocked.get("id")) 
+                    && !sellerBlocked.get("invisible").contains(id)) {
+                    id += " (invisible)";
                 }
+                //TODO: fix so that invisible people aren't added to the list
+                customers.add(id);
             }
         }
+        return customers;
     }
 
     /**
@@ -138,8 +157,9 @@ public class User {
      *
      * @param email
      * @return things as arraylist of strings with stores from the file
+     * @throws Exception
      */
-    public static ArrayList<String> readStoresFromFile(String email) {
+    public static ArrayList<String> readStoresFromFile(String email) throws Exception {
         try (BufferedReader bfr = new BufferedReader(new FileReader(
                 new File(PathManager.storeDir + "Stores.txt")))) {
             ArrayList<String> things = new ArrayList<String>();
@@ -151,15 +171,14 @@ public class User {
             }
             return things;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
 
     /**
      * Gets seller name from the associated store
      */
-    public static String getEmailFromStore(String store) {
+    public static String getEmailFromStore(String store) throws Exception {
         try (BufferedReader bfr = new BufferedReader(new FileReader(
                 new File(PathManager.storeDir + "Stores.txt")))) {
             String line;
@@ -169,7 +188,7 @@ public class User {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw new Exception(e.getMessage());
         }
         return null;
     }

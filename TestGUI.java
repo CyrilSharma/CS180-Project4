@@ -30,7 +30,12 @@ public class TestGUI {
         users.add("cs18111@gmail.com");
         users.add("cs1811111@gmail.com");
         //LogInGUI gui = new LogInGUI(users);
-        PeopleView gui = new PeopleView(new JFrame(), users, Role.Seller, null);
+        JFrame frame = new JFrame();
+        frame.setSize(600,400);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+        PeopleView gui = new PeopleView(frame, users, Role.Seller, null);
         gui.show();
 
 //        LogInGUI mainMenu = new LogInGUI(users);

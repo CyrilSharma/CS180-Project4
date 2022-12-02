@@ -3,15 +3,15 @@ import java.io.*;
 import java.time.Instant;
 
 public class MessageInterfaceClient {
-    private Translator client;
+    private Translator translator;
     public MessageInterfaceClient() {
-        client = new Translator();
+        translator = new Translator();
     }
-    public String message(String message, String id, String recipientId, String store) {
+    public String message(String message, String id, String recipientId, String store) throws Exception {
         String object = "MessageManager";
         String function = "messageUser";
         String[] args = {id, recipientId, message, store};
-        Object o = client.query(new Query(object, function, args));
+        Object o = translator.query(new Query(object, function, args));
         if (o == null) {
             // handled by caller method.
             return "INVALID";
@@ -19,11 +19,11 @@ public class MessageInterfaceClient {
         return "SUCCESS";
     }
 
-    public String editMessage(String id, String recipientId, String newMessage, String messageID) {
+    public String editMessage(String id, String recipientId, String newMessage, String messageID) throws Exception {
         String object = "MessageManager";
         String function = "editMessage";
         String[] args = {id, recipientId, newMessage, messageID};
-        Object o = client.query(new Query(object, function, args));
+        Object o = translator.query(new Query(object, function, args));
         if (o == null) {
             // handled by caller method.
             return "INVALID";
@@ -31,11 +31,11 @@ public class MessageInterfaceClient {
         return "SUCCESS";
     }
 
-    public String deleteMessage(String id, String recipientId, String messageID) {
+    public String deleteMessage(String id, String recipientId, String messageID) throws Exception {
         String object = "MessageManager";
         String function = "deleteMessage";
         String[] args = {id, recipientId, messageID};
-        Object o = client.query(new Query(object, function, args));
+        Object o = translator.query(new Query(object, function, args));
         if (o == null) {
             // handled by caller method.
             return "INVALID";
@@ -43,18 +43,18 @@ public class MessageInterfaceClient {
         return "SUCCESS";
     }
 
-    public ArrayList<HashMap<String, String>> getPersonalHistory(String id) {
+    public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws Exception {
         String object = "MessageManager";
         String function = "getPersonalHistory";
         String[] args = {id};
-        Object o = client.query(new Query(object, function, args));
+        Object o = translator.query(new Query(object, function, args));
         if (o == null) {
             return null;
         }
         return (ArrayList<HashMap<String, String>>) o;
     }
     
-    public ArrayList<HashMap<String, String>> missedMessages(Scanner scanner, String id, Translator client) {
+    public ArrayList<HashMap<String, String>> missedMessages(Scanner scanner, String id, Translator client) throws Exception {
         Instant lastOnline = Instant.parse(client.get("id", id).get("lastOnline"));
         try {
             ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
@@ -69,16 +69,16 @@ public class MessageInterfaceClient {
             sort(missedMessages);
             return missedMessages;
         } catch (Exception e) {
-            System.out.println("There was a problem accessing your history");
-            return null;
+            throw new Exception("There was a problem accessing your history");
         }
     }
 
-    public void exportConversations(String id) {
+    public void exportConversations(String id, String[] otherIDs) throws Exception {
         String object = "MessageManager";
-        String function = "exportConversations";
-        String[] args = new String[]{id};
-        client.query(new Query(object, function, args));
+        String function = "messagesToCSV";
+        //TODO: change this to objects, I guess
+        Object[] args = new Object[]{id, otherIDs};
+        translator.query(new Query(object, function, args));
     }
 
     /**
@@ -105,5 +105,28 @@ public class MessageInterfaceClient {
                 }
             }
         }
+    }
+
+    public String getID() throws Exception {
+        return (String) translator.query(new Query("User", "getID"));
+    }
+
+    public ArrayList<Message> getConversation(String id) throws Exception {
+        String object = "MessageManager";
+        String function = "getConversation";
+        String[] args = new String[]{getID(), id};
+        return (ArrayList<Message>) translator.query(new Query(object, function, args));
+    }
+
+    public Translator getTranslator() {
+        return translator;
+    }
+
+    public String[] messagesToArray(ArrayList<Message> conversationHistory) {
+        String[] messages = new String[conversationHistory.size()];
+        for (int i = 0; i < conversationHistory.size(); i++) {
+            messages[i] = conversationHistory.get(i).getMessage();
+        }
+        return messages;
     }
 }

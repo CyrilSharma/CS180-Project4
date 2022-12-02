@@ -8,13 +8,11 @@ import javax.swing.*;
 public class MainInterfaceGUI implements Runnable {
     
     JFrame frame;
-    Translator translator;
     JButton login;
     JButton createAccount;
     JButton exit;
 
     public MainInterfaceGUI() {
-        translator = new Translator();
     }
 
     public static void main(String[] args) {

@@ -94,12 +94,18 @@ public class MessageManager {
         }
     }
 
-    public ArrayList<HashMap<String, String>> getConversation(String id, String otherID, String store) throws IOException {
+    public ArrayList<Message> getConversation(String id, String otherID, String store) throws IOException {
         ArrayList<HashMap<String, String>> personalHistory = getPersonalHistory(id);
-        ArrayList<HashMap<String, String>> messages = new ArrayList<>();
+        ArrayList<Message> messages = new ArrayList<>();
         for (HashMap<String, String> message : personalHistory) {
             if ((message.get("sender").equals(otherID) || message.get("recipient").equals(otherID)) && message.get("store").equals(store)) {
-                messages.add(message);
+                String messageContent = message.get("message");
+                String messageNum = message.get("messageNum");
+                String messageSender = message.get("sender");
+                String messageRecipient = message.get("recipient");
+                Instant messageTimeStamp = Instant.parse(message.get("timeStamp"));
+                String messageStore = message.get("store");
+                messages.add(new Message(messageContent, messageNum, messageSender, messageRecipient, messageTimeStamp, messageStore));
             }
         }
         return messages;
@@ -122,33 +128,35 @@ public class MessageManager {
      * Allows the user to message other users (Customers to Sellers and vv, 
      * NOT Customers to Customers or Sellers to Sellers
      */
-    public void messageUser(String senderID, String recipientID, String message, String store) {
+    public void messageUser(String senderID, String recipientID, String message, String store) throws Exception {
         try {
             generalMessage(senderID, recipientID, message, "message", "", store);
         } catch (Exception e) {
-            System.out.println("An error has occurred sending your message");
+            throw new Exception("An error has occurred sending your message");
         }
     }
 
     /**
      * Allows the user to edit a message in an existing conversation
+     * @throws Exception
      */
-    public void editMessage(String senderID, String recipientID, String message, String messageId) {
+    public void editMessage(String senderID, String recipientID, String message, String messageId) throws Exception {
         try {
             generalMessage(senderID, recipientID, message, "edit", messageId, "");
         } catch (Exception e) {
-            System.out.println("An error has occurred sending your message");
+            throw new Exception("An error has occurred sending your message");
         }
     }
 
     /**
      * Allows the user to delete a message from THEIR personal message history
+     * @throws Exception
      */
-    public void deleteMessage(String senderID, String recipientID, String messageId) {
+    public void deleteMessage(String senderID, String recipientID, String messageId) throws Exception {
         try {
             generalMessage(senderID, recipientID, "", "delete", messageId, "");
         } catch (Exception e) {
-            System.out.println("An error has occurred sending your message");
+            throw new Exception("An error has occurred sending your message");
         }
     }
 
@@ -246,8 +254,9 @@ public class MessageManager {
 
     /**
      * Takes a text file and returns the contents as a string, allowing for the contents to be sent to another user
+     * @throws IOException
      */
-    public String[] readTextFromFile(String path) throws FileNotFoundException {
+    public String[] readTextFromFile(String path) throws IOException {
         String[] text = null;
         try (BufferedReader bfr = new BufferedReader(new FileReader(new File(path)))) {
             ArrayList<String> list = new ArrayList<String>();
@@ -260,7 +269,7 @@ public class MessageManager {
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
-            System.out.println("An error has occurred sending your message");
+            throw new IOException("An error has occurred sending your message");
         }
         return text;
     }
