@@ -47,6 +47,12 @@ public class BlockGUI implements Runnable {
         this.blockedUsers = blockedUsers;
         this.board = new JFrame("Turkey Shop");
     }
+    //Other constructor
+    public BlockGUI(ArrayList<String> allUsers, ArrayList<String> blockedUsers) {
+        this.allUsers = allUsers;
+        this.blockedUsers = blockedUsers;
+        this.board = new JFrame("Turkey Shop");
+    }
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
