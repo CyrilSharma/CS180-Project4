@@ -34,10 +34,17 @@ public class AccountManagerGUI implements Runnable {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedUsername = (String) (JOptionPane.showInputDialog(null, "Please enter your edited username: ", "Username", JOptionPane.QUESTION_MESSAGE));
                     if (editedUsername != null) {
-                        int index = users.indexOf(currentUserName);
-                        currentUserName = editedUsername;
-                        users.set(index, editedUsername);
-                        JOptionPane.showMessageDialog(null, "Username Edited");
+                        try {
+                            aic.modifyUsername(currentUserName, editedUsername);
+                            int index = users.indexOf(currentUserName);
+                            currentUserName = editedUsername;
+                            users.set(index, editedUsername);
+                            JOptionPane.showMessageDialog(null, "Username Edited");
+                        } catch (Exception error) {
+                            JOptionPane.showMessageDialog(null, 
+                                "We're having trouble communicating with the server.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 }
             }
@@ -49,7 +56,30 @@ public class AccountManagerGUI implements Runnable {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedPassword = (String) (JOptionPane.showInputDialog(null, "Please enter your edited password: ", "Username", JOptionPane.QUESTION_MESSAGE));
                     if (editedPassword != null) {
-                        JOptionPane.showMessageDialog(null, "Password Edited");
+                        try {
+                            aic.modifyPassword(currentUserName, editedPassword);
+                            JOptionPane.showMessageDialog(null, "Password Edited");
+                        } catch (Exception error) {
+                            JOptionPane.showMessageDialog(null, 
+                                "We're having trouble communicating with the server.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        });
+
+        deleteAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete your account? ", "Edit Username", JOptionPane.INFORMATION_MESSAGE);
+                if (ans == JOptionPane.YES_OPTION) {
+                    try {
+                        aic.deleteAccount(currentUserName);
+                    } catch (Exception error) {
+                        JOptionPane.showMessageDialog(null, 
+                        "We're having trouble communicating with the server.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -75,22 +105,6 @@ public class AccountManagerGUI implements Runnable {
                 gui.show();
             }
         });
-        deleteAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete your account? ", "Edit Username", JOptionPane.INFORMATION_MESSAGE);
-                if (ans == JOptionPane.YES_OPTION) {
-                    try {
-                        aic.deleteAccount(currentUserName);
-                    } catch (Exception error) {
-                        JOptionPane.showMessageDialog(null, 
-                        "We're having trouble communicating with the server.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        });
-
     }
 
     @Override
