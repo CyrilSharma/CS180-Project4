@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-public class AccountManagerGUI implements Runnable {
+public class AccountManagerGUI {
     private JFrame accountBoard;
     private Container container;
     private JButton editUsernameButton;
@@ -107,7 +107,6 @@ public class AccountManagerGUI implements Runnable {
         });
     }
 
-    @Override
     public void run() {
         this.container = accountBoard.getContentPane();
         container.setLayout(new BorderLayout());
@@ -143,6 +142,9 @@ public class AccountManagerGUI implements Runnable {
         container.add(contents, BorderLayout.CENTER);
     }
     public void show() {
-        SwingUtilities.invokeLater(this);
+        accountBoard.setContentPane(new Container());
+        run();
+        accountBoard.revalidate();
+        accountBoard.repaint();
     }
 }

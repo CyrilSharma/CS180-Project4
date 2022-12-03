@@ -122,10 +122,10 @@ public class MessageInterfaceClient {
         return translator;
     }
 
-    public String[] messagesToArray(ArrayList<Message> conversationHistory) {
+    public String[] messagesToArray(ArrayList<Message> conversationHistory) throws Exception {
         String[] messages = new String[conversationHistory.size()];
         for (int i = 0; i < conversationHistory.size(); i++) {
-            messages[i] = conversationHistory.get(i).getMessage();
+            messages[i] = translator.get("id", conversationHistory.get(i).getSender()).get("email") + ": " + conversationHistory.get(i).getMessage();
         }
         return messages;
     }

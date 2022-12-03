@@ -1,6 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +8,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class MessageGUI implements PropertyChangeListener {
     private JFrame messageBoard;
@@ -53,7 +50,7 @@ public class MessageGUI implements PropertyChangeListener {
         //stored in a ArrayListString
         try {
             otherID = mic.getTranslator().get("email", emailSelected).get("id");
-            conversationHistory = mic.getConversation(otherID, selectedStore);
+            //conversationHistory = mic.getConversation(otherID, selectedStore);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -62,8 +59,18 @@ public class MessageGUI implements PropertyChangeListener {
 
     public void run() {
         JPanel panel = new JPanel();
-        String[] msg = mic.messagesToArray(conversationHistory);
-        messages.setListData(msg);
+        /*
+        String[] msg;
+        try {
+            msg = mic.messagesToArray(conversationHistory);
+            messageList.addAll(Arrays.asList(msg));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            msg = new String[0];
+        } */
+        messages.setModel(messageList);
+        messages.setCellRenderer(new CellRenderer());
         updateMessages();
         scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setPreferredSize(new Dimension(370,300));
@@ -216,15 +223,43 @@ public class MessageGUI implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("changeUI")) {
             conversationHistory = (ArrayList<Message>) evt.getNewValue();
-            String[] msg = mic.messagesToArray(conversationHistory);
-            messages.setListData(msg);
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    SwingUtilities.updateComponentTreeUI(messages);
-                }
-            });
+            String[] msg;
+            try {
+                msg = mic.messagesToArray(conversationHistory);
+                messageList.removeAllElements();
+                messageList.addAll(Arrays.asList(msg));
+                messages.setModel(messageList);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        SwingUtilities.updateComponentTreeUI(messages);
+                    }
+                });
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
+    }
+
+    //TODO: my source: https://docs.oracle.com/javase/8/docs/api/javax/swing/ListCellRenderer.html
+    private class CellRenderer implements ListCellRenderer<String> {
+
+        DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
+                boolean isSelected, boolean cellHasFocus) {
+            // TODO Auto-generated method stub
+            JLabel label = (JLabel) renderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (conversationHistory.size() > index && !conversationHistory.get(index).getSender().equals(otherID)) {
+                label.setHorizontalAlignment(JLabel.RIGHT);
+            } else {
+                label.setHorizontalAlignment(JLabel.LEFT);
+            }
+            return label;
+        }
+
     }
 }
 
