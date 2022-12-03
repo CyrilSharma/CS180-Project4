@@ -125,6 +125,14 @@ public class BlockGUI implements Runnable {
                 userList.removeElement(blockedUser);
             }
         }
+        String confirm = "Do you want to be invisible to " + userToBlock + " ?";
+        int ans = JOptionPane.showConfirmDialog(null, confirm, "Invisible?", JOptionPane.INFORMATION_MESSAGE);
+        if (ans == JOptionPane.YES_OPTION) {
+            //delete from userlist for userEmail -> that user
+        } else if (ans == JOptionPane.NO_OPTION){
+            //nothing, just block the userEmail -> user from sending messages to the current user
+
+        }
         board.setSize(600,400);
         board.setLocationRelativeTo(null);
         board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
