@@ -53,7 +53,7 @@ public class MainMenuGUI {
         accountManagerPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AccountManagerGUI accountGUI = new AccountManagerGUI(board, "testUserName");
+                AccountManagerGUI accountGUI = new AccountManagerGUI(board, "testUserName", users);
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
                 PeopleView gui;
                 try {
