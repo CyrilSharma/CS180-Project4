@@ -13,6 +13,7 @@ public class MainMenuGUI {
     private Role role;
     private ArrayList<String> users;
     private JLabel title;
+    private JLabel contentText;
 
     //2 User Options
     private JButton peopleViewPressed;
@@ -77,16 +78,25 @@ public class MainMenuGUI {
         this.container = board.getContentPane();
         container.setLayout(new BorderLayout());
         title = new JLabel();
-        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 25);
+        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 20);
         title.setFont(f);
+        contentText = new JLabel();
+        contentText.setFont(f);
         if (role == Role.Customer) {
-            title.setText("Welcome to the Turkey Shop! Customer Main Menu: Select an option to continue");
+            title.setText("Welcome to the Turkey Shop!");
+            contentText.setText("Customer Main Menu: Select an option to continue");
         } else if (role == Role.Seller) {
-            title.setText("Welcome to the Turkey Shop! Seller Main Menu: Select an option to continue");
+            title.setText("Welcome to the Turkey Shop!");
+            contentText.setText("Seller Main Menu: Select an option to continue");
         }
+        title.setBounds(10,10, 200, 50);
+        contentText.setBounds(60,40,200,50);
         upperPanel = new JPanel();
         bottomPanel = new JPanel();
-        upperPanel.add(title);
+        panel.add(title);
+        panel.add(contentText);
+       // upperPanel.add(title);
+        //upperPanel.add(contentText);
         panel.add(upperPanel);
 
         peopleViewPressed = new JButton("Access Conversations");

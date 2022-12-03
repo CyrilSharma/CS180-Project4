@@ -36,8 +36,9 @@ public class TestGUI {
         frame.setSize(600,540);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //frame.setVisible(true);
+        frame.setVisible(true);
         MainMenuGUI main = new MainMenuGUI(frame, users, Role.Seller);
+        main.show();
         //PeopleView gui = new PeopleView(frame, users, Role.Seller, null);
         //gui.show();
 
@@ -46,7 +47,7 @@ public class TestGUI {
 
         //MessageGUIReDone message = new MessageGUIReDone("view", "cs183@purdue.edu");
         //message.show();
-        BlockGUI blockGUI = new BlockGUI("cs186@gmail.com", users, blockedUsers);
-        blockGUI.show();
+       // BlockGUI blockGUI = new BlockGUI("cs186@gmail.com", users, blockedUsers);
+       // blockGUI.show();
     }
 }

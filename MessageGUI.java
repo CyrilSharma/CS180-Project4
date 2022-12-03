@@ -72,8 +72,8 @@ public class MessageGUI implements PropertyChangeListener {
         messages.setModel(messageList);
         messages.setCellRenderer(new CellRenderer());
         updateMessages();
-        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(370,300));
+        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(450,400));
         this.container = messageBoard.getContentPane();
         container.setLayout(new BorderLayout());
         recipientText = new JLabel();
