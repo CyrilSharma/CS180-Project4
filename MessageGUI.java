@@ -5,11 +5,14 @@ import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MessageGUI implements Runnable {
+public class MessageGUI implements PropertyChangeListener {
     private JFrame messageBoard;
     private Container container;
     private JButton editMessage;
@@ -57,8 +60,6 @@ public class MessageGUI implements Runnable {
         }
     }
 
-
-    @Override
     public void run() {
         JPanel panel = new JPanel();
         //TODO: pull conversationHistory from database for two people
@@ -73,7 +74,7 @@ public class MessageGUI implements Runnable {
         messages = new JList(messageList); */
         String[] msg = mic.messagesToArray(conversationHistory);
         messages.setListData(msg);
-        messages.getModel().addListDataListener(new ListDataListener() {
+        /* messages.getModel().addListDataListener(new ListDataListener() {
 
             @Override
             public void intervalAdded(ListDataEvent e) {
@@ -96,7 +97,7 @@ public class MessageGUI implements Runnable {
                 messageBoard.repaint();
             }
             
-        });
+        }); */
         updateMessages();
         scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setPreferredSize(new Dimension(370,300));
@@ -239,36 +240,62 @@ public class MessageGUI implements Runnable {
         messageBoard.repaint();
     }
 
-    private void updateMessages() {
-        SwingWorker sw = new SwingWorker() {
+    //TODO: My source: https://stackoverflow.com/questions/27077508/infinite-loop-in-swing
+    private class UpdateMessages implements Runnable {
 
-            @Override
-            public Object doInBackground() {
-                // TODO Auto-generated method stub
-                while (true) {
-                    try {
-                        ArrayList<Message> conversationHistory2 = mic.getConversation(otherID, selectedStore);
-                        if (!conversationHistory2.equals(conversationHistory)) {
-                            String[] msg = mic.messagesToArray(conversationHistory);
-                            messages.setListData(msg);
-                            System.out.println("Changed");
-                            conversationHistory = conversationHistory2;
-                            messages.updateUI();
-                        }
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+        private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+        public void addPropertyChangeListeners(PropertyChangeListener pcl) {
+            pcs.addPropertyChangeListener(pcl);
+        }
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            while (true) {
+                try {
+                    ArrayList<Message> conversationHistory2 = mic.getConversation(otherID, selectedStore);
+                    if (!conversationHistory2.equals(conversationHistory)) {
+                        pcs.firePropertyChange("changeUI", conversationHistory, conversationHistory2);
                     }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        
-                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    
                 }
             }
-        };
-        sw.execute();
+        }
+
+    }
+
+    private void updateMessages() {
+        UpdateMessages um = new UpdateMessages(); 
+        um.addPropertyChangeListeners(this);
+        new Thread(um).start();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // TODO Auto-generated method stub
+        if (evt.getPropertyName().equals("changeUI")) {
+            conversationHistory = (ArrayList<Message>) evt.getNewValue();
+            String[] msg = mic.messagesToArray(conversationHistory);
+            messages.setListData(msg);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    SwingUtilities.updateComponentTreeUI(messages);
+                }
+                
+            });
+        }
     }
 }
 
