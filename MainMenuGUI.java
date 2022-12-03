@@ -35,6 +35,7 @@ public class MainMenuGUI {
         board.repaint();
     }
 
+    @SuppressWarnings("unchecked")
     public void addActionListeners() {
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
@@ -42,13 +43,26 @@ public class MainMenuGUI {
                 PeopleView gui;
                 try {
                     if (role.equals(Role.Customer)) {
-                        gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
+                        HashMap<String,String> stores =  (HashMap<String, String>) translator.query(
+                            new Query("User", "viewStores"));
+                        if (stores == null) {
+                            JOptionPane.showMessageDialog(null, "No store available!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        gui = new PeopleView(board, users, role, stores);
                     } else {
-                        gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "getStores")));
+                        HashMap<String,String> stores =  (HashMap<String, String>) translator.query(
+                            new Query("User", "getStores"));
+                        if (stores == null) {
+                            JOptionPane.showMessageDialog(null, "No store available!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        gui = new PeopleView(board, users, role, stores);
                     }
                     gui.show();
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
