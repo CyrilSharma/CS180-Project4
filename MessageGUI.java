@@ -148,6 +148,11 @@ public class MessageGUI implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String originalMessage = (String) messages.getSelectedValue();
+                if (originalMessage == null) {
+                    JOptionPane.showMessageDialog(null, "You must select a message!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 String confirm = "Do you want to edit " + originalMessage + " ?";
                 //int index = conversationHistory.indexOf(originalMessage);
                 int index = messages.getSelectedIndex();
@@ -184,6 +189,10 @@ public class MessageGUI implements PropertyChangeListener {
                 // cancelled and then a delete/edit is attemped after (Resolved)
                 String deletedMessage = "";
                 deletedMessage = (String) messages.getSelectedValue();
+                if (deletedMessage == null) {
+                    JOptionPane.showMessageDialog(null, "You must select a message!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 //int index = conversationHistory.indexOf(deletedMessage);
                 int index = messages.getSelectedIndex();
                 String confirm = "Do you want to delete " + deletedMessage + " ?";
