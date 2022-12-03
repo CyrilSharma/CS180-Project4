@@ -5,7 +5,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: implement invisibility, show in PeopleView, database integration, clean up formatting, autoupdate blocked list & all users
+//TODO: implement invisibility, show in PeopleView, database integration, clean up formatting, autoupdate blocked list & all users,
+//remove blocked users from being visible, find name of user
 public class BlockGUI implements Runnable {
     private JFrame board;
     private Container content;
@@ -25,7 +26,7 @@ public class BlockGUI implements Runnable {
     private ArrayList<String> unblockedUsers;
     private ArrayList<String> blockedUsers;
     private ArrayList<String> allUsers;
-    private String email;
+    private String userToBlock;
 
 
     /** Not sure if action parameter is needed
@@ -39,8 +40,9 @@ public class BlockGUI implements Runnable {
     }
      */
     //Test constructor
-    public BlockGUI(String email, ArrayList<String> allUsers, ArrayList<String> blockedUsers) {
-        this.email = email;
+    public BlockGUI(String userToBlock, ArrayList<String> allUsers, ArrayList<String> blockedUsers) {
+        //this.email = email;
+        this.userToBlock = userToBlock;
         this.allUsers = allUsers;
         this.blockedUsers = blockedUsers;
         this.board = new JFrame("Turkey Shop");
@@ -103,12 +105,30 @@ public class BlockGUI implements Runnable {
 
     @Override
     public void run() {
+        String[] listOfUsers = allUsers.toArray(new String[0]);
+        userList.addAll(List.of(listOfUsers));
+        boolean blocked = false;
+        if (userToBlock!=null) {
+            for (String user: blockedUsers) {
+                if (user.equals(userToBlock)) {
+                    JOptionPane.showMessageDialog(null, "This user has already been blocked.", "Cannot Block", JOptionPane.INFORMATION_MESSAGE);
+                    blocked = true;
+                }
+            }
+            if (!blocked) {
+                blockedUsers.add(userToBlock);
+                userList.removeElement(userToBlock);
+            }
+        }
+        for (String blockedUser: allUsers) {
+            if (blockedUsers.contains(blockedUser)) {
+                userList.removeElement(blockedUser);
+            }
+        }
         board.setSize(600,400);
         board.setLocationRelativeTo(null);
         board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         board.setVisible(true);
-        String[] listOfUsers = allUsers.toArray(new String[0]);
-        userList.addAll(List.of(listOfUsers));
         users = new JList(userList);
         createAndAdd();
         setFrame();
@@ -121,12 +141,18 @@ public class BlockGUI implements Runnable {
                 String msg = "Trying to block " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 //check if user is blocked already, not needed if we stick with unblockedList
+                boolean blocked = false;
                 for (String user: blockedUsers) {
-                    if (user == userEmail) {
+                    if (user.equals(userEmail)) {
                         JOptionPane.showMessageDialog(null, "This user has already been blocked.", "Cannot Block", JOptionPane.INFORMATION_MESSAGE);
+                        blocked = true;
                     }
                 }
-                blockedUsers.add(userEmail);
+                if (!blocked) {
+                    blockedUsers.add(userEmail);
+                    userList.removeElement(userEmail);
+                    users.updateUI();
+                }
                 //TODO: Maybe make invisibility a separate button?
                 String confirm = "Do you want to be invisible to " + userEmail + " ?";
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Invisible?", JOptionPane.INFORMATION_MESSAGE);
@@ -141,12 +167,27 @@ public class BlockGUI implements Runnable {
         unblockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Do an action for unblocking a user
+                if (unblockedUsers == null) {
+                    unblockedUsers = allUsers;
+                    unblockedUsers.removeAll(blockedUsers);
+                }
                 String userEmail = (String) users.getSelectedValue();
                 String msg = "Trying to unblock " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                blockedUsers.remove(userEmail);
-                users.updateUI();
+                boolean blocked = false;
+                for (String user: unblockedUsers) {
+                    if (user.equals(userEmail)) {
+                        JOptionPane.showMessageDialog(null, "This user has already been unblocked.", "Cannot Block", JOptionPane.INFORMATION_MESSAGE);
+                        blocked = true;
+                    }
+                }
+                if (!blocked) {
+                    blockedUsers.remove(userEmail);
+                    allUsers.add(userEmail);
+                    userList.clear();
+                    userList.addAll(allUsers);
+                    users.updateUI();
+                }
             }
         });
         //Is this needed, instead maybe a viewBlockedList
@@ -168,7 +209,7 @@ public class BlockGUI implements Runnable {
         viewBlockedListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userList.removeAllElements();
+                userList.clear();
                 userList.addAll(blockedUsers);
                 users.updateUI();
             }
@@ -176,7 +217,7 @@ public class BlockGUI implements Runnable {
         viewAllUsersButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userList.removeAllElements();
+                userList.clear();
                 userList.addAll(allUsers);
                 users.updateUI();
             }
