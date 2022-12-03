@@ -109,7 +109,6 @@ public class AccountManagerGUI implements Runnable {
 
     @Override
     public void run() {
-        JPanel panel = new JPanel();
         this.container = accountBoard.getContentPane();
         container.setLayout(new BorderLayout());
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
@@ -138,9 +137,10 @@ public class AccountManagerGUI implements Runnable {
         contents.add(signOutButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(deleteAccountButton);
+        System.out.println("WHERE THIS AT");
         accountBoard.setVisible(true);
         addActionListeners();
-        container.add(panel, BorderLayout.CENTER);
+        container.add(contents, BorderLayout.CENTER);
     }
     public void show() {
         SwingUtilities.invokeLater(this);

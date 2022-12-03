@@ -53,7 +53,7 @@ public class MainMenuGUI {
                                 "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        gui = new PeopleView(board, users, role, stores);
+                        gui = new PeopleView(board, users, user, stores);
                     } else {
                         HashMap<String,String> stores =  (HashMap<String, String>) translator.query(
                             new Query("User", "getStores"));
@@ -62,7 +62,7 @@ public class MainMenuGUI {
                                 "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        gui = new PeopleView(board, users, role, stores);
+                        gui = new PeopleView(board, users, user, stores);
                     }
                     gui.show();
                 } catch (Exception e1) {
@@ -70,11 +70,11 @@ public class MainMenuGUI {
                 }
             }
         });
-        //TODO
+
         accountManagerPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
+                try { 
                     AccountManagerGUI accountGUI = new AccountManagerGUI(board, user.get("email"), users);
                     accountGUI.show();
                 } catch (Exception e2) {
