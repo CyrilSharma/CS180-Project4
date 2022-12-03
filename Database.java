@@ -38,7 +38,7 @@ public class Database {
      * @param path of the fileName
      * @return ArrayList<HashMap<String, String>> userlist
      */
-    private ArrayList<HashMap<String, String>> readFromDatabase(String path) throws Exception {
+    private synchronized ArrayList<HashMap<String, String>> readFromDatabase(String path) throws Exception {
         File f = new File(path);
         try {
             f.createNewFile();
@@ -100,7 +100,7 @@ public class Database {
      * @param password
      * @param role
      */
-    public void add(String name, String password, Role role) throws InvalidUserException {
+    public synchronized void add(String name, String password, Role role) throws InvalidUserException {
         if (get("email", name) != null) {
             throw new InvalidUserException("That email is already registered");
         } else if (!validate(name, keys[1])) {
@@ -132,7 +132,7 @@ public class Database {
      *
      * @param name
      */
-    public void remove(String name) throws InvalidUserException, InvalidKeyException {
+    public synchronized void remove(String name) throws InvalidUserException, InvalidKeyException {
         HashMap<String, String> toBeRemoved = get("email", name);
         if (toBeRemoved == null) {
             throw new InvalidUserException("That email does not exist");
@@ -272,7 +272,7 @@ public class Database {
      * @param key
      * @param val
      */
-    public void modify(String email, String key, String val) throws InvalidUserException,
+    public synchronized void modify(String email, String key, String val) throws InvalidUserException,
         InvalidKeyException {
         if (!validateKey(key)) {
             throw new InvalidKeyException(String.format("Invalid Key: {%s}", key));
@@ -328,7 +328,7 @@ public class Database {
     /**
      * saves the file
      */
-    public void save() {
+    public synchronized void save() {
         try {
             File file = new File(databasePath);
             file.createNewFile();
