@@ -41,7 +41,11 @@ public class MainMenuGUI {
             public void actionPerformed(ActionEvent e) {
                 PeopleView gui;
                 try {
-                    gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
+                    if (role.equals(Role.Customer)) {
+                        gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
+                    } else {
+                        gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "getStores")));
+                    }
                     gui.show();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
@@ -57,11 +61,11 @@ public class MainMenuGUI {
                 //TODO: Must be changed to add the account manager GUI --> Not created YET
                 PeopleView gui;
                 try {
-                    gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
-                    gui.show();
-                } catch (Exception e1) {
+                    accountGUI = new AccountManagerGUI(board, (String) translator.query(new Query("User", "getEmail")), (ArrayList<String>) translator.query(new Query("User", "getUsers")));
+                    accountGUI.show();
+                } catch (Exception e2) {
                     // TODO Auto-generated catch block
-                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

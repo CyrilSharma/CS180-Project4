@@ -231,7 +231,7 @@ public class PeopleView implements Runnable {
                 String email = (String) people.getSelectedValue();
                 email = email.split(" ")[0];
                 String store = (String) storeList.getSelectedValue();
-                if (email != null) {
+                if (email != null && store != null) {
                     String msg = "Trying to view a conversation with " + email + " with " + store;
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                     MessageGUI gui;

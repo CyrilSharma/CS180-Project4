@@ -56,7 +56,7 @@ public class MessageManager {
     /**
      * Returns the personal message history of the user
      */
-    public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
+    public synchronized ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
         File f = new File(historyDir + id + "-messageHistory.txt");
         f.createNewFile();
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
