@@ -72,13 +72,10 @@ public class MainMenuGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AccountManagerGUI accountGUI = new AccountManagerGUI(board, "testUserName", users);
-                //TODO: Must be changed to add the account manager GUI --> Not created YET
-                PeopleView gui;
                 try {
                     accountGUI = new AccountManagerGUI(board, (String) translator.query(new Query("User", "getEmail")), (ArrayList<String>) translator.query(new Query("User", "getUsers")));
                     accountGUI.show();
                 } catch (Exception e2) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }

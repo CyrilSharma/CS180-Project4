@@ -16,12 +16,14 @@ public class AccountManagerGUI implements Runnable {
     private JButton deleteAccountButton;
     private String currentUserName;
     private ArrayList<String> users;
+    private AccountInterfaceClient aic;
 
     public AccountManagerGUI(JFrame board, String currentUserName, ArrayList<String> users) {
         board.setSize(600,500);
         accountBoard = board;
         this.currentUserName = currentUserName;
         this.users = users;
+        aic = new AccountInterfaceClient();
     }
 
     public void addActionListeners() {
@@ -35,7 +37,6 @@ public class AccountManagerGUI implements Runnable {
                         int index = users.indexOf(currentUserName);
                         currentUserName = editedUsername;
                         users.set(index, editedUsername);
-                        //TODO: Access dashboard to edit the username
                         JOptionPane.showMessageDialog(null, "Username Edited");
                     }
                 }
@@ -48,7 +49,6 @@ public class AccountManagerGUI implements Runnable {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedPassword = (String) (JOptionPane.showInputDialog(null, "Please enter your edited password: ", "Username", JOptionPane.QUESTION_MESSAGE));
                     if (editedPassword != null) {
-                        //TODO: Access dashboard to edit the password
                         JOptionPane.showMessageDialog(null, "Password Edited");
                     }
                 }
@@ -80,7 +80,13 @@ public class AccountManagerGUI implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete your account? ", "Edit Username", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
-                    //TODO: Delete account
+                    try {
+                        aic.deleteAccount(currentUserName);
+                    } catch (Exception error) {
+                        JOptionPane.showMessageDialog(null, 
+                        "We're having trouble communicating with the server.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
