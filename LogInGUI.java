@@ -111,31 +111,26 @@ public class LogInGUI {
                 }
             }
         });
+
         logInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //THIS DOES NOT CHECK CREDENTIALS YET
                 String email = emailField.getText();
                 String password = passwordField.getText();
                 if ((email.isEmpty() || email.equals("Email...")) ||
                         (password.isEmpty() || password.equals("Password..."))) {
                     JOptionPane.showMessageDialog(null, "Please fill out the text fields!", "Error", JOptionPane.WARNING_MESSAGE, null);
                 } else {
-//                    String f = "Trying to log in with credential {email: %s, pw: %s}\n";
-//                    f = String.format(f, email, password);
-//                    JOptionPane.showMessageDialog(null, f, "Alert", JOptionPane.INFORMATION_MESSAGE);
                     try {
                         if (!((Boolean) translator.query(new Query("Database", "verify", new String[]{email, password})))) {
                             JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
                         } else {
-                            HashMap<String, String> loggedIn = translator.get("email", email);
-                            Role role = Role.valueOf(loggedIn.get("role"));
+                            HashMap<String, String> user = translator.get("email", email);
                             ArrayList<String> users = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
-                            MainMenuGUI menu = new MainMenuGUI(board, users, role);
+                            MainMenuGUI menu = new MainMenuGUI(board, users, user);
                             menu.show();
                         }
                     } catch (Exception e1) {
-                        // TODO Auto-generated catch block
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }

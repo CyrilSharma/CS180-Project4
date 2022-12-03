@@ -10,6 +10,7 @@ public class MainMenuGUI {
 
     private JPanel upperPanel;
     private JPanel bottomPanel;
+    private HashMap<String,String> user;
     private Role role;
     private ArrayList<String> users;
     private JLabel title;
@@ -21,10 +22,12 @@ public class MainMenuGUI {
     private Translator translator;
 
 
-    public MainMenuGUI(JFrame frame, ArrayList<String> users, Role role) {
+    public MainMenuGUI(JFrame frame, ArrayList<String> users, HashMap<String,String> user) {
         frame.setSize(600,400);
         this.board = frame;
-        this.role = role;
+        this.user = user;
+        // used frequently enough to justify a seperate variable.
+        this.role = Role.valueOf(user.get("role"));
         this.users = users;
         translator = new Translator();
     }
@@ -71,9 +74,8 @@ public class MainMenuGUI {
         accountManagerPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AccountManagerGUI accountGUI = new AccountManagerGUI(board, "testUserName", users);
                 try {
-                    accountGUI = new AccountManagerGUI(board, (String) translator.query(new Query("User", "getEmail")), (ArrayList<String>) translator.query(new Query("User", "getUsers")));
+                    AccountManagerGUI accountGUI = new AccountManagerGUI(board, user.get("email"), users);
                     accountGUI.show();
                 } catch (Exception e2) {
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
