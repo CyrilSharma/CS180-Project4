@@ -177,7 +177,8 @@ public class MessageGUI implements Runnable {
         sendMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = currentUser + ": " + messageText.getText();
+               // String message = currentUser + ": " + messageText.getText();
+                String message = messageText.getText();
                 //Test below
                 //TODO: store back in the database of the new message --> do this functionality
                 //add the message on the screen --> should be done automatically if adding the message to the arraylist
