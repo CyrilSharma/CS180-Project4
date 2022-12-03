@@ -38,7 +38,6 @@ public class PeopleView implements Runnable {
     private JScrollPane scroll2;
 
     private Translator translator;
-    private HashMap<String, String> user;
     private HashMap<String, String> map;
 
     private ArrayList<String> newUserNotif;
@@ -47,15 +46,14 @@ public class PeopleView implements Runnable {
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
-    public PeopleView(JFrame frame, ArrayList<String> emails, HashMap<String,String> user, 
-        HashMap<String, String> stores) {
+    public PeopleView(JFrame frame, ArrayList<String> emails, Role role, HashMap<String, String> stores) {
         frame.setSize(600,540);
         board = frame;
         users = emails;
-        this.user = user;
-        this.role = Role.valueOf(user.get("role"));
+        this.role = role;
         String[] ex = {"Online", "Offline", "Online"};
         status = new ArrayList<>(Arrays.asList(ex));
+//        db = new Database();
         map = stores;
         translator = new Translator();
     }
@@ -113,6 +111,18 @@ public class PeopleView implements Runnable {
     public void updateNotif(HashMap<String, ArrayList<String>> notif) {
         userNotifications = notif;
     }
+    /*
+    public void testAdd() {
+        //String[] stores = new String[10];
+        HashMap<String, String> stores = new HashMap<>();
+        for (int i = 0; i < 10; i++) {
+            stores.put("Store" + i, "" + i);
+        }
+        map = stores;
+        storeList.setListData(stores.keySet().toArray(new String[0]));
+        storeList.updateUI();
+    }
+    */
 
     public String storeHTMLRemover(String str) {
         str = str.substring(str.indexOf(">") + 1);
@@ -251,7 +261,7 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //will change to mainGUI if it is uploaded
-                MainMenuGUI gui = new MainMenuGUI(board, users, user);
+                MainMenuGUI gui = new MainMenuGUI(board, users, role);
                 gui.show();
             }
         });

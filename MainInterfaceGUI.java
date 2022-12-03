@@ -20,6 +20,7 @@ public class MainInterfaceGUI implements Runnable {
 
     @Override
     public void run() {
+        // TODO Auto-generated method stub
         frame = new JFrame("Turkey Shop");
         homePage();
         frame.setSize(600,400);
@@ -46,6 +47,7 @@ public class MainInterfaceGUI implements Runnable {
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
                 LogInGUI loginGUI = new LogInGUI(frame);
                 loginGUI.show();
             }
@@ -53,6 +55,7 @@ public class MainInterfaceGUI implements Runnable {
         createAccount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
                 CreateAccountGUI createAccountGUI = new CreateAccountGUI(frame);
                 createAccountGUI.show();
             }
@@ -60,6 +63,7 @@ public class MainInterfaceGUI implements Runnable {
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
                 frame.dispose();
             }
         });
