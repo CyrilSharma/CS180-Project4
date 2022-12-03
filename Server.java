@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 
 public class Server implements Runnable {
     
-    private Socket socket;
     private MessageManager mm;
     private Database db;
     private User user;
@@ -22,7 +21,6 @@ public class Server implements Runnable {
     private ObjectInputStream ois;
 
     public Server(Socket socket, MessageManager mm, Database db) {
-        this.socket = socket;
         this.mm = mm;
         this.db = db;
         this.dashboard = null;
@@ -80,7 +78,7 @@ public class Server implements Runnable {
                 oos.writeObject(result);
                 oos.flush();
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             return;
         }
     }

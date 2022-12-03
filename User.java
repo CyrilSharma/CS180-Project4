@@ -24,13 +24,14 @@ public class User implements Serializable {
      * creating an account
      *
      * @param email, password, role, manager
+     * @throws Exception
      */
-    public User(String email, String password, Role role, MessageManager manager, Database db) {
+    public User(String email, String password, Role role, MessageManager manager, Database db) throws Exception {
         this.email = email;
         this.role = role;
         this.hasAccount = true;
         this.db = db;
-        stores = new ArrayList<>();
+        stores = readStoresFromFile(email);
         this.id = db.get("email", this.email).get("id");
     }
 
@@ -122,16 +123,16 @@ public class User implements Serializable {
         if (role.equals(Role.Seller)) {
             HashMap<String, String> thisUser = db.get("id", id);
             for (HashMap<String, String> sellerBlocked : getCustomers) {
-                String id = sellerBlocked.get("id");
+                String userEmail = sellerBlocked.get("email");
                 if (thisUser.get("blocked").contains(sellerBlocked.get("id")) 
                     && !sellerBlocked.get("invisible").contains(id)) {
-                    id += " (blocked)";
+                    userEmail += " (blocked)";
                 } if (thisUser.get("invisible").contains(sellerBlocked.get("id")) 
                     && !sellerBlocked.get("invisible").contains(id)) {
-                    id += " (invisible)";
+                    userEmail += " (invisible)";
                 }
                 //TODO: fix so that invisible people aren't added to the list
-                customers.add(id);
+                customers.add(userEmail);
             }
         }
         return customers;
@@ -141,8 +142,12 @@ public class User implements Serializable {
      * get list of stores
      * @return stores
      */
-    public ArrayList<String> getStores() {
-        return stores;
+    public HashMap<String, String> getStores() {
+        HashMap<String, String> result = new HashMap<>();
+        for (String store : stores) {
+            result.put(store, email);
+        }
+        return result;
     }
 
     /**
