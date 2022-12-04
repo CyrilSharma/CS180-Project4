@@ -4,3 +4,4 @@ xe0IEz0cFpVQyW###Qyril@gmail.com###password###Customer###2022-11-26T17:45:15.460
 NZbmG6amDPO3Ld###sharma.cyril@gmail.com###urmomlol###Customer###2022-11-30T21:36:26.025162Z###null###null
 7p1D8oRPGBEK6t###user1@gmail.com###password###Customer###2022-12-03T16:15:14.202789Z###null###null
 P7rv2kBQVCqrlV###palpatine@senate.gov###password###Seller###2022-12-03T23:20:29.214017600Z###null###null
+SOG61tpYM3KYMa###anakin@jedi.org###password###Customer###2022-12-04T07:34:56.463663200Z###null###null

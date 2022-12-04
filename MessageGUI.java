@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.plaf.DimensionUIResource;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,8 +7,13 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 
 public class MessageGUI implements PropertyChangeListener {
     private JFrame messageBoard;
@@ -43,7 +49,6 @@ public class MessageGUI implements PropertyChangeListener {
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email; //selected user
         this.selectedStore = selectedStore;
-        System.out.println(selectedStore);
         this.messageChoice = messageChoice;
         this.mic = new MessageInterfaceClient();
         //TODO: get the conversationHistory from the translator module
@@ -79,7 +84,7 @@ public class MessageGUI implements PropertyChangeListener {
         recipientText = new JLabel();
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
         recipientText.setFont(f);
-        recipientText.setText(this.selectedStore + " Sending message to " + this.emailSelected);
+        recipientText.setText(this.emailSelected + " via " + this.selectedStore);
         messageText = new JTextField(12);
         messageText.setForeground(Color.GRAY);
         messageText.setText("Insert Message...");
@@ -121,7 +126,6 @@ public class MessageGUI implements PropertyChangeListener {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
                     if (editedMessage != null) {
-                        editedMessage = currentUser + ": " + editedMessage;
                         emailSelected = emailSelected.split(" ")[0];
                         try {
                             mic.editMessage(mic.getID(), otherID, editedMessage, conversationHistory.get(index).getMessageID());
@@ -252,11 +256,33 @@ public class MessageGUI implements PropertyChangeListener {
                 boolean isSelected, boolean cellHasFocus) {
             // TODO Auto-generated method stub
             JLabel label = (JLabel) renderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            int maxWidth = (int) (scrollPane.getWidth() * .7);
+            int r;
+            int g;
+            int b;
             if (conversationHistory.size() > index && !conversationHistory.get(index).getSender().equals(otherID)) {
                 label.setHorizontalAlignment(JLabel.RIGHT);
+                //label.setForeground(new Color(7, 252, 3));
+                r = 7;
+                g = 252;
+                b = 3;
             } else {
                 label.setHorizontalAlignment(JLabel.LEFT);
+                //label.setForeground(new Color(179, 186, 184));
+                r = 179;
+                g = 186;
+                b = 184;
             }
+            Instant time = conversationHistory.get(index).getTimeStamp();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("eee, MMM d, YYYY 'at' h:mm a");
+            LocalDateTime localTime = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalDateTime();
+            String timeString =  localTime.format(dateTimeFormatter);
+            if (label.getPreferredSize().getWidth() >= maxWidth - 10) {
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
+            } else {
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
+            }
+            label.setText(value);
             return label;
         }
 
