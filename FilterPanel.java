@@ -37,11 +37,12 @@ public class FilterPanel implements Runnable {
         board.repaint();
     }
 
-    public String removeSpecialChar(String word) {
-        String result = "";
+    //not tested method
+    public boolean checkSpecialChar(String word) {
+        boolean result = false;
         for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) > 64 && word.charAt(i) <= 122) {
-                result = result + word.charAt(i);
+            if (!(word.charAt(i) > 64 && word.charAt(i) <= 122)) {
+                return true;
             }
         }
         return result;
@@ -93,18 +94,26 @@ public class FilterPanel implements Runnable {
                 str += ", ";
             }
         }
+        if (words.size() == 0) {
+            str += "No word";
+        }
         label.setText(str);
         label.updateUI();
     }
     public void addActionListeners() {
         addButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Check if special character exists
                 String word = txtField.getText();
-                words.add(word);
-                updateLabel();
+                if (checkSpecialChar(word)) {
+                    words.add(word);
+                    updateLabel();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Enter a word without special character!",
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         });
         removeButton.addActionListener(new ActionListener() {
@@ -113,10 +122,16 @@ public class FilterPanel implements Runnable {
 
                 try {
                     String word = txtField.getText();
-                    words.remove(word);
-                    updateLabel();
+                    if (checkSpecialChar(word)) {
+                        words.remove(word);
+                        updateLabel();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Enter a word without special character!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (Exception er) {
-                    JOptionPane.showMessageDialog(null, "Enter a valid word!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Enter a valid word!",
+                                                "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 updateLabel();
             }
@@ -124,13 +139,17 @@ public class FilterPanel implements Runnable {
         enableButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                enabled = !enabled;
+                if (enabled) {
+                    enableButton.setText("Disable Filter");
+                }
             }
         });
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //TODO: FIX THIS CONSTRUCTOR
+                AccountManagerGUI gui = new AccountManagerGUI(board, null, null);
             }
         });
 
