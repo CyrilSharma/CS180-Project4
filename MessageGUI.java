@@ -30,6 +30,7 @@ public class MessageGUI implements PropertyChangeListener {
     private JPanel upperPanel; //title text (recipient name)
     private JPanel rightPanel; //houses the message history
     private JLabel recipientText;
+    private JButton backButton;
 
     private String currentUser;
 
@@ -40,9 +41,11 @@ public class MessageGUI implements PropertyChangeListener {
     private ArrayList<Message> conversationHistory;
     private String selectedStore;
     private String otherID;
+    private PeopleView parent;
     private MessageInterfaceClient mic;
     
-    public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore) {
+    public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
+        PeopleView parent) {
         board.setSize(600,550);
         messageBoard = board;
         this.currentUser = username; //logged in user
@@ -51,6 +54,7 @@ public class MessageGUI implements PropertyChangeListener {
         this.selectedStore = selectedStore;
         this.messageChoice = messageChoice;
         this.mic = new MessageInterfaceClient();
+        this.parent = parent;
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
         try {
@@ -95,10 +99,12 @@ public class MessageGUI implements PropertyChangeListener {
         editMessage = new JButton("Edit Message");
         deleteMessage = new JButton("Delete Message");
         sendMessage = new JButton("Send Message");
+        backButton = new JButton("Back");
         leftPanel.add(messageText);
         leftPanel.add(sendMessage);
         leftPanel.add(editMessage);
         leftPanel.add(deleteMessage);
+        leftPanel.add(backButton);
 
         panel.add(upperPanel);
         panel.add(leftPanel);
@@ -178,6 +184,13 @@ public class MessageGUI implements PropertyChangeListener {
                 } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.show();
             }
         });
     }

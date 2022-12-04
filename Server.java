@@ -12,12 +12,7 @@ public class Server implements Runnable {
     private Dashboard dashboard;
     private Filter filter;
     private boolean loggedIn;
-
-    private String typeSeperator = "\\*\\*\\*";
-    private String elementSeperator = ",,,";
-
     private ObjectOutputStream oos;
-    private BufferedReader bfr;
     private ObjectInputStream ois;
 
     public Server(Socket socket, MessageManager mm, Database db) {
@@ -28,7 +23,6 @@ public class Server implements Runnable {
         this.loggedIn = false;
         try {
             oos = new ObjectOutputStream(socket.getOutputStream());
-            bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             ois = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             // TODO Auto-generated catch block

@@ -224,12 +224,10 @@ public class PeopleView implements Runnable {
                 if (email != null && store != null) {
                     String msg = "Trying to view a conversation with " + email + " with " + store;
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                    MessageGUI gui;
                     try {
-                        gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store);
+                        MessageGUI gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store, PeopleView.this);
                         gui.show();
                     } catch (Exception e1) {
-                        // TODO Auto-generated catch block
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
