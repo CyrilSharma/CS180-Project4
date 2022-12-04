@@ -46,25 +46,20 @@ public class MainMenuGUI {
             public void actionPerformed(ActionEvent e) {
                 PeopleView gui;
                 try {
+                    HashMap<String,String> stores;
                     if (role.equals(Role.Customer)) {
-                        HashMap<String,String> stores =  (HashMap<String, String>) translator.query(
+                            stores = (HashMap<String, String>) translator.query(
                             new Query("User", "viewStores"));
-                        if (stores == null) {
-                            JOptionPane.showMessageDialog(null, "No store available!",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                        gui = new PeopleView(board, users, user, stores);
                     } else {
-                        HashMap<String,String> stores =  (HashMap<String, String>) translator.query(
+                        stores = (HashMap<String, String>) translator.query(
                             new Query("User", "getStores"));
-                        if (stores == null) {
-                            JOptionPane.showMessageDialog(null, "No store available!",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                        gui = new PeopleView(board, users, user, stores);
                     }
+                    if (stores == null) {
+                        JOptionPane.showMessageDialog(null, "No store available!",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    gui = new PeopleView(board, users, user, stores);
                     gui.show();
                 } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
