@@ -10,6 +10,7 @@ public class MainMenuGUI {
 
     private JPanel upperPanel;
     private JPanel bottomPanel;
+    private HashMap<String,String> user;
     private Role role;
     private ArrayList<String> users;
     private JLabel title;
@@ -21,10 +22,12 @@ public class MainMenuGUI {
     private Translator translator;
 
 
-    public MainMenuGUI(JFrame frame, ArrayList<String> users, Role role) {
+    public MainMenuGUI(JFrame frame, ArrayList<String> users, HashMap<String,String> user) {
         frame.setSize(600,400);
         this.board = frame;
-        this.role = role;
+        this.user = user;
+        // used frequently enough to justify a seperate variable.
+        this.role = Role.valueOf(user.get("role"));
         this.users = users;
         translator = new Translator();
     }
@@ -35,6 +38,7 @@ public class MainMenuGUI {
         board.repaint();
     }
 
+    @SuppressWarnings("unchecked")
     public void addActionListeners() {
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
@@ -42,29 +46,38 @@ public class MainMenuGUI {
                 PeopleView gui;
                 try {
                     if (role.equals(Role.Customer)) {
-                        gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "viewStores")));
+                        HashMap<String,String> stores =  (HashMap<String, String>) translator.query(
+                            new Query("User", "viewStores"));
+                        if (stores == null) {
+                            JOptionPane.showMessageDialog(null, "No store available!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        gui = new PeopleView(board, users, user, stores);
                     } else {
-                        gui = new PeopleView(board, users, role, (HashMap<String, String>) translator.query(new Query("User", "getStores")));
+                        HashMap<String,String> stores =  (HashMap<String, String>) translator.query(
+                            new Query("User", "getStores"));
+                        if (stores == null) {
+                            JOptionPane.showMessageDialog(null, "No store available!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        gui = new PeopleView(board, users, user, stores);
                     }
                     gui.show();
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        //TODO
+
         accountManagerPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AccountManagerGUI accountGUI = new AccountManagerGUI(board, "testUserName", users);
-                //TODO: Must be changed to add the account manager GUI --> Not created YET
-                PeopleView gui;
-                try {
-                    accountGUI = new AccountManagerGUI(board, (String) translator.query(new Query("User", "getEmail")), (ArrayList<String>) translator.query(new Query("User", "getUsers")));
+                try { 
+                    AccountManagerGUI accountGUI = new AccountManagerGUI(board, user.get("email"), users);
                     accountGUI.show();
                 } catch (Exception e2) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }

@@ -36,7 +36,7 @@ public class TestGUI {
         frame.setSize(600,540);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //frame.setVisible(true);
+        frame.setVisible(true);
         MainMenuGUI main = new MainMenuGUI(frame, users, Role.Seller);
         //PeopleView gui = new PeopleView(frame, users, Role.Seller, null);
         //gui.show();

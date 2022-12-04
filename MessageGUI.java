@@ -99,20 +99,8 @@ public class MessageGUI implements PropertyChangeListener {
         panel.add(leftPanel);
         rightPanel.add(scrollPane);
         panel.add(rightPanel);
-    /** Not needed unless these options exist from peopleview
-        if (messageChoice.equals("edit")) {
-            JOptionPane.showMessageDialog(null, "Select a message to edit", "Message", JOptionPane.INFORMATION_MESSAGE);
-        } else if (messageChoice.equals("view")) {
-            String tempMsg = "You are viewing chats with " + this.emailSelected;
-            JOptionPane.showMessageDialog(null, tempMsg, "Message", JOptionPane.INFORMATION_MESSAGE);
-        } else if (messageChoice.equals("delete")) {
-            JOptionPane.showMessageDialog(null, "Select a message to delete", "Message", JOptionPane.INFORMATION_MESSAGE);
-        }
-     */
         addActionListeners();
         container.add(panel, BorderLayout.CENTER);
-
-
     }
 
     private void addActionListeners() {
@@ -134,24 +122,15 @@ public class MessageGUI implements PropertyChangeListener {
                     String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
                     if (editedMessage != null) {
                         editedMessage = currentUser + ": " + editedMessage;
-                        //TODO: edit the message in database
-                        //edit the message shown on screen --> maybe done just have to test
-                        //Test below
-                        //messageList.set(index, editedMessage + " (Edited Message)");
-                        //messages.add(messageText);
-                        //messages.updateUI();
                         emailSelected = emailSelected.split(" ")[0];
                         try {
                             mic.editMessage(mic.getID(), otherID, editedMessage, conversationHistory.get(index).getMessageID());
                             JOptionPane.showMessageDialog(null, "Message Edited");
                         } catch (Exception e1) {
-                            // TODO Auto-generated catch block
                             JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
-                //else if no don't do anything
-
             }
         });
         //Select message and delete
@@ -171,20 +150,11 @@ public class MessageGUI implements PropertyChangeListener {
                 String confirm = "Do you want to delete " + deletedMessage + " ?";
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
-                    //Test below
-                    //messageList.removeElementAt(index);
-                    //messages.add(messageText);
-                    //messages.updateUI();
-                    //removes the message from the conversationHistory
-                    //when the run method is called again it should update the Jlist entirely
-                    //TODO: delete in the database
                     try {
                         emailSelected = emailSelected.split(" ")[0];
                         mic.deleteMessage(mic.getID(), otherID, conversationHistory.get(index).getMessageID());
                         JOptionPane.showMessageDialog(null, "Message Deleted");
-                        //conversationHistory.remove(index);
                     } catch (Exception e1) {
-                        // TODO Auto-generated catch block
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -197,19 +167,11 @@ public class MessageGUI implements PropertyChangeListener {
             public void actionPerformed(ActionEvent e) {
                // String message = currentUser + ": " + messageText.getText();
                 String message = messageText.getText();
-                //Test below
-                //TODO: store back in the database of the new message --> do this functionality
-                //add the message on the screen --> should be done automatically if adding the message to the arraylist
                 try {
                     emailSelected = emailSelected.split(" ")[0];
                     mic.message(message, mic.getID(), otherID, selectedStore);
-                    //conversationHistory = mic.getConversation(otherID, selectedStore);
-                    //messageList.addElement(message);
-                    //Update GUI to show changes
-                    //messages.updateUI();
                     JOptionPane.showMessageDialog(null, "Message Sent");
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -234,7 +196,6 @@ public class MessageGUI implements PropertyChangeListener {
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
             while (true) {
                 try {
                     ArrayList<Message> conversationHistory2 = mic.getConversation(otherID, selectedStore);
@@ -242,15 +203,11 @@ public class MessageGUI implements PropertyChangeListener {
                         pcs.firePropertyChange("changeUI", conversationHistory, conversationHistory2);
                     }
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    
-                }
+                } catch (InterruptedException e) {}
             }
         }
 
@@ -264,7 +221,6 @@ public class MessageGUI implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO Auto-generated method stub
         if (evt.getPropertyName().equals("changeUI")) {
             conversationHistory = (ArrayList<Message>) evt.getNewValue();
             String[] msg;
@@ -306,4 +262,3 @@ public class MessageGUI implements PropertyChangeListener {
 
     }
 }
-

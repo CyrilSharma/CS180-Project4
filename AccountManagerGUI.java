@@ -16,12 +16,14 @@ public class AccountManagerGUI {
     private JButton deleteAccountButton;
     private String currentUserName;
     private ArrayList<String> users;
+    private AccountInterfaceClient aic;
 
     public AccountManagerGUI(JFrame board, String currentUserName, ArrayList<String> users) {
         board.setSize(600,500);
         accountBoard = board;
         this.currentUserName = currentUserName;
         this.users = users;
+        aic = new AccountInterfaceClient();
     }
 
     public void addActionListeners() {
@@ -32,11 +34,17 @@ public class AccountManagerGUI {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedUsername = (String) (JOptionPane.showInputDialog(null, "Please enter your edited username: ", "Username", JOptionPane.QUESTION_MESSAGE));
                     if (editedUsername != null) {
-                        int index = users.indexOf(currentUserName);
-                        currentUserName = editedUsername;
-                        users.set(index, editedUsername);
-                        //TODO: Access dashboard to edit the username
-                        JOptionPane.showMessageDialog(null, "Username Edited");
+                        try {
+                            aic.modifyUsername(currentUserName, editedUsername);
+                            int index = users.indexOf(currentUserName);
+                            currentUserName = editedUsername;
+                            users.set(index, editedUsername);
+                            JOptionPane.showMessageDialog(null, "Username Edited");
+                        } catch (Exception error) {
+                            JOptionPane.showMessageDialog(null, 
+                                "We're having trouble communicating with the server.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 }
             }
@@ -48,8 +56,30 @@ public class AccountManagerGUI {
                 if (ans == JOptionPane.YES_OPTION) {
                     String editedPassword = (String) (JOptionPane.showInputDialog(null, "Please enter your edited password: ", "Username", JOptionPane.QUESTION_MESSAGE));
                     if (editedPassword != null) {
-                        //TODO: Access dashboard to edit the password
-                        JOptionPane.showMessageDialog(null, "Password Edited");
+                        try {
+                            aic.modifyPassword(currentUserName, editedPassword);
+                            JOptionPane.showMessageDialog(null, "Password Edited");
+                        } catch (Exception error) {
+                            JOptionPane.showMessageDialog(null, 
+                                "We're having trouble communicating with the server.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        });
+
+        deleteAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete your account? ", "Edit Username", JOptionPane.INFORMATION_MESSAGE);
+                if (ans == JOptionPane.YES_OPTION) {
+                    try {
+                        aic.deleteAccount(currentUserName);
+                    } catch (Exception error) {
+                        JOptionPane.showMessageDialog(null, 
+                        "We're having trouble communicating with the server.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -75,20 +105,9 @@ public class AccountManagerGUI {
                 gui.show();
             }
         });
-        deleteAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete your account? ", "Edit Username", JOptionPane.INFORMATION_MESSAGE);
-                if (ans == JOptionPane.YES_OPTION) {
-                    //TODO: Delete account
-                }
-            }
-        });
-
     }
 
     public void run() {
-        JPanel panel = new JPanel();
         this.container = accountBoard.getContentPane();
         container.setLayout(new BorderLayout());
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
@@ -117,9 +136,10 @@ public class AccountManagerGUI {
         contents.add(signOutButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(deleteAccountButton);
+        System.out.println("WHERE THIS AT");
         accountBoard.setVisible(true);
         addActionListeners();
-        container.add(panel, BorderLayout.CENTER);
+        container.add(contents, BorderLayout.CENTER);
     }
     public void show() {
         accountBoard.setContentPane(new Container());
