@@ -48,7 +48,7 @@ public class MainMenuGUI {
                 try {
                     HashMap<String,String> stores;
                     if (role.equals(Role.Customer)) {
-                            stores = (HashMap<String, String>) translator.query(
+                        stores = (HashMap<String, String>) translator.query(
                             new Query("User", "viewStores"));
                     } else {
                         stores = (HashMap<String, String>) translator.query(

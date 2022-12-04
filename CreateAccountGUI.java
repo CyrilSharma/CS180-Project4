@@ -119,10 +119,16 @@ public class CreateAccountGUI implements Runnable {
                     JOptionPane.showMessageDialog(null, "Password does not match!", "Error", JOptionPane.WARNING_MESSAGE, null);
                 } else {
                     try {
+                        if (stores.size() == 0 && Role.Seller == role) {
+                            JOptionPane.showMessageDialog(null, 
+                                "As a seller, you must have at least 1 store.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
                         Object o = translator.query(new Query("Database", "add", new String[]{email, password, role.toString()}));
                         // log in user.
                         translator.query(new Query("Database", "verify", new String[]{email, password}));
-                        if (role.toString().equals("Seller")) {
+                        if (Role.Seller == role) {
                             for (String store: stores) {
                                 try {
                                     translator.query(new Query("User", "addStores", new Object[]{store}));
@@ -135,7 +141,7 @@ public class CreateAccountGUI implements Runnable {
                             }
                         }
                         if (!(o instanceof Exception)) {
-                            MainMenuGUI gui = new MainMenuGUI(board, users, translator.get("email", email));
+                            MainMenuGUI gui = new MainMenuGUI(board, (ArrayList<String>) translator.query(new Query("User", "getUsers")), translator.get("email", email));
                             gui.show();
                         } else {
                             throw new InvalidUserException(((Exception) o).getMessage());
