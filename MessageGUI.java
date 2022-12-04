@@ -37,7 +37,7 @@ public class MessageGUI implements PropertyChangeListener {
     private MessageInterfaceClient mic;
     
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore) {
-        board.setSize(600,500);
+        board.setSize(600,550);
         messageBoard = board;
         this.currentUser = username; //logged in user
         this.conversationHistory = new ArrayList<>();

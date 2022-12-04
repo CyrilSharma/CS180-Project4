@@ -37,16 +37,16 @@ public class TestGUI {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
-        MainMenuGUI main = new MainMenuGUI(frame, users, Role.Seller);
-        main.show();
+       // MainMenuGUI main = new MainMenuGUI(frame, users, Role.Seller);
+        //main.show();
         //PeopleView gui = new PeopleView(frame, users, Role.Seller, null);
         //gui.show();
 
 //        LogInGUI mainMenu = new LogInGUI(users);
 //        mainMenu.show();
 
-        //MessageGUIReDone message = new MessageGUIReDone("view", "cs183@purdue.edu");
-        //message.show();
+        MessageGUI message = new MessageGUI(frame,"view", "cs183@purdue.edu", "temp", "store0");
+        message.show();
        // BlockGUI blockGUI = new BlockGUI("cs186@gmail.com", users, blockedUsers);
        // blockGUI.show();
     }
