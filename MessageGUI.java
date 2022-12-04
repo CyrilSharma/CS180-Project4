@@ -37,7 +37,7 @@ public class MessageGUI implements PropertyChangeListener {
     private MessageInterfaceClient mic;
     
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore) {
-        board.setSize(600,500);
+        board.setSize(600,550);
         messageBoard = board;
         this.currentUser = username; //logged in user
         this.conversationHistory = new ArrayList<>();
@@ -72,8 +72,8 @@ public class MessageGUI implements PropertyChangeListener {
         messages.setModel(messageList);
         messages.setCellRenderer(new CellRenderer());
         updateMessages();
-        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(370,300));
+        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(450,400));
         this.container = messageBoard.getContentPane();
         container.setLayout(new BorderLayout());
         recipientText = new JLabel();
