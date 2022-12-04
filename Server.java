@@ -66,7 +66,7 @@ public class Server implements Runnable {
                 function = query.getFunction();
                 args = query.getArgs();
                 Object result = executeMethod(o, function, args);
-                if (function.equals("verify") && (Boolean) result) {
+                if ((function.equals("verify") && (Boolean) result)) {
                     String[] argsString = (String[]) args;
                     loggedIn = true;
                     user = new User(argsString[0], argsString[1], Role.valueOf(db.get("email", argsString[0]).get("role")), mm, db);

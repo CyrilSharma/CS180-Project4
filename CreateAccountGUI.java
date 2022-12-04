@@ -11,7 +11,6 @@ public class CreateAccountGUI implements Runnable {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
-    private ArrayList<String> users;
     private JButton placeholder;
 
     private Role role;
@@ -21,11 +20,7 @@ public class CreateAccountGUI implements Runnable {
     private Translator translator;
 
     public CreateAccountGUI(JFrame frame) {
-        this(frame, new ArrayList<>());
-    }
-    public CreateAccountGUI(JFrame frame, ArrayList<String> users) {
         board = frame;
-        this.users = users;
         translator = new Translator();
     }
 
@@ -114,8 +109,8 @@ public class CreateAccountGUI implements Runnable {
 //                    JOptionPane.showMessageDialog(null, f, "Message", JOptionPane.INFORMATION_MESSAGE);
                     try {
                         Object o = translator.query(new Query("Database", "add", new String[]{email, password, role.toString()}));
-                        if (!(o instanceof Exception)) {
-                            MainMenuGUI gui = new MainMenuGUI(board, users, translator.get("email", email));
+                        if (!(o instanceof Exception) && (Boolean) (translator.query(new Query("Database", "verify", new String[]{email, password})))) {
+                            MainMenuGUI gui = new MainMenuGUI(board, (ArrayList<String>) translator.query(new Query("User", "getUsers")), translator.get("email", email));
                             gui.show();
                         } else {
                             throw new InvalidUserException(((Exception) o).getMessage());

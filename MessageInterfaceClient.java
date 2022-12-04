@@ -115,7 +115,8 @@ public class MessageInterfaceClient {
         String object = "MessageManager";
         String function = "getConversation";
         String[] args = new String[]{getID(), id, store};
-        return (ArrayList<Message>) translator.query(new Query(object, function, args));
+        Object r = translator.query(new Query(object, function, args));
+        return (ArrayList<Message>) r;
     }
 
     public Translator getTranslator() {

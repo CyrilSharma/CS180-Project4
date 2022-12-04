@@ -139,7 +139,7 @@ public class LogInGUI {
         createAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CreateAccountGUI gui = new CreateAccountGUI(board, users);
+                CreateAccountGUI gui = new CreateAccountGUI(board);
                 gui.show();
             }
         });
