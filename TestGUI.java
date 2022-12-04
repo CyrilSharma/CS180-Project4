@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 
@@ -39,14 +40,22 @@ public class TestGUI {
         frame.setVisible(true);
        // MainMenuGUI main = new MainMenuGUI(frame, users, Role.Seller);
         //main.show();
-        //PeopleView gui = new PeopleView(frame, users, Role.Seller, null);
-        //gui.show();
+        HashMap<String, String> stores = new HashMap<>();
+        stores.put("Store1", "helloworld@gmail.com");
+        Translator tr = new Translator();
+        try {
+            PeopleView gui = new PeopleView(frame, users, tr.get("email", "bob@gmail.com"), stores);
+            gui.show();
+        } catch (Exception e) {
+
+        }
+
 
 //        LogInGUI mainMenu = new LogInGUI(users);
 //        mainMenu.show();
 
-        MessageGUI message = new MessageGUI(frame,"view", "cs183@purdue.edu", "temp", "store0");
-        message.show();
+        //MessageGUI message = new MessageGUI(frame,"view", "cs183@purdue.edu", "temp", "store0");
+        //message.show();
        // BlockGUI blockGUI = new BlockGUI("cs186@gmail.com", users, blockedUsers);
        // blockGUI.show();
     }

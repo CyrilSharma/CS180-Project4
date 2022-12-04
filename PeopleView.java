@@ -13,7 +13,6 @@ import java.util.HashMap;
 public class PeopleView implements Runnable {
     //TODO 1: remove html after user checks that message
     //TODO 2: remove html tag when transferring data
-    //TODO 3: check each store in hashmap, if val = ArrayList(size = 0), remove the key
     private JFrame board;
     private Container content;
     private JScrollPane convPane;
@@ -47,7 +46,7 @@ public class PeopleView implements Runnable {
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
-    public PeopleView(JFrame frame, ArrayList<String> emails, HashMap<String,String> user, 
+    public PeopleView(JFrame frame, ArrayList<String> emails, HashMap<String,String> user,
         HashMap<String, String> stores) {
         frame.setSize(600,540);
         board = frame;
@@ -89,7 +88,7 @@ public class PeopleView implements Runnable {
         placeholder = new JButton();
         scroll2 = new JScrollPane(storeList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         if (role == Role.Customer) {
-            title.setText("Sellers");
+            title.setText("Stores");
         } else {
             title.setText("Customers");
         }
@@ -104,7 +103,12 @@ public class PeopleView implements Runnable {
         convPane.add(upperPanel);
         convPane.add(rightPanel);
         convPane.add(scrollPane);
-        convPane.add(storeSearchBar);
+        if (role == Role.Customer) {
+            upperPanel.add(storeSearchBar);
+        } else {
+            convPane.add(storeSearchBar);
+        }
+
         convPane.add(scroll2);
         //scrollPane.add(people);
     }
@@ -112,6 +116,10 @@ public class PeopleView implements Runnable {
 
     public void updateNotif(HashMap<String, ArrayList<String>> notif) {
         userNotifications = notif;
+    }
+
+    public void removeStoreNotif(String store) {
+        userNotifications.remove(store);
     }
 
     public String storeHTMLRemover(String str) {
@@ -162,12 +170,7 @@ public class PeopleView implements Runnable {
         convPane.setSize(500,400);
         //convPane.setBackground(Color.GRAY);
         storeSearchBar.setForeground(Color.GRAY);
-        scrollPane.setBounds(30,70,370,250);
-        //scrollPane.setBackground(Color.green);
         upperPanel.setSize(400,70);
-        people.setBounds(0,0,330,5000);
-        convPane.setPreferredSize(new Dimension(370, 800));
-        storeSearchBar.setBounds(30, 340, 300, 20);
         title.setBounds(10,10, 200, 50);
         Font f = new Font("Helvetica", Font.BOLD, 25);
         title.setFont(f);
@@ -175,13 +178,30 @@ public class PeopleView implements Runnable {
         blockButton.setBounds(20, 20, 160,30);
         testButton.setBounds(20, 100, 160,30);
         viewButton.setBounds(20, 60, 160,30);
-        //editButton.setBounds(20, 100, 160,30);
-        //deleteButton.setBounds(20, 140, 160,30);
-        placeholder.setBounds(-1,-1,1,1);
-        backButton.setBounds(100, 450, 80, 30);
-        searchBar.setBounds(200,25,200,20);
-        scroll2.setBounds(30, 370, 370, 100);
-        searchBar.setForeground(Color.GRAY);
+        if (role == Role.Customer) {
+            storeSearchBar.setBounds(200,25,200,20);
+            scroll2.setBounds(30,70,370,400);
+            storeList.setListData(map.keySet().toArray());
+            storeList.updateUI();
+        } else {
+            scrollPane.setBounds(30,70,370,250);
+            //scrollPane.setBackground(Color.green);
+            people.setBounds(0,0,330,5000);
+            convPane.setPreferredSize(new Dimension(370, 800));
+            storeSearchBar.setBounds(30, 340, 300, 20);
+            //editButton.setBounds(20, 100, 160,30);
+            //deleteButton.setBounds(20, 140, 160,30);
+            placeholder.setBounds(-1,-1,1,1);
+            backButton.setBounds(100, 450, 80, 30);
+            searchBar.setBounds(200,25,200,20);
+            scroll2.setBounds(30, 370, 370, 100);
+            searchBar.setForeground(Color.GRAY);
+            ArrayList<String> stores = getMyStores(user.get("id"));
+            storeList.setListData(stores.toArray());
+            storeList.updateUI();
+        }
+
+
     }
 
     public ArrayList<String> getMyStores(String myid) {
@@ -219,8 +239,13 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = (String) people.getSelectedValue();
-                email = email.split(" ")[0];
+                //email = email.split(" ")[0];
                 String store = (String) storeList.getSelectedValue();
+                if (role == Role.Customer) {
+                    store = storeHTMLRemover(store);
+                    removeStoreNotif(store);
+                }
+
                 if (email != null && store != null) {
                     String msg = "Trying to view a conversation with " + email + " with " + store;
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
@@ -236,13 +261,24 @@ public class PeopleView implements Runnable {
         testButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                HashMap<String, ArrayList<String>> map = new HashMap<>();
-                ArrayList<String> userrr = new ArrayList<>();
-                userrr.add("helloworld@gmail.com");
-                map.put("Store1", userrr);
-                updateNotif(map);
-                //updateUserUI();
-                updateStoreUI();
+                if (role == Role.Customer) {
+                    HashMap<String, ArrayList<String>> map = new HashMap<>();
+                    ArrayList<String> userrr = new ArrayList<>();
+                    userrr.add("helloworld@gmail.com");
+                    map.put("Store1", userrr);
+                    updateNotif(map);
+                    //updateUserUI();
+                    updateStoreUI();
+                } else {
+                    HashMap<String, ArrayList<String>> map = new HashMap<>();
+                    ArrayList<String> userrr = new ArrayList<>();
+                    userrr.add("helloworld@gmail.com");
+                    map.put("Store1", userrr);
+                    updateNotif(map);
+                    //updateUserUI();
+                    updateStoreUI();
+                }
+
             }
         });
         backButton.addActionListener(new ActionListener() {
@@ -322,15 +358,33 @@ public class PeopleView implements Runnable {
             }
 
         });
+        people.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (role == Role.Customer) {
+                    String user = (String) people.getSelectedValue();
+                    try {
+                        ArrayList<String> stores = getUserStores(user);
+                        storeList.setListData(stores.toArray());
+                        storeList.updateUI();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
         storeList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 //STORE NAME MUST NOT HAVE A SPECIAL CHARACTER
                 String store = (String) storeList.getSelectedValue();
-                if (store.indexOf("<") != -1) {
+                if (store != null && store.indexOf("<") != -1) {
                     store = storeHTMLRemover(store);
                 }
-                updateUserUI(store);
+                if (role == Role.Seller) {
+                    updateUserUI(store);
+                }
+
             }
         });
         //people.setBackground(Color.GREEN);
