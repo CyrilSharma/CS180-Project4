@@ -47,7 +47,7 @@ public class PeopleView implements Runnable {
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
     public PeopleView(JFrame frame, ArrayList<String> emails, HashMap<String,String> user,
-        HashMap<String, String> stores) {
+                      HashMap<String, String> stores) {
         frame.setSize(600,540);
         board = frame;
         users = emails;
@@ -57,6 +57,7 @@ public class PeopleView implements Runnable {
         status = new ArrayList<>(Arrays.asList(ex));
         map = stores;
         translator = new Translator();
+        userNotifications = new HashMap<>();
     }
     public void show() {
         board.setContentPane(new Container());
@@ -119,7 +120,9 @@ public class PeopleView implements Runnable {
     }
 
     public void removeStoreNotif(String store) {
-        userNotifications.remove(store);
+        if (userNotifications.containsKey(store)) {
+            userNotifications.remove(store);
+        }
     }
 
     public String storeHTMLRemover(String str) {
@@ -252,19 +255,21 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                String email;
+                String email = (String) people.getSelectedValue();
+                //email = email.split(" ")[0];
                 String store = (String) storeList.getSelectedValue();
                 if (role == Role.Customer) {
-                    email = (String) translator.query(new Query("User", "getEmailFromStore", store));
+                    //ID OR EMAIL
+                    email = map.get(store);
+                    if (store.indexOf("<") != -1) {
+                        store = storeHTMLRemover(store);
+                        removeStoreNotif(store);
+                    } else {
+                        removeStoreNotif(store);
+                    }
                 } else {
                     email = (String) people.getSelectedValue();
                 }
-                //email = email.split(" ")[0];
-                if (role == Role.Customer) {
-                    store = storeHTMLRemover(store);
-                    removeStoreNotif(store);
-                }
-
                 if (email != null && store != null) {
                     String msg = "Trying to view a conversation with " + email + " with " + store;
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);

@@ -8,7 +8,6 @@ public class TestGUI {
         //LogInGUI gui = new LogInGUI();
         ArrayList<String> users = new ArrayList<>();
         ArrayList<String> blockedUsers = new ArrayList<>();
-        ArrayList<String> invisibleUsers = new ArrayList<>();
         users.add("helloworld@gmail.com");
         users.add("hmmmm@gmail.com");
         users.add("cs184@gmail.com");
@@ -33,8 +32,6 @@ public class TestGUI {
         users.add("cs18111@gmail.com");
         users.add("cs1811111@gmail.com");
         blockedUsers.add("cs186@gmail.com");
-        invisibleUsers.add("cs186@gmail.com");
-
         //LogInGUI gui = new LogInGUI(users);
         JFrame frame = new JFrame("Turkey Shop");
         frame.setSize(600,540);
@@ -59,7 +56,7 @@ public class TestGUI {
 
         //MessageGUI message = new MessageGUI(frame,"view", "cs183@purdue.edu", "temp", "store0");
         //message.show();
-       BlockGUI blockGUI = new BlockGUI("cs186@gmail.com", users, blockedUsers, invisibleUsers);
-       blockGUI.show();
+       // BlockGUI blockGUI = new BlockGUI("cs186@gmail.com", users, blockedUsers);
+       // blockGUI.show();
     }
 }
