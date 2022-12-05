@@ -46,8 +46,8 @@ public class PeopleView implements Runnable {
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
-    public PeopleView(JFrame frame, ArrayList<String> emails, HashMap<String,String> user, 
-        HashMap<String, String> stores) {
+    public PeopleView(JFrame frame, ArrayList<String> emails, HashMap<String,String> user,
+                      HashMap<String, String> stores) {
         frame.setSize(600,540);
         board = frame;
         users = emails;
@@ -57,6 +57,7 @@ public class PeopleView implements Runnable {
         status = new ArrayList<>(Arrays.asList(ex));
         map = stores;
         translator = new Translator();
+        userNotifications = new HashMap<>();
     }
     public void show() {
         board.setContentPane(new Container());
@@ -116,6 +117,12 @@ public class PeopleView implements Runnable {
 
     public void updateNotif(HashMap<String, ArrayList<String>> notif) {
         userNotifications = notif;
+    }
+
+    public void removeStoreNotif(String store) {
+        if (userNotifications.containsKey(store)) {
+            userNotifications.remove(store);
+        }
     }
 
     public String storeHTMLRemover(String str) {
@@ -234,9 +241,21 @@ public class PeopleView implements Runnable {
         viewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String email = (String) people.getSelectedValue();
-                email = email.split(" ")[0];
+                String email;
+                //email = email.split(" ")[0];
                 String store = (String) storeList.getSelectedValue();
+                if (role == Role.Customer) {
+                    //ID OR EMAIL
+                    email = map.get(store);
+                    if (store.indexOf("<") != -1) {
+                        store = storeHTMLRemover(store);
+                        removeStoreNotif(store);
+                    } else {
+                        removeStoreNotif(store);
+                    }
+                } else {
+                    email = (String) people.getSelectedValue();
+                }
                 if (email != null && store != null) {
                     String msg = "Trying to view a conversation with " + email + " with " + store;
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
@@ -252,13 +271,24 @@ public class PeopleView implements Runnable {
         testButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                HashMap<String, ArrayList<String>> map = new HashMap<>();
-                ArrayList<String> userrr = new ArrayList<>();
-                userrr.add("helloworld@gmail.com");
-                map.put("Store1", userrr);
-                updateNotif(map);
-                //updateUserUI();
-                updateStoreUI();
+                if (role == Role.Customer) {
+                    HashMap<String, ArrayList<String>> map = new HashMap<>();
+                    ArrayList<String> userrr = new ArrayList<>();
+                    userrr.add("helloworld@gmail.com");
+                    map.put("Store1", userrr);
+                    updateNotif(map);
+                    //updateUserUI();
+                    updateStoreUI();
+                } else {
+                    HashMap<String, ArrayList<String>> map = new HashMap<>();
+                    ArrayList<String> userrr = new ArrayList<>();
+                    userrr.add("helloworld@gmail.com");
+                    map.put("Store1", userrr);
+                    updateNotif(map);
+                    //updateUserUI();
+                    updateStoreUI();
+                }
+
             }
         });
         backButton.addActionListener(new ActionListener() {
@@ -358,11 +388,13 @@ public class PeopleView implements Runnable {
             public void valueChanged(ListSelectionEvent e) {
                 //STORE NAME MUST NOT HAVE A SPECIAL CHARACTER
                 String store = (String) storeList.getSelectedValue();
-                System.out.println(store);
                 if (store != null && store.indexOf("<") != -1) {
                     store = storeHTMLRemover(store);
                 }
-                updateUserUI(store);
+                if (role == Role.Seller) {
+                    updateUserUI(store);
+                }
+
             }
         });
         //people.setBackground(Color.GREEN);
