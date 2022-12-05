@@ -11,21 +11,18 @@ public class CreateAccountGUI implements Runnable {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
-    private ArrayList<String> users;
     private JButton placeholder;
-
+    private JTextField storeField;
+    private JButton addStoreButton;
     private Role role;
     private JButton customerButton;
     private JButton sellerButton;
     private JLabel userSelectionLabel;
+    private ArrayList<String> stores = new ArrayList<String>();
     private Translator translator;
 
     public CreateAccountGUI(JFrame frame) {
-        this(frame, new ArrayList<>());
-    }
-    public CreateAccountGUI(JFrame frame, ArrayList<String> users) {
         board = frame;
-        this.users = users;
         translator = new Translator();
     }
 
@@ -59,12 +56,20 @@ public class CreateAccountGUI implements Runnable {
         sellerButton.setSize(150,30);
         sellerButton.setLocation(board.getWidth()/2 - sellerButton.getWidth()/2, 275);
         createButton.setSize(150,30);
-        createButton.setBounds(board.getWidth()/2 - createButton.getWidth()/2, 325,
+        createButton.setBounds(board.getWidth()/2 - createButton.getWidth()/2, 350,
                 createButton.getWidth(), createButton.getHeight());
 
         backButton.setSize(90, 30);
-        backButton.setBounds(20, 380,
-                backButton.getWidth(), backButton.getHeight());
+        backButton.setBounds(20, 380, backButton.getWidth(), backButton.getHeight());
+
+        storeField.setSize(150,30);
+        storeField.setLocation(board.getWidth()/2 - storeField.getWidth()/2, 300);
+        storeField.setText("Store name...");
+        storeField.setForeground(Color.GRAY);
+        storeField.setVisible(false);
+        addStoreButton.setSize(150,30);
+        addStoreButton.setLocation(board.getWidth()/2 - addStoreButton.getWidth()/2, 325);
+        addStoreButton.setVisible(false);
     }
 
     public void createAndAdd(JPanel panel) {
@@ -72,11 +77,14 @@ public class CreateAccountGUI implements Runnable {
         emailField = new JTextField(10);
         passwordField = new JPasswordField(10);
         confirmPasswordField = new JPasswordField(10);
+        storeField = new JTextField(10);
+
         backButton = new JButton("Back");
         placeholder = new JButton();
         customerButton = new JButton("Customer");
         sellerButton = new JButton("Seller");
         userSelectionLabel = new JLabel("select a role...");
+        addStoreButton = new JButton("Add Store");
         panel.setLayout(null);
         panel.add(emailField);
         panel.add(passwordField);
@@ -86,6 +94,8 @@ public class CreateAccountGUI implements Runnable {
         panel.add(placeholder);
         panel.add(customerButton);
         panel.add(sellerButton);
+        panel.add(storeField);
+        panel.add(addStoreButton);
         panel.add(userSelectionLabel);
         placeholder.setBounds(-1,-1,1,1);
         emailField.setSize(150,30);
@@ -108,14 +118,30 @@ public class CreateAccountGUI implements Runnable {
                 } else if (!password.equals(cp)) {
                     JOptionPane.showMessageDialog(null, "Password does not match!", "Error", JOptionPane.WARNING_MESSAGE, null);
                 } else {
-                    //THIS DOES NOT CHECK CREDENTIALS YET
-//                    String f = "Trying to create an account with credential {email: %s, pw: %s}\n";
-//                    f = String.format(f, email, password);
-//                    JOptionPane.showMessageDialog(null, f, "Message", JOptionPane.INFORMATION_MESSAGE);
                     try {
+                        if (stores.size() == 0 && Role.Seller == role) {
+                            JOptionPane.showMessageDialog(null, 
+                                "As a seller, you must have at least 1 store.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
                         Object o = translator.query(new Query("Database", "add", new String[]{email, password, role.toString()}));
+                        // log in user.
+                        translator.query(new Query("Database", "verify", new String[]{email, password}));
+                        if (Role.Seller == role) {
+                            for (String store: stores) {
+                                try {
+                                    translator.query(new Query("User", "addStores", new Object[]{store}));
+                                } catch (Exception error) {
+                                    JOptionPane.showMessageDialog(null, 
+                                        "We're having trouble communicating with the server.",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                    break;
+                                }
+                            }
+                        }
                         if (!(o instanceof Exception)) {
-                            MainMenuGUI gui = new MainMenuGUI(board, users, translator.get("email", email));
+                            MainMenuGUI gui = new MainMenuGUI(board, (ArrayList<String>) translator.query(new Query("User", "getUsers")), translator.get("email", email));
                             gui.show();
                         } else {
                             throw new InvalidUserException(((Exception) o).getMessage());
@@ -138,6 +164,8 @@ public class CreateAccountGUI implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 role = Role.Customer;
                 userSelectionLabel.setText("role: customer");
+                addStoreButton.setVisible(false);
+                storeField.setVisible(false);
             }
         });
         sellerButton.addActionListener(new ActionListener() {
@@ -145,6 +173,16 @@ public class CreateAccountGUI implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 role = Role.Seller;
                 userSelectionLabel.setText("role: seller");
+                addStoreButton.setVisible(true);
+                storeField.setVisible(true);
+            }
+        });
+
+        addStoreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String store = storeField.getText();
+                stores.add(store);
             }
         });
     }
@@ -217,6 +255,26 @@ public class CreateAccountGUI implements Runnable {
                     confirmPasswordField.setForeground(Color.GRAY);
                     confirmPasswordField.setEchoChar((char)0);
                     confirmPasswordField.setText("Confirm Password...");
+                }
+            }
+        });
+        storeField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                JTextField field = (JTextField)e.getComponent();
+                if (field.getText().equals("Store name...")) {
+                    field.setText("");
+                    confirmPasswordField.setEchoChar('*');
+                }
+                field.setForeground(Color.BLACK);
+                //field.removeFocusListener(this);
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (confirmPasswordField.getText().isEmpty()) {
+                    confirmPasswordField.setForeground(Color.GRAY);
+                    confirmPasswordField.setEchoChar((char)0);
+                    confirmPasswordField.setText("Store name...");
                 }
             }
         });
