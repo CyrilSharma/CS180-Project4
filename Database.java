@@ -337,6 +337,7 @@ public class Database {
             pw.write(output.strip());
             pw.flush();
             pw.close();
+            database = readFromDatabase(databasePath);
         } catch (Exception e) {
             return;
         }

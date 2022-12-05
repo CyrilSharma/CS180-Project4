@@ -141,7 +141,7 @@ public class CreateAccountGUI implements Runnable {
                             }
                         }
                         if (!(o instanceof Exception)) {
-                            MainMenuGUI gui = new MainMenuGUI(board, (ArrayList<String>) translator.query(new Query("User", "getUsers")), translator.get("email", email));
+                            MainMenuGUI gui = new MainMenuGUI(board, translator.get("email", email));
                             gui.show();
                         } else {
                             throw new InvalidUserException(((Exception) o).getMessage());

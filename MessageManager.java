@@ -132,7 +132,7 @@ public class MessageManager {
         try {
             generalMessage(senderID, recipientID, message, "message", "", store);
         } catch (Exception e) {
-            throw new Exception("An error has occurred sending your message");
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class MessageManager {
         try {
             generalMessage(senderID, recipientID, message, "edit", messageId, "");
         } catch (Exception e) {
-            throw new Exception("An error has occurred sending your message");
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -156,7 +156,7 @@ public class MessageManager {
         try {
             generalMessage(senderID, recipientID, "", "delete", messageId, "");
         } catch (Exception e) {
-            throw new Exception("An error has occurred sending your message");
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -164,8 +164,13 @@ public class MessageManager {
      * Allows the user to delete a message from THEIR personal message history
      */
     public void generalMessage(String senderID, String recipientID, String message, String action, 
-        String messageID, String store) throws IOException {
+        String messageID, String store) throws Exception {
         String[] ids = {senderID, recipientID};
+        HashMap<String, String> senderHashMap = db.get("id", senderID);
+        HashMap<String, String> recipientHashMap = db.get("id", recipientID);
+        if (senderHashMap.values().toString().contains(recipientID) || recipientHashMap.values().contains(senderID)) {
+            throw new Exception("You don't have permission to message that user");
+        }
         for (String id: ids) {
             ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
             if (action.equals("message")) {

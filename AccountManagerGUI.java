@@ -18,7 +18,7 @@ public class AccountManagerGUI {
     private String currentUserName;
     private AccountInterfaceClient aic;
 
-    public AccountManagerGUI(JFrame board, String currentUserName, ArrayList<String> users) {
+    public AccountManagerGUI(JFrame board, String currentUserName) {
         board.setSize(600,500);
         accountBoard = board;
         this.currentUserName = currentUserName;

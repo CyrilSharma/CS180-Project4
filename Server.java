@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import java.time.Instant;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -40,25 +41,28 @@ public class Server implements Runnable {
                 }
                 Query query = (Query) input;
                 Object o = null;
-                String function = null;
-                Object[] args = null;
-                if (query.getObject().equals("Database")) {
+                String function = query.getFunction();
+                Object[] args = query.getArgs();
+                if (query.getObject().equals("Database") && (function.equals("verify") || function.equals("add"))) {
                     o = db;
-                } else if (query.getObject().equals("MessageManager")) {
-                    o = mm;
                 } else if (loggedIn) {
-                    if (query.getObject().equals("User")) {
+                    if (query.getObject().equals("Database")) {
+                        o = db;
+                    } else if (query.getObject().equals("User")) {
                         o = user;
+                    } else if (query.getObject().equals("MessageManager")) {
+                        o = mm;
                     } else if (query.getObject().equals("Dashboard")) {
                         o = dashboard;
                     } else if (query.getObject().equals("Filter")) {
                         o = filter;
                     }
                 } else {
+                    Exception e = new Exception("I'm sorry, Dave. I'm afraid I can't do that.\nYou are not signed in.");
+                    oos.writeObject(e);
+                    oos.flush();
                     continue;
                 }
-                function = query.getFunction();
-                args = query.getArgs();
                 Object result = executeMethod(o, function, args);
                 if ((function.equals("verify") && (Boolean) result)) {
                     String[] argsString = (String[]) args;
@@ -66,7 +70,9 @@ public class Server implements Runnable {
                     user = new User(argsString[0], argsString[1], Role.valueOf(db.get("email", argsString[0]).get("role")), mm, db);
                     dashboard = new Dashboard(argsString[0], mm.getHistoryLocation(db.get("email", argsString[0]).get("id")), db);
                     filter = new Filter(argsString[0], db);
+                    db.modify(argsString[0], "lastOnline", Instant.now().toString());
                 } else if (function.equals("logout")) {
+                    db.modify(user.getEmail(), "lastOnline", Instant.now().toString());
                     loggedIn = false;
                 }
                 oos.writeObject(result);

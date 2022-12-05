@@ -320,7 +320,7 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //will change to mainGUI if it is uploaded
-                MainMenuGUI gui = new MainMenuGUI(board, users, user);
+                MainMenuGUI gui = new MainMenuGUI(board, user);
                 gui.show();
             }
         });

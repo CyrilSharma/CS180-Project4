@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class TestGUI {
     public static void main(String[] args) {
@@ -47,7 +48,7 @@ public class TestGUI {
             PeopleView gui = new PeopleView(frame, tr.get("email", "bob@gmail.com"));
             gui.show();
         } catch (Exception e) {
-
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
 

@@ -15,13 +15,12 @@ public class BlockGUI implements Runnable {
     private JPanel rightPanel;
     private JPanel upperPanel;
     private JButton unblockButton;
-    private JButton blockButton;
-    private JButton invisibleButton;
     private JButton undoInvisibilityButton;
     private JButton viewUnblockedListButton;
     private JButton viewBlockedListButton;
     private JButton viewInvisibilityList;
     private JButton viewAllUsersButton;
+    private JButton backButton;
     private JLabel title;
     private JList users;
     private DefaultListModel userList = new DefaultListModel();
@@ -56,25 +55,22 @@ public class BlockGUI implements Runnable {
         //people.setBackground(Color.gray);
         rightPanel = new JPanel();
         title = new JLabel();
-        blockButton = new JButton("Block User");
         unblockButton = new JButton("Unblock User");
-        invisibleButton = new JButton("Go Invisible");
         undoInvisibilityButton = new JButton("Undo Invisibility");
         viewUnblockedListButton = new JButton("View Unblocked List");
         viewBlockedListButton = new JButton("View Blocked List");
         viewInvisibilityList = new JButton("View Invisibility List");
         viewAllUsersButton = new JButton("View All Users");
+        backButton = new JButton("Back");
         upperPanel = new JPanel();
         upperPanel.add(title);
-        rightPanel.add(blockButton);
         rightPanel.add(unblockButton);
-        rightPanel.add(invisibleButton);
         rightPanel.add(undoInvisibilityButton);
         rightPanel.add(viewUnblockedListButton);
         rightPanel.add(viewBlockedListButton);
         rightPanel.add(viewInvisibilityList);
         rightPanel.add(viewAllUsersButton);
-
+        rightPanel.add(backButton);
         convPane.add(upperPanel);
         convPane.add(rightPanel);
         convPane.add(scrollPane);
@@ -96,14 +92,13 @@ public class BlockGUI implements Runnable {
         Font f = new Font("Helvetica", Font.BOLD, 25);
         title.setFont(f);
         rightPanel.setBounds(400,0, 200, 400);
-        blockButton.setBounds(20, 20, 160,30);
-        unblockButton.setBounds(20, 60, 160,30);
-        invisibleButton.setBounds(20, 100, 160, 30);
-        undoInvisibilityButton.setBounds(20, 140, 160, 30);
-        viewUnblockedListButton.setBounds(20, 180, 160,30);
-        viewBlockedListButton.setBounds(20, 220, 160,30);
-        viewInvisibilityList.setBounds(20, 260, 160, 30);
-        viewAllUsersButton.setBounds(20, 300, 160,30);
+        unblockButton.setBounds(20, 20, 160,30);
+        undoInvisibilityButton.setBounds(20, 60, 160, 30);
+        viewUnblockedListButton.setBounds(20, 100, 160,30);
+        viewBlockedListButton.setBounds(20, 140, 160,30);
+        viewInvisibilityList.setBounds(20, 180, 160, 30);
+        viewAllUsersButton.setBounds(20, 220, 160,30);
+        backButton.setBounds(20, 260, 160, 30);
     }
     public void show() {
         board.setContentPane(new Container());
@@ -196,6 +191,21 @@ public class BlockGUI implements Runnable {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        });
+        backButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                try {
+                    AccountManagerGUI accountManagerGUI = new AccountManagerGUI(board, (String) blockGUIInterface.geTranslator().query(new Query("User", "getEmail")));
+                    accountManagerGUI.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            
         });
     }
 }

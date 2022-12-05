@@ -12,7 +12,6 @@ public class MainMenuGUI {
     private JPanel bottomPanel;
     private HashMap<String,String> user;
     private Role role;
-    private ArrayList<String> users;
     private JLabel title;
     private JLabel contentText;
 
@@ -20,13 +19,12 @@ public class MainMenuGUI {
     private JButton peopleViewPressed;
     private JButton accountManagerPressed;
 
-    public MainMenuGUI(JFrame frame, ArrayList<String> users, HashMap<String,String> user) {
+    public MainMenuGUI(JFrame frame, HashMap<String,String> user) {
         frame.setSize(600,400);
         this.board = frame;
         this.user = user;
         // used frequently enough to justify a seperate variable.
         this.role = Role.valueOf(user.get("role"));
-        this.users = users;
     }
     public void show() {
         board.setContentPane(new Container());
@@ -53,7 +51,7 @@ public class MainMenuGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try { 
-                    AccountManagerGUI accountGUI = new AccountManagerGUI(board, user.get("email"), users);
+                    AccountManagerGUI accountGUI = new AccountManagerGUI(board, user.get("email"));
                     accountGUI.show();
                 } catch (Exception e2) {
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

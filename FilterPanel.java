@@ -149,7 +149,7 @@ public class FilterPanel implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: FIX THIS CONSTRUCTOR
-                AccountManagerGUI gui = new AccountManagerGUI(board, null, null);
+                AccountManagerGUI gui = new AccountManagerGUI(board, null);
             }
         });
 

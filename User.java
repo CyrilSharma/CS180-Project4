@@ -67,21 +67,13 @@ public class User implements Serializable {
         HashMap<String, String> stores = new HashMap<>();
         if (role.equals(Role.Customer)) {
             for (HashMap<String, String> sellerBlocked : getSellers) {
-                if (!sellerBlocked.get("blocked").contains(id) && !sellerBlocked.get("invisible").contains(id)) {
+                if (!sellerBlocked.get("invisible").contains(id)) {
                     ArrayList<String> stores2 = User.readStoresFromFile(sellerBlocked.get("email"));
                     String email = sellerBlocked.get("email");
-                    String id = sellerBlocked.get("id");
-                    if (db.get("id", id).get("blocked").contains(sellerBlocked.get("id")) 
-                        && !sellerBlocked.get("invisible").contains(id)) {
-                        email += " (blocked)";
-                    } if (db.get("id", id).get("invisible").contains(sellerBlocked.get("id")) 
-                        && !sellerBlocked.get("invisible").contains(id)) {
-                        email += " (invisible)";
-                    }
-                    //TODO: fix so that invisible people aren't added to the list
                     for (String store : stores2) {
                         stores.put(store, email);
                     }
+                    //TODO: fix so that invisible people aren't added to the list
                 }
             }
         }
@@ -97,7 +89,7 @@ public class User implements Serializable {
     public void addStores(String store) throws Exception {
         if (role.equals(Role.Seller)) {
             try {
-                if (User.getEmailFromStore(store) != null || store.contains("-")) {
+                if (User.getEmailFromStore(store) != null || store.contains("-") || store.contains(",,,")) {
                     throw new InvalidUserException("That store name is not available");
                 }
                 File f = new File(PathManager.storeDir + "Stores.txt");
@@ -121,18 +113,11 @@ public class User implements Serializable {
         ArrayList<HashMap<String, String>> getCustomers = db.getSelection("role", Role.Customer.toString());
         ArrayList<String> customers = new ArrayList<>();
         if (role.equals(Role.Seller)) {
-            HashMap<String, String> thisUser = db.get("id", id);
             for (HashMap<String, String> sellerBlocked : getCustomers) {
                 String userEmail = sellerBlocked.get("email");
-                if (thisUser.get("blocked").contains(sellerBlocked.get("id")) 
-                    && !sellerBlocked.get("invisible").contains(id)) {
-                    userEmail += " (blocked)";
-                } if (thisUser.get("invisible").contains(sellerBlocked.get("id")) 
-                    && !sellerBlocked.get("invisible").contains(id)) {
-                    userEmail += " (invisible)";
+                if (!sellerBlocked.get("invisible").contains(id)) {
+                    customers.add(userEmail);
                 }
-                //TODO: fix so that invisible people aren't added to the list
-                customers.add(userEmail);
             }
         }
         return customers;

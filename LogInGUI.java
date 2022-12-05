@@ -12,16 +12,10 @@ public class LogInGUI {
     private JTextField emailField;
     private JButton placeholder;
     private JPasswordField passwordField;
-    private ArrayList<String> users;
     private Translator translator;
 
     public LogInGUI(JFrame frame) {
-        this(frame, new ArrayList<>());
-    }
-
-    public LogInGUI(JFrame frame, ArrayList<String> exUsers) {
         board = frame;
-        users = exUsers;
         translator = new Translator();
     }
 
@@ -126,7 +120,7 @@ public class LogInGUI {
                             JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
                         } else {
                             HashMap<String, String> user = translator.get("email", email);
-                            MainMenuGUI menu = new MainMenuGUI(board, users, user);
+                            MainMenuGUI menu = new MainMenuGUI(board, user);
                             menu.show();
                         }
                     } catch (Exception e1) {
