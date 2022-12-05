@@ -134,9 +134,8 @@ public class BlockGUI implements Runnable {
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 try {
                     blockGUIInterface.unblockUser(userEmail, false);
-                    userList.clear();
-                    userList.addAll(blockGUIInterface.getAllUsers());
-                    users.updateUI();
+                    BlockGUI blockGUI = new BlockGUI(board);
+                    blockGUI.show();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -151,9 +150,8 @@ public class BlockGUI implements Runnable {
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 try {
                     blockGUIInterface.unblockUser(userEmail, true);
-                    userList.clear();
-                    userList.addAll(blockGUIInterface.getAllUsers());
-                    users.updateUI();
+                    BlockGUI blockGUI = new BlockGUI(board);
+                    blockGUI.show();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -164,8 +162,8 @@ public class BlockGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    userList.addAll(blockGUIInterface.getUsers("blocked"));
                     userList.clear();
+                    userList.addAll(blockGUIInterface.getUsers("blocked"));
                     users.updateUI();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
@@ -177,8 +175,8 @@ public class BlockGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    userList.addAll(blockGUIInterface.getAllUsers());
                     userList.clear();
+                    userList.addAll(blockGUIInterface.getAllUsers());
                     users.updateUI();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
@@ -190,8 +188,8 @@ public class BlockGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    userList.addAll(blockGUIInterface.getUsers("invisible"));
                     userList.clear();
+                    userList.addAll(blockGUIInterface.getUsers("invisible"));
                     users.updateUI();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block

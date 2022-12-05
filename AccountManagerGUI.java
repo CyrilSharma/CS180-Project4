@@ -16,14 +16,12 @@ public class AccountManagerGUI {
     private JButton deleteAccountButton;
     private JButton blockUserButton;
     private String currentUserName;
-    private ArrayList<String> users;
     private AccountInterfaceClient aic;
 
     public AccountManagerGUI(JFrame board, String currentUserName, ArrayList<String> users) {
         board.setSize(600,500);
         accountBoard = board;
         this.currentUserName = currentUserName;
-        this.users = users;
         aic = new AccountInterfaceClient();
     }
 
@@ -37,9 +35,6 @@ public class AccountManagerGUI {
                     if (editedUsername != null) {
                         try {
                             aic.modifyUsername(currentUserName, editedUsername);
-                            int index = users.indexOf(currentUserName);
-                            currentUserName = editedUsername;
-                            users.set(index, editedUsername);
                             JOptionPane.showMessageDialog(null, "Username Edited");
                         } catch (Exception error) {
                             JOptionPane.showMessageDialog(null, 

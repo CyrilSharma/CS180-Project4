@@ -126,7 +126,6 @@ public class LogInGUI {
                             JOptionPane.showMessageDialog(null, "That is either the wrong email or password. Please try again", "Error", JOptionPane.ERROR_MESSAGE);
                         } else {
                             HashMap<String, String> user = translator.get("email", email);
-                            ArrayList<String> users = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
                             MainMenuGUI menu = new MainMenuGUI(board, users, user);
                             menu.show();
                         }

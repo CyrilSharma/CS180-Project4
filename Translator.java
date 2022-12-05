@@ -33,9 +33,12 @@ public class Translator {
             oos.writeObject(q);
             oos.flush();
             result = ois.readObject();
+            if (result instanceof Exception) {
+                throw new Exception(((Exception) result).getMessage());
+            }
             return result;
         } catch (Exception e) {
-            throw new Exception("We are having trouble connecting to the server");
+            throw new Exception(e.getMessage());
         }
     }
 

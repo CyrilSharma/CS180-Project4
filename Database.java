@@ -165,11 +165,11 @@ public class Database {
         ArrayList<String> blockedUsers;
         if (invisible) {
             blockedUsers = new ArrayList<String>(
-                Arrays.asList(blockedUser.get("invisible").split(","))
+                Arrays.asList(changeInfo.get("invisible").split(","))
             );
         } else {
             blockedUsers = new ArrayList<String>(
-                Arrays.asList(blockedUser.get("blocked").split(","))
+                Arrays.asList(changeInfo.get("blocked").split(","))
             );
         }
 

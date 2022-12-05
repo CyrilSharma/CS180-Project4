@@ -46,17 +46,22 @@ public class PeopleView implements Runnable {
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
-    public PeopleView(JFrame frame, ArrayList<String> emails, HashMap<String,String> user,
-                      HashMap<String, String> stores) {
+    public PeopleView(JFrame frame, HashMap<String,String> user) throws Exception {
+        translator = new Translator();
         frame.setSize(600,540);
         board = frame;
-        users = emails;
+        users = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
         this.user = user;
         this.role = Role.valueOf(user.get("role"));
         String[] ex = {"Online", "Offline", "Online"};
         status = new ArrayList<>(Arrays.asList(ex));
+        HashMap<String,String> stores;
+        if (role.equals(Role.Customer)) {
+            stores = (HashMap<String, String>) translator.query(new Query("User", "viewStores"));
+        } else {
+            stores = (HashMap<String, String>) translator.query(new Query("User", "getStores"));
+        }
         map = stores;
-        translator = new Translator();
         userNotifications = new HashMap<>();
     }
     public void show() {
@@ -181,6 +186,7 @@ public class PeopleView implements Runnable {
         blockButton.setBounds(20, 20, 160,30);
         testButton.setBounds(20, 100, 160,30);
         viewButton.setBounds(20, 60, 160,30);
+        backButton.setBounds(100, 450, 80, 30);
         if (role == Role.Customer) {
             storeSearchBar.setBounds(200,25,200,20);
             scroll2.setBounds(30,70,370,400);
@@ -195,7 +201,7 @@ public class PeopleView implements Runnable {
             //editButton.setBounds(20, 100, 160,30);
             //deleteButton.setBounds(20, 140, 160,30);
             placeholder.setBounds(-1,-1,1,1);
-            backButton.setBounds(100, 450, 80, 30);
+            //backButton.setBounds(100, 450, 80, 30);
             searchBar.setBounds(200,25,200,20);
             scroll2.setBounds(30, 370, 370, 100);
             searchBar.setForeground(Color.GRAY);
@@ -245,6 +251,8 @@ public class PeopleView implements Runnable {
                     JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                     BlockGUIInterface blockGUIInterface = new BlockGUIInterface();
                     blockGUIInterface.blockUser(email, false);
+                    PeopleView peopleView = new PeopleView(board, user);
+                    peopleView.show();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

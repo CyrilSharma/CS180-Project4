@@ -19,9 +19,6 @@ public class MainMenuGUI {
     //2 User Options
     private JButton peopleViewPressed;
     private JButton accountManagerPressed;
-    
-    private Translator translator;
-
 
     public MainMenuGUI(JFrame frame, ArrayList<String> users, HashMap<String,String> user) {
         frame.setSize(600,400);
@@ -30,7 +27,6 @@ public class MainMenuGUI {
         // used frequently enough to justify a seperate variable.
         this.role = Role.valueOf(user.get("role"));
         this.users = users;
-        translator = new Translator();
     }
     public void show() {
         board.setContentPane(new Container());
@@ -39,27 +35,13 @@ public class MainMenuGUI {
         board.repaint();
     }
 
-    @SuppressWarnings("unchecked")
     public void addActionListeners() {
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PeopleView gui;
                 try {
-                    HashMap<String,String> stores;
-                    if (role.equals(Role.Customer)) {
-                        stores = (HashMap<String, String>) translator.query(
-                            new Query("User", "viewStores"));
-                    } else {
-                        stores = (HashMap<String, String>) translator.query(
-                            new Query("User", "getStores"));
-                    }
-                    if (stores == null) {
-                        JOptionPane.showMessageDialog(null, "No store available!",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    gui = new PeopleView(board, users, user, stores);
+                    gui = new PeopleView(board, user);
                     gui.show();
                 } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

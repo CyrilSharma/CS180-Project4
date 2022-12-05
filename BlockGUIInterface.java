@@ -20,7 +20,7 @@ public class BlockGUIInterface {
 
     public ArrayList<String> getUsers(String key) throws Exception {
         if (user.get(key).equals("null")) {
-            return null;
+            return new ArrayList<>();
         } else {
             ArrayList<String> ids = new ArrayList<>(
                 Arrays.asList(user.get(key).split(",")));
@@ -29,6 +29,8 @@ public class BlockGUIInterface {
                 HashMap<String, String> person = translator.get("id", id);
                 if (person.get("invisible").contains(user.get("id"))) {
                     ids.remove(i);
+                } else {
+                    ids.set(i, person.get("email"));
                 }
             }
             return ids;

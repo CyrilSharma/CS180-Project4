@@ -44,7 +44,7 @@ public class TestGUI {
         stores.put("Store1", "helloworld@gmail.com");
         Translator tr = new Translator();
         try {
-            PeopleView gui = new PeopleView(frame, users, tr.get("email", "bob@gmail.com"), stores);
+            PeopleView gui = new PeopleView(frame, tr.get("email", "bob@gmail.com"));
             gui.show();
         } catch (Exception e) {
 

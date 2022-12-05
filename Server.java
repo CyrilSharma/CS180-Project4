@@ -116,10 +116,14 @@ public class Server implements Runnable {
                 params = new Object[args.length];
                 for (int i = 0; i < args.length; i++) {
                     try {
+                        //TODO: handle for boolean casting
                         params[i] = methodParameterTypes[i].cast(args[i]);
                     } catch (ClassCastException e) {
                         //Add all the things that can't be cast as parameters here with if statements or something
-                        params[i] = Role.valueOf((String) args[i]);
+                        if (function.equals("add"))
+                            params[i] = Role.valueOf((String) args[i]);
+                        else if (function.equals("block") || function.equals("unblock"))
+                            params[i] = (Boolean) args[i];
                     } catch (Exception e) {
                         return null;
                     }
