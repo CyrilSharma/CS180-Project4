@@ -255,31 +255,31 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                String email = (String) people.getSelectedValue();
-                //email = email.split(" ")[0];
-                String store = (String) storeList.getSelectedValue();
-                if (role == Role.Customer) {
-                    //ID OR EMAIL
-                    email = map.get(store);
-                    if (store.indexOf("<") != -1) {
-                        store = storeHTMLRemover(store);
-                        removeStoreNotif(store);
+                    String email;
+                    //email = email.split(" ")[0];
+                    String store = (String) storeList.getSelectedValue();
+                    if (role == Role.Customer) {
+                        //ID OR EMAIL
+                        email = map.get(store);
+                        if (store.indexOf("<") != -1) {
+                            store = storeHTMLRemover(store);
+                            removeStoreNotif(store);
+                        } else {
+                            removeStoreNotif(store);
+                        }
                     } else {
-                        removeStoreNotif(store);
+                        email = (String) people.getSelectedValue();
                     }
-                } else {
-                    email = (String) people.getSelectedValue();
-                }
-                if (email != null && store != null) {
-                    String msg = "Trying to view a conversation with " + email + " with " + store;
-                    JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                    try {
-                        MessageGUI gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store, PeopleView.this);
-                        gui.show();
-                    } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    if (email != null && store != null) {
+                        String msg = "Trying to view a conversation with " + email + " with " + store;
+                        JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
+                        try {
+                            MessageGUI gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store, PeopleView.this);
+                            gui.show();
+                        } catch (Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
-                }
                 } catch (Exception e2) {
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
