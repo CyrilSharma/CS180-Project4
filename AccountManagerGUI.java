@@ -14,6 +14,7 @@ public class AccountManagerGUI {
     private JButton filterButton;
     private JButton signOutButton;
     private JButton deleteAccountButton;
+    private JButton blockUserButton;
     private String currentUserName;
     private ArrayList<String> users;
     private AccountInterfaceClient aic;
@@ -105,6 +106,20 @@ public class AccountManagerGUI {
                 gui.show();
             }
         });
+        blockUserButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                try {
+                    BlockGUI blockGUI = new BlockGUI(accountBoard);
+                    blockGUI.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     public void run() {
@@ -121,6 +136,7 @@ public class AccountManagerGUI {
         filterButton = new JButton("Access Filter");
         signOutButton = new JButton("Sign out");
         deleteAccountButton = new JButton("Delete Account");
+        blockUserButton = new JButton("Unblock/Visibility");
         rightPanel.add(loginName);
         rightPanel.add(editUsernameButton);
         rightPanel.add(editPasswordButton);
@@ -128,6 +144,7 @@ public class AccountManagerGUI {
         loginName.setBounds(20, 20, 160,30);
         editUsernameButton.setBounds(20, 100, 160,30);
         editPasswordButton.setBounds(20, 60, 160,30);
+        blockUserButton.setBounds(20, 20, 160, 30);
         JPanel contents = new JPanel();
         contents.add(dashboardButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -136,9 +153,12 @@ public class AccountManagerGUI {
         contents.add(signOutButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(deleteAccountButton);
+        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        contents.add(blockUserButton);
         System.out.println("WHERE THIS AT");
         accountBoard.setVisible(true);
         addActionListeners();
+        container.add(rightPanel, BorderLayout.EAST);
         container.add(contents, BorderLayout.CENTER);
     }
     public void show() {

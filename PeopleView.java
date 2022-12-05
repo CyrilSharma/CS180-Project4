@@ -233,6 +233,13 @@ public class PeopleView implements Runnable {
                 String email = (String) people.getSelectedValue();
                 String msg = "Trying to block " + email;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    BlockGUIInterface blockGUIInterface = new BlockGUIInterface();
+                    blockGUIInterface.blockUser(email, false);
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         viewButton.addActionListener(new ActionListener() {

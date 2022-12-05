@@ -25,12 +25,7 @@ public class BlockGUI implements Runnable {
     private JLabel title;
     private JList users;
     private DefaultListModel userList = new DefaultListModel();
-    private String action;
-    private ArrayList<String> unblockedUsers;
-    private ArrayList<String> blockedUsers;
-    private ArrayList<String> allUsers;
-    private ArrayList<String> invisibleUsers;
-    private String userToBlock;
+    private BlockGUIInterface blockGUIInterface;
 
 
     /** Not sure if action parameter is needed
@@ -42,22 +37,15 @@ public class BlockGUI implements Runnable {
         this.blockedUsers = blockedUsers;
         this.title.setText("Blocked Users");
     }
+     * @throws Exception
      */
     //Test constructor
-    public BlockGUI(String userToBlock, ArrayList<String> allUsers, ArrayList<String> blockedUsers, ArrayList<String> invisibleUsers) {
+    public BlockGUI(JFrame frame) throws Exception {
         //this.email = email;
-        this.userToBlock = userToBlock;
-        this.allUsers = allUsers;
-        this.blockedUsers = blockedUsers;
-        this.invisibleUsers = invisibleUsers;
-        this.board = new JFrame("Turkey Shop");
+        this.board = frame;
+        blockGUIInterface = new BlockGUIInterface();
     }
-    //Other constructor
-    public BlockGUI(ArrayList<String> allUsers, ArrayList<String> blockedUsers) {
-        this.allUsers = allUsers;
-        this.blockedUsers = blockedUsers;
-        this.board = new JFrame("Turkey Shop");
-    }
+    
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
@@ -118,115 +106,40 @@ public class BlockGUI implements Runnable {
         viewAllUsersButton.setBounds(20, 300, 160,30);
     }
     public void show() {
-        SwingUtilities.invokeLater(this);
+        board.setContentPane(new Container());
+        run();
+        board.revalidate();
+        board.repaint();
     }
 
     @Override
     public void run() {
-        String[] listOfUsers = allUsers.toArray(new String[0]);
-        userList.addAll(List.of(listOfUsers));
-        boolean blocked = false;
-        if (userToBlock!=null) {
-            for (String user: blockedUsers) {
-                if (user.equals(userToBlock)) {
-                    JOptionPane.showMessageDialog(null, "This user has already been blocked.", "Cannot Block", JOptionPane.INFORMATION_MESSAGE);
-                    blocked = true;
-                }
-            }
-            if (!blocked) {
-                blockedUsers.add(userToBlock);
-                userList.removeElement(userToBlock);
-            }
+        try {
+            userList.addAll(blockGUIInterface.getAllUsers());
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        for (String blockedUser: allUsers) {
-            if (blockedUsers.contains(blockedUser)) {
-                userList.removeElement(blockedUser);
-            }
-        }
-        if (unblockedUsers == null) {
-            unblockedUsers = allUsers;
-            if (blockedUsers != null) {
-                unblockedUsers.removeAll(blockedUsers);
-            }
-        }
+        
         board.setSize(600,400);
-        board.setLocationRelativeTo(null);
-        board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        board.setVisible(true);
         users = new JList(userList);
         createAndAdd();
         setFrame();
         content.add(convPane, BorderLayout.CENTER);
-        blockButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO: Do an action for blocking a user/pull and send back to backend
-                String userEmail = (String) users.getSelectedValue();
-                String msg = "Trying to block " + userEmail;
-                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                //check if user is blocked already, not needed if we stick with unblockedList
-                boolean blocked = false;
-                for (String user: blockedUsers) {
-                    if (user.equals(userEmail)) {
-                        JOptionPane.showMessageDialog(null, "This user has already been blocked.", "Cannot Block", JOptionPane.INFORMATION_MESSAGE);
-                        blocked = true;
-                    }
-                }
-                if (!blocked) {
-                    blockedUsers.add(userEmail);
-                    userList.removeElement(userEmail);
-                    users.updateUI();
-                }
-                /**
-                String confirm = "Do you want to be invisible to " + userEmail + " ?";
-                int ans = JOptionPane.showConfirmDialog(null, confirm, "Invisible?", JOptionPane.INFORMATION_MESSAGE);
-                if (ans == JOptionPane.YES_OPTION) {
-                    //delete from userlist for userEmail -> that user
-                } else if (ans == JOptionPane.NO_OPTION){
-                    //nothing, just block the userEmail -> user from sending messages to the current user
-
-                }
-                 */
-            }
-        });
-        invisibleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (invisibleUsers == null) {
-                    invisibleUsers = new ArrayList<>();
-                }
-                String userEmail = (String) users.getSelectedValue();
-                String msg = "Trying to become invisible from " + userEmail;
-                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                //TODO: action call to backend to be invisible from userEmail
-                invisibleUsers.add(userEmail);
-            }
-        });
         unblockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (unblockedUsers == null) {
-                    unblockedUsers = allUsers;
-                    if (blockedUsers != null) {
-                        unblockedUsers.removeAll(blockedUsers);
-                    }
-                }
                 String userEmail = (String) users.getSelectedValue();
                 String msg = "Trying to unblock " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                boolean blocked = false;
-                for (String user: unblockedUsers) {
-                    if (user.equals(userEmail)) {
-                        JOptionPane.showMessageDialog(null, "This user has already been unblocked.", "Cannot Block", JOptionPane.INFORMATION_MESSAGE);
-                        blocked = true;
-                    }
-                }
-                if (!blocked) {
-                    blockedUsers.remove(userEmail);
-                    allUsers.add(userEmail);
+                try {
+                    blockGUIInterface.unblockUser(userEmail, false);
                     userList.clear();
-                    userList.addAll(unblockedUsers);
+                    userList.addAll(blockGUIInterface.getAllUsers());
                     users.updateUI();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -236,60 +149,54 @@ public class BlockGUI implements Runnable {
                 String userEmail = (String) users.getSelectedValue();
                 String msg = "Trying to undo the invisibility of " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
-                boolean invisible = false;
-                for (String user: invisibleUsers) {
-                    if (user.equals(userEmail)) {
-                        invisible = true;
-                    }
-                }
-                if (invisible) {
-                    invisibleUsers.remove(userEmail);
+                try {
+                    blockGUIInterface.unblockUser(userEmail, true);
                     userList.clear();
-                    userList.addAll(unblockedUsers);
+                    userList.addAll(blockGUIInterface.getAllUsers());
                     users.updateUI();
-                } else {
-                    JOptionPane.showMessageDialog(null, "This user is already visible.", "Cannot Undo", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }
-        });
-        //Is this needed, instead maybe a viewBlockedList
-        viewUnblockedListButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                userList.removeAllElements();
-                userList.addAll(allUsers);
-                for (String blocked: allUsers) {
-                    if (blockedUsers.contains(blocked)) {
-                        userList.removeElement(blocked);
-                    }
-                }
-                users.updateUI();
-                //This shows the unblockedUsers list so that if a user wants to block
-                //a user from the unblocked user list, he/she can do so
             }
         });
         viewBlockedListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userList.clear();
-                userList.addAll(blockedUsers);
-                users.updateUI();
+                try {
+                    userList.addAll(blockGUIInterface.getUsers("blocked"));
+                    userList.clear();
+                    users.updateUI();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         viewAllUsersButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userList.clear();
-                userList.addAll(allUsers);
-                users.updateUI();
+                try {
+                    userList.addAll(blockGUIInterface.getAllUsers());
+                    userList.clear();
+                    users.updateUI();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         viewInvisibilityList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userList.clear();
-                userList.addAll(invisibleUsers);
-                users.updateUI();
+                try {
+                    userList.addAll(blockGUIInterface.getUsers("invisible"));
+                    userList.clear();
+                    users.updateUI();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
