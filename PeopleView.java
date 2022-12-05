@@ -230,10 +230,16 @@ public class PeopleView implements Runnable {
         blockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String email = (String) people.getSelectedValue();
-                String msg = "Trying to block " + email;
-                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 try {
+                    String email;
+                    if (user.get("role").equals(Role.Customer.toString())) {
+                        String store = (String) storeList.getSelectedValue();
+                        email = (String) translator.query(new Query("User", "getEmailFromStore", store));
+                    } else {
+                        email = (String) people.getSelectedValue();
+                    }
+                    String msg = "Trying to block " + email;
+                    JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                     BlockGUIInterface blockGUIInterface = new BlockGUIInterface();
                     blockGUIInterface.blockUser(email, false);
                 } catch (Exception e1) {
@@ -245,9 +251,15 @@ public class PeopleView implements Runnable {
         viewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String email = (String) people.getSelectedValue();
-                //email = email.split(" ")[0];
+                try {
+                String email;
                 String store = (String) storeList.getSelectedValue();
+                if (role == Role.Customer) {
+                    email = (String) translator.query(new Query("User", "getEmailFromStore", store));
+                } else {
+                    email = (String) people.getSelectedValue();
+                }
+                //email = email.split(" ")[0];
                 if (role == Role.Customer) {
                     store = storeHTMLRemover(store);
                     removeStoreNotif(store);
@@ -262,6 +274,9 @@ public class PeopleView implements Runnable {
                     } catch (Exception e1) {
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
+                }
+                } catch (Exception e2) {
+                    JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
