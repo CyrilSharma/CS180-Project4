@@ -1,12 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 //TODO: implement invisibility, show in PeopleView, database integration, clean up formatting, autoupdate blocked list & all users,
 //remove blocked users from being visible, find name of user
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class BlockGUI implements Runnable {
     private JFrame board;
     private Container content;

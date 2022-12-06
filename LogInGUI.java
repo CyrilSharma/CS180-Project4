@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LogInGUI {
@@ -98,7 +97,7 @@ public class LogInGUI {
             }
             @Override
             public void focusLost(FocusEvent e) {
-                if (passwordField.getText().isEmpty()) {
+                if (passwordField.getPassword().length == 0) {
                     passwordField.setForeground(Color.GRAY);
                     passwordField.setEchoChar((char)0);
                     passwordField.setText("Password...");
@@ -110,7 +109,7 @@ public class LogInGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = emailField.getText();
-                String password = passwordField.getText();
+                String password = String.valueOf(passwordField.getPassword());
                 if ((email.isEmpty() || email.equals("Email...")) ||
                         (password.isEmpty() || password.equals("Password..."))) {
                     JOptionPane.showMessageDialog(null, "Please fill out the text fields!", "Error", JOptionPane.WARNING_MESSAGE, null);

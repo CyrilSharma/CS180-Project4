@@ -3,13 +3,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class PeopleView implements Runnable {
     //TODO 1: remove html after user checks that message
     //TODO 2: remove html tag when transferring data

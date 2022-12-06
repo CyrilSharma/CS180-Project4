@@ -106,8 +106,8 @@ public class CreateAccountGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = emailField.getText();
-                String password = passwordField.getText();
-                String cp = confirmPasswordField.getText();
+                String password = String.valueOf(passwordField.getPassword());
+                String cp = String.valueOf(confirmPasswordField.getPassword());
                 if (role == null) {
                     JOptionPane.showMessageDialog(null, "Please select a role!", "Alert", JOptionPane.WARNING_MESSAGE, null);
                     return;
@@ -231,7 +231,7 @@ public class CreateAccountGUI implements Runnable {
             }
             @Override
             public void focusLost(FocusEvent e) {
-                if (passwordField.getText().isEmpty()) {
+                if (passwordField.getPassword().length == 0) {
                     passwordField.setForeground(Color.GRAY);
                     passwordField.setEchoChar((char)0);
                     passwordField.setText("Password...");
@@ -251,7 +251,7 @@ public class CreateAccountGUI implements Runnable {
             }
             @Override
             public void focusLost(FocusEvent e) {
-                if (confirmPasswordField.getText().isEmpty()) {
+                if (confirmPasswordField.getPassword().length == 0) {
                     confirmPasswordField.setForeground(Color.GRAY);
                     confirmPasswordField.setEchoChar((char)0);
                     confirmPasswordField.setText("Confirm Password...");
@@ -271,7 +271,7 @@ public class CreateAccountGUI implements Runnable {
             }
             @Override
             public void focusLost(FocusEvent e) {
-                if (confirmPasswordField.getText().isEmpty()) {
+                if (confirmPasswordField.getPassword().length == 0) {
                     confirmPasswordField.setForeground(Color.GRAY);
                     confirmPasswordField.setEchoChar((char)0);
                     confirmPasswordField.setText("Store name...");

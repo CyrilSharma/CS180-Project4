@@ -1,6 +1,4 @@
 import javax.swing.*;
-import javax.swing.plaf.DimensionUIResource;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,12 +7,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
+//TODO: Add the ability to import files, create multiple line messages
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class MessageGUI implements PropertyChangeListener {
     private JFrame messageBoard;
     private Container container;

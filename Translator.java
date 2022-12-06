@@ -1,14 +1,10 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
 public class Translator {
     private static Socket socket;
-    //TODO: use this for... something
-    private static boolean connected;
     private static ObjectInputStream ois;
     private static ObjectOutputStream oos;
 
@@ -19,10 +15,8 @@ public class Translator {
                 socket = new Socket("localhost", Constants.port);
                 ois = new ObjectInputStream(socket.getInputStream());
                 oos = new ObjectOutputStream(socket.getOutputStream());
-                connected = true;
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "We can't connect to the server right now. Please try again later", "Error", JOptionPane.ERROR_MESSAGE);
-                connected = false;
             }
         }
     }
