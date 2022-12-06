@@ -35,19 +35,27 @@ public class BlockGUIInterface {
         }
     }
 
-    public ArrayList<String> getAllUsers() throws Exception {
+    public ArrayList<String> getUnblockedUsers() throws Exception {
         ArrayList<String> blockedUsers = getUsers("blocked");
         ArrayList<String> invisibleUsers = getUsers("invisible");
-        invisibleUsers.removeAll(blockedUsers);
-        blockedUsers.addAll(invisibleUsers);
-        return blockedUsers;
+        ArrayList<String> allUsers = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
+        allUsers.removeAll(blockedUsers);
+        allUsers.removeAll(invisibleUsers);
+        return allUsers;
+    }
+
+    public ArrayList<String> getAllUsers() throws Exception {
+        ArrayList<String> allUsers = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
+        return allUsers;
     }
 
     public void blockUser(String email, boolean invisible) throws Exception {
         translator.query(new Query("Database", "block", new Object[]{user.get("email"), email, invisible}));
+        user = translator.get("id", user.get("id"));
     }
 
     public void unblockUser(String email, boolean invisible) throws Exception {
         translator.query(new Query("Database", "unblock", new Object[]{user.get("email"), email, invisible}));
+        user = translator.get("id", user.get("id"));
     }
 }

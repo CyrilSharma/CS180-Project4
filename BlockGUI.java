@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 //TODO: implement invisibility, show in PeopleView, database integration, clean up formatting, autoupdate blocked list & all users,
 //remove blocked users from being visible, find name of user
@@ -12,6 +13,8 @@ public class BlockGUI implements Runnable {
     private JScrollPane scrollPane;
     private JPanel rightPanel;
     private JPanel upperPanel;
+    private JButton blockButton;
+    private JButton invisibleButton;
     private JButton unblockButton;
     private JButton undoInvisibilityButton;
     private JButton viewUnblockedListButton;
@@ -53,8 +56,10 @@ public class BlockGUI implements Runnable {
         //people.setBackground(Color.gray);
         rightPanel = new JPanel();
         title = new JLabel();
+        blockButton = new JButton("Block User");
         unblockButton = new JButton("Unblock User");
-        undoInvisibilityButton = new JButton("Undo Invisibility");
+        invisibleButton = new JButton("Go Invisible");
+        undoInvisibilityButton = new JButton("Go visible");
         viewUnblockedListButton = new JButton("View Unblocked List");
         viewBlockedListButton = new JButton("View Blocked List");
         viewInvisibilityList = new JButton("View Invisibility List");
@@ -62,7 +67,9 @@ public class BlockGUI implements Runnable {
         backButton = new JButton("Back");
         upperPanel = new JPanel();
         upperPanel.add(title);
+        rightPanel.add(blockButton);
         rightPanel.add(unblockButton);
+        rightPanel.add(invisibleButton);
         rightPanel.add(undoInvisibilityButton);
         rightPanel.add(viewUnblockedListButton);
         rightPanel.add(viewBlockedListButton);
@@ -90,13 +97,15 @@ public class BlockGUI implements Runnable {
         Font f = new Font("Helvetica", Font.BOLD, 25);
         title.setFont(f);
         rightPanel.setBounds(400,0, 200, 400);
-        unblockButton.setBounds(20, 20, 160,30);
-        undoInvisibilityButton.setBounds(20, 60, 160, 30);
-        viewUnblockedListButton.setBounds(20, 100, 160,30);
-        viewBlockedListButton.setBounds(20, 140, 160,30);
-        viewInvisibilityList.setBounds(20, 180, 160, 30);
-        viewAllUsersButton.setBounds(20, 220, 160,30);
-        backButton.setBounds(20, 260, 160, 30);
+        blockButton.setBounds(20, 20, 160,30);
+        unblockButton.setBounds(20, 60, 160,30);
+        invisibleButton.setBounds(20, 100, 160, 30);
+        undoInvisibilityButton.setBounds(20, 140, 160, 30);
+        viewUnblockedListButton.setBounds(20, 180, 160,30);
+        viewBlockedListButton.setBounds(20, 220, 160,30);
+        viewInvisibilityList.setBounds(20, 260, 160, 30);
+        viewAllUsersButton.setBounds(20, 300, 160,30);
+        backButton.setBounds(20, 340, 160, 30);
     }
     public void show() {
         board.setContentPane(new Container());
@@ -119,6 +128,46 @@ public class BlockGUI implements Runnable {
         createAndAdd();
         setFrame();
         content.add(convPane, BorderLayout.CENTER);
+        blockButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO: Do an action for blocking a user/pull and send back to backend
+                String userEmail = (String) users.getSelectedValue();
+                String msg = "Trying to block " + userEmail;
+                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
+                //check if user is blocked already, not needed if we stick with unblockedList
+                try {
+                    blockGUIInterface.blockUser(userEmail, false);
+                    JOptionPane.showMessageDialog(null, userEmail + " has been blocked", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    ArrayList<String> allUsers = blockGUIInterface.getAllUsers();
+                    userList.clear();
+                    userList.addAll(allUsers);
+                    users.updateUI();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        invisibleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userEmail = (String) users.getSelectedValue();
+                String msg = "Trying to become invisible from " + userEmail;
+                JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    blockGUIInterface.blockUser(userEmail, true);
+                    JOptionPane.showMessageDialog(null, "You are invisible to " + userEmail, "Success", JOptionPane.INFORMATION_MESSAGE);
+                    ArrayList<String> allUsers = blockGUIInterface.getAllUsers();
+                    userList.clear();
+                    userList.addAll(allUsers);
+                    users.updateUI();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         unblockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -155,8 +204,9 @@ public class BlockGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    ArrayList<String> blocked = blockGUIInterface.getUsers("blocked");
                     userList.clear();
-                    userList.addAll(blockGUIInterface.getUsers("blocked"));
+                    userList.addAll(blocked);
                     users.updateUI();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
@@ -168,8 +218,9 @@ public class BlockGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    ArrayList<String> allUsers = blockGUIInterface.getAllUsers();
                     userList.clear();
-                    userList.addAll(blockGUIInterface.getAllUsers());
+                    userList.addAll(allUsers);
                     users.updateUI();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
@@ -181,13 +232,30 @@ public class BlockGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    ArrayList<String> invisible = blockGUIInterface.getUsers("invisible");
                     userList.clear();
-                    userList.addAll(blockGUIInterface.getUsers("invisible"));
+                    userList.addAll(invisible);
                     users.updateUI();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+        });
+        viewUnblockedListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    ArrayList<String> unblockedUsers = blockGUIInterface.getUnblockedUsers();
+                    userList.clear();
+                    userList.addAll(unblockedUsers);
+                    users.updateUI();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                //This shows the unblockedUsers list so that if a user wants to block
+                //a user from the unblocked user list, he/she can do so
             }
         });
         backButton.addActionListener(new ActionListener() {
