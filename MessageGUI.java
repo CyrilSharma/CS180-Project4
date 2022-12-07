@@ -85,7 +85,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
         recipientText.setFont(f);
         recipientText.setText(this.emailSelected + " via " + this.selectedStore);
-        messageText = new JTextArea(2, 26);
+        messageText = new JTextArea(1, 26);
         messageText.setLineWrap(true);
         messageText.setForeground(Color.GRAY);
         messageText.setText("Insert Message...");

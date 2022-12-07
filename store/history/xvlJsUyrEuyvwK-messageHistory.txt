@@ -1,3 +1,26 @@
 SOG61tpYM3KYMa
-This is a multi-line message|||||xvlJsUyrEuyvwK|||||2;C8D_R?J=`MBT|||||2022-12-07T18:45:20.312249200Z|||||The Republic-----
+This is a multi-line message.
+Let's see how I handle it|||||xvlJsUyrEuyvwK|||||:?XL?NG304]<C1|||||2022-12-07T21:14:43.866110500Z|||||The Republic-----
+This is a multi-line String!
+Can you not see?|||||xvlJsUyrEuyvwK|||||^aJ2_A8]NAZ25T|||||2022-12-07T21:21:53.674680900Z|||||The Republic-----
+More multi-lines
+Hooray!|||||xvlJsUyrEuyvwK|||||<<H^QYWAYNRFU8|||||2022-12-07T21:26:38.048333800Z|||||The Republic-----
+Multi-line is back, baby!
+This has been fixed completely
+THere are totally no problems, ever|||||xvlJsUyrEuyvwK|||||S2M]3^Ca`9Q@KA|||||2022-12-07T21:33:58.707798600Z|||||The Republic-----
+Multi-line is back, baby!
+This has been fixed completely
+THere are totally no problems, ever
+Can I send these with impunity?|||||xvlJsUyrEuyvwK|||||Q]IT3C5FY6F[?M|||||2022-12-07T21:36:35.913521Z|||||The Republic-----
+IT seems that I can|||||xvlJsUyrEuyvwK|||||MQ1=8I4aD7RWG`|||||2022-12-07T21:36:45.980228800Z|||||The Republic-----
+IT seems that I can
+Cool stuff
+And its multiline
+So that's pretty wizard|||||xvlJsUyrEuyvwK|||||0CXRVC64\JZ7QM|||||2022-12-07T21:37:13.827706600Z|||||The Republic-----
+IT seems that I can
+Cool stuff
+And its multiline
+So that's pretty wizard
+This is a message
+This is another one in the same message|||||xvlJsUyrEuyvwK|||||OV:Q]CL8F=C^GF|||||2022-12-07T21:37:53.031030500Z|||||The Republic-----
 #####

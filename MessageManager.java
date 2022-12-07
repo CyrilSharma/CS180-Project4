@@ -63,8 +63,10 @@ public class MessageManager {
                 if (!line.contains(tokenSep) && !line.contains(conversationSplit) && (history.isEmpty() || history.get(history.size() - 1).containsKey("messageBreak"))) {
                     message.put("recipient", line);
                     recipient = line;
+                    history.add(message);
                 } else if (line.contains(conversationSplit)) {
                     message.put("messageBreak", line);
+                    history.add(message);
                 } else if (!line.contains("|||||")) {
                     messageString += line + "\n";
                 } else {
@@ -82,8 +84,8 @@ public class MessageManager {
                     }
                     message.put("timeStamp", lineArray[3]);
                     message.put("store", lineArray[4].split("-----")[0]);
+                    history.add(message);
                 }
-                history.add(message);
             }
             return history;
         } catch (FileNotFoundException e) {
