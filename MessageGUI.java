@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -11,12 +9,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
+import java.awt.event.*;
 
 //TODO: Add the ability to import files, create multiple line messages
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class MessageGUI extends KeyAdapter implements PropertyChangeListener {
+public class MessageGUI extends MouseAdapter implements PropertyChangeListener, KeyListener {
     private JFrame messageBoard;
     private Container container;
     private JButton editMessage;
@@ -117,7 +114,7 @@ public class MessageGUI extends KeyAdapter implements PropertyChangeListener {
         messageText.addKeyListener(this);
         sendMessage.setFocusable(true);
         messageText.setFocusable(true);
-        
+        messages.addMouseListener(this);
     }
 
     private void addActionListeners() {
@@ -125,55 +122,14 @@ public class MessageGUI extends KeyAdapter implements PropertyChangeListener {
         editMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String originalMessage = (String) messages.getSelectedValue();
-                if (originalMessage == null) {
-                    JOptionPane.showMessageDialog(null, "You must select a message!",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                String confirm = "Do you want to edit " + originalMessage + " ?";
-                //int index = conversationHistory.indexOf(originalMessage);
-                int index = messages.getSelectedIndex();
-                int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
-                if (ans == JOptionPane.YES_OPTION) {
-                    String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
-                    if (editedMessage != null) {
-                        emailSelected = emailSelected.split(" ")[0];
-                        try {
-                            mic.editMessage(mic.getID(), otherID, editedMessage, conversationHistory.get(index).getMessageID());
-                            JOptionPane.showMessageDialog(null, "Message Edited");
-                        } catch (Exception e1) {
-                            JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                }
+                
             }
         });
         //Select message and delete
         deleteMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Having issue where sometimes index is -1 with below command (specifically if an edit or delete is
-                // cancelled and then a delete/edit is attemped after (Resolved)
-                String deletedMessage = "";
-                deletedMessage = (String) messages.getSelectedValue();
-                if (deletedMessage == null) {
-                    JOptionPane.showMessageDialog(null, "You must select a message!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                //int index = conversationHistory.indexOf(deletedMessage);
-                int index = messages.getSelectedIndex();
-                String confirm = "Do you want to delete " + deletedMessage + " ?";
-                int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
-                if (ans == JOptionPane.YES_OPTION) {
-                    try {
-                        emailSelected = emailSelected.split(" ")[0];
-                        mic.deleteMessage(mic.getID(), otherID, conversationHistory.get(index).getMessageID());
-                        JOptionPane.showMessageDialog(null, "Message Deleted");
-                    } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
+                
                 //else if no don't do anything
             }
         });
@@ -274,19 +230,21 @@ public class MessageGUI extends KeyAdapter implements PropertyChangeListener {
         public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
                 boolean isSelected, boolean cellHasFocus) {
             // TODO Auto-generated method stub
-            JLabel label = (JLabel) renderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            //JLabel label = (JLabel) renderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            JTextPane textArea = new JTextPane();
+            textArea.setText(value);
             int maxWidth = (int) (scrollPane.getWidth() * .7);
             int r;
             int g;
             int b;
             if (conversationHistory.size() > index && !conversationHistory.get(index).getSender().equals(otherID)) {
-                label.setHorizontalAlignment(JLabel.RIGHT);
+                textArea.setAlignmentX(JTextArea.RIGHT_ALIGNMENT);
                 //label.setForeground(new Color(7, 252, 3));
                 r = 7;
                 g = 252;
                 b = 3;
             } else {
-                label.setHorizontalAlignment(JLabel.LEFT);
+                textArea.setAlignmentX(JTextArea.LEFT_ALIGNMENT);
                 //label.setForeground(new Color(179, 186, 184));
                 r = 179;
                 g = 186;
@@ -296,13 +254,13 @@ public class MessageGUI extends KeyAdapter implements PropertyChangeListener {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("eee, MMM d, YYYY 'at' h:mm a");
             LocalDateTime localTime = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalDateTime();
             String timeString =  localTime.format(dateTimeFormatter);
-            if (label.getPreferredSize().getWidth() >= maxWidth - 10) {
+            if (textArea.getPreferredSize().getWidth() >= maxWidth - 10) {
                 value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
             } else {
-                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, (int) textArea.getPreferredSize().getWidth() + 10, r, g, b, value);
             }
-            label.setText(value);
-            return label;
+            textArea.setText(value);
+            return textArea;
         }
 
     }
@@ -313,5 +271,92 @@ public class MessageGUI extends KeyAdapter implements PropertyChangeListener {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             sendMessage.doClick();
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // TODO Auto-generated method stub
+        if (e.getButton() == 3) {
+            messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
+            showContextMenu(e);
+        }
+    }
+
+    public void showContextMenu(MouseEvent e) {
+        JPopupMenu popupMenu = new JPopupMenu("Actions");
+        JMenuItem editItem = new JMenuItem("Edit");
+        editItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                String originalMessage = (String) messages.getSelectedValue();
+                if (originalMessage == null) {
+                    JOptionPane.showMessageDialog(null, "You must select a message!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                String confirm = "Do you want to edit " + originalMessage + " ?";
+                //int index = conversationHistory.indexOf(originalMessage);
+                int index = messages.getSelectedIndex();
+                int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
+                if (ans == JOptionPane.YES_OPTION) {
+                    String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
+                    if (editedMessage != null) {
+                        emailSelected = emailSelected.split(" ")[0];
+                        try {
+                            mic.editMessage(mic.getID(), otherID, editedMessage, conversationHistory.get(index).getMessageID());
+                            JOptionPane.showMessageDialog(null, "Message Edited");
+                        } catch (Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        });
+        JMenuItem deleteItem = new JMenuItem("Delete");
+        deleteItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                //Having issue where sometimes index is -1 with below command (specifically if an edit or delete is
+                // cancelled and then a delete/edit is attemped after (Resolved)
+                String deletedMessage = "";
+                deletedMessage = (String) messages.getSelectedValue();
+                if (deletedMessage == null) {
+                    JOptionPane.showMessageDialog(null, "You must select a message!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                //int index = conversationHistory.indexOf(deletedMessage);
+                int index = messages.getSelectedIndex();
+                String confirm = "Do you want to delete " + deletedMessage + " ?";
+                int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
+                if (ans == JOptionPane.YES_OPTION) {
+                    try {
+                        emailSelected = emailSelected.split(" ")[0];
+                        mic.deleteMessage(mic.getID(), otherID, conversationHistory.get(index).getMessageID());
+                        JOptionPane.showMessageDialog(null, "Message Deleted");
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        popupMenu.add(editItem);
+        popupMenu.add(deleteItem);
+        popupMenu.show(messages, e.getX(), e.getY());
     }
 }
