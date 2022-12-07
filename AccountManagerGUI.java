@@ -14,6 +14,7 @@ public class AccountManagerGUI {
     private JButton signOutButton;
     private JButton deleteAccountButton;
     private JButton blockUserButton;
+    private JButton exportCSV;
     private String currentUserName;
     private AccountInterfaceClient aic;
 
@@ -114,6 +115,22 @@ public class AccountManagerGUI {
                 }
             }
         });
+        exportCSV.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                ExportCSV exportCSV;
+                try {
+                    exportCSV = new ExportCSV(accountBoard, currentUserName);
+                    exportCSV.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            
+        });
     }
 
     public void run() {
@@ -131,6 +148,7 @@ public class AccountManagerGUI {
         signOutButton = new JButton("Sign out");
         deleteAccountButton = new JButton("Delete Account");
         blockUserButton = new JButton("Unblock/Visibility");
+        exportCSV = new JButton("Export Conversations");
         rightPanel.add(loginName);
         rightPanel.add(editUsernameButton);
         rightPanel.add(editPasswordButton);
@@ -139,6 +157,7 @@ public class AccountManagerGUI {
         editUsernameButton.setBounds(20, 100, 160,30);
         editPasswordButton.setBounds(20, 60, 160,30);
         blockUserButton.setBounds(20, 20, 160, 30);
+        exportCSV.setBounds(20, 240, 160, 30);
         JPanel contents = new JPanel();
         contents.add(dashboardButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -149,6 +168,8 @@ public class AccountManagerGUI {
         contents.add(deleteAccountButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(blockUserButton);
+        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        contents.add(exportCSV);
         System.out.println("WHERE THIS AT");
         accountBoard.setVisible(true);
         addActionListeners();

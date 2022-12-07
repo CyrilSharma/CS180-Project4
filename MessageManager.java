@@ -19,7 +19,6 @@ public class MessageManager {
     private Random random;
     private Database db;
     private String historyDir;
-    private String csvDir;
 
     /**
      * Initializes instance fields
@@ -29,7 +28,6 @@ public class MessageManager {
     public MessageManager(Database db) {
         this.db = db;
         historyDir = PathManager.storeDir + "history/";
-        csvDir = PathManager.storeDir + "csv/";
         random = new Random();
     }
 
@@ -47,10 +45,6 @@ public class MessageManager {
 
     public String getHistoryLocation(String id) {
         return historyDir + id + "-messageHistory.txt";
-    }
-
-    public String getCSVDir() {
-        return csvDir;
     }
 
     /**
@@ -282,35 +276,27 @@ public class MessageManager {
     /**
      * Converts personal message history text file into a CSV file that can be exported
      */
-    public void messagesToCSV(String id, String[] idsOfConversationsToRetrieve) throws IOException {
+    public String messagesToCSV(String id, String[] idsOfConversationsToRetrieve) throws IOException {
         ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
-        String text = "Message ID, Sender,Recipient,Store,Time Stamp,Message Contents\n";
+        ArrayList<String> ids = new ArrayList<>(Arrays.asList(idsOfConversationsToRetrieve));
+        String text = "Message Number,Sender,Recipient,Store,Time Stamp,Message Contents\n";
+        int i = 0;
         for (HashMap<String, String> message : history) {
             if (message.size() > 1) {
                 String recipient = db.get("id", message.get("recipient")).get("email");
                 String sender = db.get("id", message.get("sender")).get("email");
-                if (Arrays.asList(idsOfConversationsToRetrieve).contains(message.get("recipient"))) {
+                if (ids.contains(message.get("recipient")) || ids.contains(message.get("sender"))) {
+                    i++;
                     Instant time = Instant.parse(message.get("timeStamp"));
                     String timeStamp = time.atZone(Calendar.getInstance().getTimeZone().toZoneId())
-                        .toLocalTime().toString();
-                    text += String.join(",", message.get("messageNum"), 
+                        .toLocalDateTime().toString();
+                    text += String.join(",", String.valueOf(i), 
                         sender, recipient, message.get("store"), timeStamp, 
                         message.get("message")) + "\n";
                 }
             }
         }
-        int count = 1;
-        File file = new File(csvDir + id + "-historyCSV.csv");
-        if (!file.createNewFile()) {
-            while (!file.createNewFile()) {
-                file = new File(csvDir + id + "-historyCSV-" + count + ".csv");
-                count++;
-            }
-        }
-        PrintWriter pw = new PrintWriter(file);
-        pw.write(text.strip());
-        pw.flush();
-        pw.close();
+        return text;
     }
 
     public void removeHistory(String email) {
