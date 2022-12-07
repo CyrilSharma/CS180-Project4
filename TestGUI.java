@@ -43,10 +43,15 @@ public class TestGUI {
         //main.show();
         HashMap<String, String> stores = new HashMap<>();
         stores.put("Store1", "helloworld@gmail.com");
+        stores.put("str", "someone@gmail.com");
         Translator tr = new Translator();
+
         try {
-            PeopleView gui = new PeopleView(frame, tr.get("email", "bob@gmail.com"));
+            tr.query(new Query("Database", "verify", new String[]{"palpatine@senate.gov", "password"}));
+            DashboardGUI gui = new DashboardGUI(frame, stores, tr.get("email", "bob@gmail.com"));
             gui.show();
+//            PeopleView gui = new PeopleView(frame, tr.get("email", "bob@gmail.com"));
+//            gui.show();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
