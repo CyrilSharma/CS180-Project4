@@ -38,7 +38,6 @@ public class MainInterfaceGUI implements Runnable {
         addListeners();
         content.add(stuff, BorderLayout.CENTER);
         frame.setContentPane(content);
-        frame.addKeyListener(new GlobalKeys(frame));
     }
 
     private void addListeners() {

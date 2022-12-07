@@ -11,10 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
 
 //TODO: Add the ability to import files, create multiple line messages
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class MessageGUI implements PropertyChangeListener {
+public class MessageGUI extends KeyAdapter implements PropertyChangeListener {
     private JFrame messageBoard;
     private Container container;
     private JButton editMessage;
@@ -111,6 +113,11 @@ public class MessageGUI implements PropertyChangeListener {
         panel.add(rightPanel);
         addActionListeners();
         container.add(panel, BorderLayout.CENTER);
+        sendMessage.addKeyListener(this);
+        messageText.addKeyListener(this);
+        sendMessage.setFocusable(true);
+        messageText.setFocusable(true);
+        
     }
 
     private void addActionListeners() {
@@ -298,5 +305,13 @@ public class MessageGUI implements PropertyChangeListener {
             return label;
         }
 
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        // TODO Auto-generated method stub
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            sendMessage.doClick();
+        }
     }
 }
