@@ -22,4 +22,3 @@ Ofl8tY2BYwsgxg###idrc@gmail.com###password###Seller###2022-12-04T21:33:51.343011
 g9pSGpYzdscf1G###anotherone@gmail.com###password###Seller###2022-12-04T21:39:24.899978Z###null###null
 xvlJsUyrEuyvwK###obi-wan@jedi.org###password###Seller###2022-12-07T04:42:51.523895800Z###null###null
 MQikiYEbb9c2Ud###smurfaccount@gmail.com###password###Customer###2022-12-07T05:00:02.181645800Z###null###null
-4Dhm24Yox1gHko###user69@gmail.com###password###Seller###2022-12-07T20:36:27.840877Z###null###null

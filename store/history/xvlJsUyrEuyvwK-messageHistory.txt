@@ -1,13 +1,26 @@
 SOG61tpYM3KYMa
-It's over, Anakin. I have the high ground!|||||SOG61tpYM3KYMa|||||=N4APAE8LN0LSD|||||2022-12-07T00:31:07.133672Z|||||The Republic-----
-You underestimate my power|||||xvlJsUyrEuyvwK|||||X`C<AEC[7a0\YX|||||2022-12-07T00:36:14.753458700Z|||||The Republic-----
-Don't try it|||||SOG61tpYM3KYMa|||||>^5VZ\]aUJ6XMN|||||2022-12-07T01:09:46.104197100Z|||||The Republic-----
-AAAAAARRRR|||||xvlJsUyrEuyvwK|||||78VLURTUK7_GT?|||||2022-12-07T01:20:51.924960600Z|||||The Republic-----
-You were the chosen one!|||||SOG61tpYM3KYMa|||||8781B[CJM0D4SG|||||2022-12-07T04:43:47.476736400Z|||||The Republic-----
-It was said you would destroy the Sith, not join them|||||SOG61tpYM3KYMa|||||G4aG;2Z3O<ODQJ|||||2022-12-07T04:43:52.040537100Z|||||The Republic-----
-Bring balance to Force, not leave it in darkness|||||SOG61tpYM3KYMa|||||V2PDAAZ\CaN82T|||||2022-12-07T04:47:12.897091500Z|||||The Republic-----
-I HATE YOU|||||xvlJsUyrEuyvwK|||||N>S[JTAS<2R4V;|||||2022-12-07T04:48:08.449999300Z|||||The Republic-----
-You were my brother, Anakin|||||SOG61tpYM3KYMa|||||?LDPY3L\AD<D0Y|||||2022-12-07T04:48:19.605590300Z|||||The Republic-----
-I loved you|||||SOG61tpYM3KYMa|||||@ELY\XZRKMPLIZ|||||2022-12-07T04:48:24.373930Z|||||The Republic-----
-AAAAAAAAA|||||xvlJsUyrEuyvwK|||||AE[8URZX1BX9JQ|||||2022-12-07T04:48:36.961182100Z|||||The Republic-----
+This is a multi-line message.
+Let's see how I handle it|||||xvlJsUyrEuyvwK|||||:?XL?NG304]<C1|||||2022-12-07T21:14:43.866110500Z|||||The Republic-----
+This is a multi-line String!
+Can you not see?|||||xvlJsUyrEuyvwK|||||^aJ2_A8]NAZ25T|||||2022-12-07T21:21:53.674680900Z|||||The Republic-----
+More multi-lines
+Hooray!|||||xvlJsUyrEuyvwK|||||<<H^QYWAYNRFU8|||||2022-12-07T21:26:38.048333800Z|||||The Republic-----
+Multi-line is back, baby!
+This has been fixed completely
+THere are totally no problems, ever|||||xvlJsUyrEuyvwK|||||S2M]3^Ca`9Q@KA|||||2022-12-07T21:33:58.707798600Z|||||The Republic-----
+Multi-line is back, baby!
+This has been fixed completely
+THere are totally no problems, ever
+Can I send these with impunity?|||||xvlJsUyrEuyvwK|||||Q]IT3C5FY6F[?M|||||2022-12-07T21:36:35.913521Z|||||The Republic-----
+IT seems that I can|||||xvlJsUyrEuyvwK|||||MQ1=8I4aD7RWG`|||||2022-12-07T21:36:45.980228800Z|||||The Republic-----
+IT seems that I can
+Cool stuff
+And its multiline
+So that's pretty wizard|||||xvlJsUyrEuyvwK|||||0CXRVC64\JZ7QM|||||2022-12-07T21:37:13.827706600Z|||||The Republic-----
+IT seems that I can
+Cool stuff
+And its multiline
+So that's pretty wizard
+This is a message
+This is another one in the same message|||||xvlJsUyrEuyvwK|||||OV:Q]CL8F=C^GF|||||2022-12-07T21:37:53.031030500Z|||||The Republic-----
 #####

@@ -20,7 +20,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     //list of messages
     private JList messages = new JList();
     //where user enters the message to send
-    private JTextField messageText;
+    private JTextArea messageText;
+    private JScrollPane messagePane;
     private JPanel leftPanel; //houses the buttons
     private JPanel upperPanel; //title text (recipient name)
     private JPanel rightPanel; //houses the message history
@@ -84,16 +85,22 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
         recipientText.setFont(f);
         recipientText.setText(this.emailSelected + " via " + this.selectedStore);
-        messageText = new JTextField(26);
+        messageText = new JTextArea(1, 26);
+        messageText.setLineWrap(true);
         messageText.setForeground(Color.GRAY);
         messageText.setText("Insert Message...");
+        messageText.setWrapStyleWord(true);
+        messageText.setMaximumSize(messageText.getPreferredSize());
+        messagePane = new JScrollPane(messageText, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         upperPanel = new JPanel();
         rightPanel = new JPanel();
         leftPanel = new JPanel();
         upperPanel.add(recipientText);
         sendMessage = new JButton("Send Message");
         backButton = new JButton("Back");
-        leftPanel.add(messageText);
+        messagePane.setSize(scrollPane.getWidth() - sendMessage.getWidth(), sendMessage.getHeight());
+        messageText.setSize(messagePane.getWidth(), messagePane.getHeight());
+        leftPanel.add(messagePane);
         leftPanel.add(sendMessage);
         leftPanel.add(backButton);
 
@@ -230,10 +237,11 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("eee, MMM d, YYYY 'at' h:mm a");
             LocalDateTime localTime = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalDateTime();
             String timeString =  localTime.format(dateTimeFormatter);
+            value = value.replaceAll("\n", "<br>");
             if (label.getPreferredSize().getWidth() >= maxWidth - 10) {
-                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
             } else {
-                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>", timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
             }
             label.setText(value);
             return label;
@@ -244,7 +252,10 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     @Override
     public void keyPressed(KeyEvent e) {
         // TODO Auto-generated method stub
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
+            messageText.append("\n");
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             sendMessage.doClick();
         }
     }
@@ -269,6 +280,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
             showContextMenu(e);
         } else if (e.getButton() == 1) {
+            System.out.println((String) messages.getSelectedValue());
             e.consume();
         }
     }

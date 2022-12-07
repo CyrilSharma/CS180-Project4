@@ -57,16 +57,23 @@ public class MessageManager {
             ArrayList<HashMap<String, String>> history = new ArrayList<HashMap<String, String>>();
             String line;
             String recipient = "";
+            String messageString = "";
             while ((line = bfr.readLine()) != null) {
                 HashMap<String, String> message = new HashMap<String, String>();
-                if (!line.contains(tokenSep) && !line.contains(conversationSplit)) {
+                if (!line.contains(tokenSep) && !line.contains(conversationSplit) && (history.isEmpty() || history.get(history.size() - 1).containsKey("messageBreak"))) {
                     message.put("recipient", line);
                     recipient = line;
+                    history.add(message);
                 } else if (line.contains(conversationSplit)) {
                     message.put("messageBreak", line);
+                    history.add(message);
+                } else if (!line.contains("|||||")) {
+                    messageString += line + "\n";
                 } else {
                     String[] lineArray = line.split("\\|\\|\\|\\|\\|");
-                    message.put("message", lineArray[0]);
+                    messageString += lineArray[0];
+                    message.put("message", messageString);
+                    messageString = "";
                     message.put("messageNum", lineArray[2]);
                     message.put("recipient", lineArray[1]);
                     //checks whether the person the text file is contacting sent or recieved the message
@@ -77,8 +84,8 @@ public class MessageManager {
                     }
                     message.put("timeStamp", lineArray[3]);
                     message.put("store", lineArray[4].split("-----")[0]);
+                    history.add(message);
                 }
-                history.add(message);
             }
             return history;
         } catch (FileNotFoundException e) {
@@ -165,7 +172,7 @@ public class MessageManager {
         if (senderHashMap.values().toString().contains(recipientID) || recipientHashMap.values().contains(senderID)) {
             throw new Exception("You don't have permission to message that user");
         }
-        for (String id: ids) {
+        for (String id : ids) {
             ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
             if (action.equals("message")) {
                 if (messageID == null || messageID.equals("")) {

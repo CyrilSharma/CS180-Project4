@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.swing.*;
-
+//TODO: get some actual organization, change the JScrollPane to a checkbox
 public class ExportCSV {
     
     JFrame frame;
