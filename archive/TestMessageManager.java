@@ -2,10 +2,10 @@ package archive;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
 import Database;
 import MessageManager;
-/**
+
  * Project 4 -> TestMessageManager
  *
  * class handles all the testing of MessageManager
@@ -14,7 +14,7 @@ import MessageManager;
  *
  * @version November 13, 2022
  *
- */
+
 public class TestMessageManager {
     // Useful constants.
     private static final String[] IDS = {"PYzww08h9X985c", "ysJKgy0v2hyVY3"};
@@ -139,3 +139,4 @@ public class TestMessageManager {
         }
     }
 }
+ */

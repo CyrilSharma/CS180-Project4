@@ -136,7 +136,7 @@ public class AccountManagerGUI {
     public void run() {
         this.container = accountBoard.getContentPane();
         container.setLayout(new BorderLayout());
-        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
+        Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 24);
         loginName = new JLabel();
         loginName.setFont(f);
         loginName.setText(currentUserName);
@@ -152,29 +152,32 @@ public class AccountManagerGUI {
         rightPanel.add(loginName);
         rightPanel.add(editUsernameButton);
         rightPanel.add(editPasswordButton);
-        rightPanel.setBounds(400,0,200,530);
-        loginName.setBounds(20, 20, 160,30);
-        editUsernameButton.setBounds(20, 100, 160,30);
-        editPasswordButton.setBounds(20, 60, 160,30);
-        blockUserButton.setBounds(20, 20, 160, 30);
-        exportCSV.setBounds(20, 240, 160, 30);
+        //rightPanel.setBounds(400,0,200,530);
+        loginName.setBounds(0, 40, 160,30);
+        editUsernameButton.setBounds(300, 100, 160,30);
+        editPasswordButton.setBounds(300, 60, 160,30);
+        //blockUserButton.setBounds(650, 100, 160, 30);
+        //exportCSV.setBounds(650, 340, 160, 30);
         JPanel contents = new JPanel();
+        JPanel contents2 = new JPanel();
         contents.add(dashboardButton);
-        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        //contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(filterButton);
-        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        //contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(signOutButton);
-        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
-        contents.add(deleteAccountButton);
-        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
-        contents.add(blockUserButton);
-        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
-        contents.add(exportCSV);
+        //contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        contents2.add(deleteAccountButton);
+        //contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        contents2.add(blockUserButton);
+       // contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        contents2.add(exportCSV);
         System.out.println("WHERE THIS AT");
         accountBoard.setVisible(true);
         addActionListeners();
-        container.add(rightPanel, BorderLayout.EAST);
+
         container.add(contents, BorderLayout.CENTER);
+        container.add(contents2, BorderLayout.NORTH);
+        container.add(rightPanel, BorderLayout.SOUTH);
     }
     public void show() {
         accountBoard.setContentPane(new Container());

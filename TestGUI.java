@@ -49,10 +49,10 @@ public class TestGUI {
         try {
             //tr.query(new Query("Database", "verify", new String[]{"avadakedavera@gmail.com", "password"}));
             tr.query(new Query("Database", "verify", new String[]{"palpatine@senate.gov", "password"}));
-            DashboardGUI gui = new DashboardGUI(frame, stores, tr.get("email", "bob@gmail.com"));
+            //DashboardGUI gui = new DashboardGUI(frame, stores, tr.get("email", "bob@gmail.com"));
+            //gui.show();
+            PeopleView gui = new PeopleView(frame, tr.get("email", "palpatine@senate.gov"));
             gui.show();
-//            PeopleView gui = new PeopleView(frame, tr.get("email", "bob@gmail.com"));
-//            gui.show();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
