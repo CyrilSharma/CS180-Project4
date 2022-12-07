@@ -38,6 +38,7 @@ public class DashboardGUI implements Runnable {
     private Role role;
     private HashMap<String, ArrayList<Object>> stats;
     private HashMap<String, String> storeMap;
+    private DashboardInterfaceGUI dig;
     public DashboardGUI(JFrame board, HashMap<String, String> stores, HashMap<String,String> user) {
         this.board = board;
         Set<String> keySet = stores.keySet();
@@ -46,6 +47,10 @@ public class DashboardGUI implements Runnable {
         this.user = user;
         storeMap = stores;
         role = user.get("role").equals("Seller") ? Role.Seller : Role.Customer;
+        dig = new DashboardInterfaceGUI();
+        storeMap = dig.getStoreMap(role);
+        this.stores = new ArrayList<String>(storeMap.keySet());
+
     }
     public void setFrame() {
         convPane.setLayout(null);
@@ -78,6 +83,7 @@ public class DashboardGUI implements Runnable {
         statisticLabel.setBounds(180,100,180,100);
         placeUp();
     }
+
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());

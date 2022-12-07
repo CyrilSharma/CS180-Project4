@@ -33,6 +33,33 @@ public class Dashboard {
         myConversations = new ArrayList<>();
     }
 
+    public HashMap<String, String> getStoreMap() {
+        System.out.println("!!!x!!!");
+        HashMap<String, String> map = new HashMap<>();
+        File f = new File("store/Stores.txt");
+        FileReader fr;
+        BufferedReader bfr;
+        if (!f.exists()) {
+            System.out.println("file doesn't exist!");
+        }
+        try {
+            fr = new FileReader(f);
+            bfr = new BufferedReader(fr);
+            while (true) {
+                String line = bfr.readLine();
+                if (line == null) {
+                    break;
+                }
+                String store = line.substring(0,line.indexOf('-'));
+                String seller = line.substring(line.indexOf('-') + 1);
+                map.put(store, seller);
+            }
+        } catch (IOException e) {
+
+        }
+        return map;
+    }
+
     /**
      * initializes the role field to the Role Enum:
      * Seller or Customer
