@@ -125,7 +125,7 @@ public class CreateAccountGUI implements Runnable {
                                 "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        Object o = translator.query(new Query("Database", "add", new String[]{email, password, role.toString()}));
+                        Object o = translator.query(new Query("Database", "add", new Object[]{email, password, role}));
                         // log in user.
                         translator.query(new Query("Database", "verify", new String[]{email, password}));
                         if (Role.Seller == role) {

@@ -96,7 +96,7 @@ public class User implements Serializable {
                 f.createNewFile();
                 FileOutputStream fos = new FileOutputStream(f, true);
                 PrintWriter pw = new PrintWriter(fos);
-                pw.write(store + "-" + email + "\n");
+                pw.write(store + "---" + email + "\n");
                 stores.add(store);
                 pw.close();
             } catch (IOException e) {
@@ -149,7 +149,7 @@ public class User implements Serializable {
             String line;
             while ((line = bfr.readLine()) != null) {
                 if (line.contains(email)) {
-                    things.add(line.split("-")[0]);
+                    things.add(line.split("---")[0]);
                 }
             }
             return things;
@@ -167,7 +167,7 @@ public class User implements Serializable {
             String line;
             while ((line = bfr.readLine()) != null) {
                 if (line.contains(store)) {
-                    return line.split("-")[1];
+                    return line.split("---")[1];
                 }
             }
         } catch (Exception e) {

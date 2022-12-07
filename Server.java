@@ -115,31 +115,10 @@ public class Server implements Runnable {
             return null;
         }
         Object result = null;
-        if (method != null) {
-            Class[] methodParameterTypes = method.getParameterTypes();
-            Object[] params = null;
-            if (args != null && args.length == methodParameterTypes.length) {
-                params = new Object[args.length];
-                for (int i = 0; i < args.length; i++) {
-                    try {
-                        //TODO: handle for boolean casting
-                        params[i] = methodParameterTypes[i].cast(args[i]);
-                    } catch (ClassCastException e) {
-                        //Add all the things that can't be cast as parameters here with if statements or something
-                        if (function.equals("add"))
-                            params[i] = Role.valueOf((String) args[i]);
-                        else if (function.equals("block") || function.equals("unblock"))
-                            params[i] = (Boolean) args[i];
-                    } catch (Exception e) {
-                        return null;
-                    }
-                }
-            }
-            try {
-                result = method.invoke(o, params);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                result = e.getCause();
-            }
+        try {
+            result = method.invoke(o, args);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            result = e.getCause();
         }
         return result;
     }

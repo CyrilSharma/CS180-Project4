@@ -223,7 +223,7 @@ public class Dashboard {
                 if (line == null) {
                     break;
                 }
-                String[] info = line.split("-");
+                String[] info = line.split("---");
                 if (email.equals(info[1])) {
                     if (!checkStoreExist(info[0])) {
                         String[] data = new String[3];
