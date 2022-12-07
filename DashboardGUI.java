@@ -14,7 +14,7 @@ public class DashboardGUI implements Runnable {
     private ArrayList<String> stores;
     private HashMap<String,String> user;
     private JList storeList;
-    private JList messageSentList;
+    private JList customerList;
     private JList messageReceivedList;
     private JList wordList;
     private JList displayList;
@@ -35,15 +35,23 @@ public class DashboardGUI implements Runnable {
     private Container content;
     private JScrollPane convPane;
     private JScrollPane scrollPane;
+    private JScrollPane scrollPane2;
     private Role role;
     private HashMap<String, ArrayList<Object>> stats;
+    private HashMap<String, String> storeMap;
+    private DashboardInterfaceGUI dig;
     public DashboardGUI(JFrame board, HashMap<String, String> stores, HashMap<String,String> user) {
         this.board = board;
         Set<String> keySet = stores.keySet();
         this.stores = new ArrayList<String>(keySet);
         board.setSize(600,500);
         this.user = user;
+        storeMap = stores;
         role = user.get("role").equals("Seller") ? Role.Seller : Role.Customer;
+        dig = new DashboardInterfaceGUI();
+        storeMap = dig.getStoreMap(role, user.get("email"));
+        this.stores = new ArrayList<String>(storeMap.keySet());
+
     }
     public void setFrame() {
         convPane.setLayout(null);
@@ -52,7 +60,13 @@ public class DashboardGUI implements Runnable {
         upperPanel.setSize(430,70);
         convPane.setSize(500,400);
         //convPane.setBackground(Color.GRAY);
-        scrollPane.setBounds(0,70,150,330);
+        if (role == Role.Customer) {
+            scrollPane.setBounds(0,70,150,330);
+        } else {
+            scrollPane.setBounds(0,70,150,165);
+            scrollPane2.setBounds(0,235,150,165);
+        }
+
         convPane.setPreferredSize(new Dimension(370, 800));
         title.setBounds(10,10, 200, 50);
         Font f = new Font("Helvetica", Font.BOLD, 25);
@@ -74,16 +88,18 @@ public class DashboardGUI implements Runnable {
         sortDescendingReceivedNum.setBounds(20, 180, 140,30);
         backButton.setBounds(20, 330, 140, 30);
         statisticLabel.setBounds(180,100,180,100);
-        placeCenter();
         placeUp();
     }
+
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
         convPane = new JScrollPane();
         storeList = new JList(stores.toArray());
+        customerList = new JList();
         scrollPane = new JScrollPane(storeList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setPreferredSize(new Dimension(370,400));
+        scrollPane2 = new JScrollPane(customerList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         //statusList = new JList(status.toArray(new String[0]));
         //people.setBackground(Color.gray);
         rightPanel = new JPanel();
@@ -115,6 +131,7 @@ public class DashboardGUI implements Runnable {
         convPane.add(upperPanel);
         convPane.add(rightPanel);
         convPane.add(scrollPane);
+        convPane.add(scrollPane2);
         convPane.add(statisticLabel);
         addActionListeners();
         storeList.addListSelectionListener(new ListSelectionListener() {
@@ -128,8 +145,8 @@ public class DashboardGUI implements Runnable {
                     statisticLabel.setText(getStats(store));
                     placeUp();
                 } else {
-                    statisticLabel.setText("No Data Here!");
-                    placeCenter();
+                    noData(store);
+                    placeUp();
                 }
 
             }
@@ -143,42 +160,59 @@ public class DashboardGUI implements Runnable {
     }
 
     public void sortAlphabet() {
-        Collections.sort(stores);
+        Collections.sort(stores, String.CASE_INSENSITIVE_ORDER);
         storeList.setListData(stores.toArray());
         storeList.updateUI();
     }
     public void sortAlphabetBackwards() {
-        Collections.sort(stores);
+        Collections.sort(stores, String.CASE_INSENSITIVE_ORDER);
         Collections.reverse(stores);
         storeList.setListData(stores.toArray());
         storeList.updateUI();
     }
 
+    public ArrayList<String> getReceivedArray() {
+        ArrayList<String> stores = new ArrayList<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String store : this.stores) {
+            if (!stats.containsKey(store)) {
+                map.put(store, 0);
+                stores.add(store);
+                continue;
+            }
+            int received = (role == Role.Customer) ? (int) stats.get(store).get(0) :(int) stats.get(store).get(2);
+            if (map.size() == 0) {
+                map.put(store, received);
+                stores.add(store);
+            } else {
+                int index = 0;
+                int size = map.size();
+                for (String storr: map.keySet()) {
+                    if (received < map.get(storr)) {
+                        map.put(store, received);
+                        stores.add(index, store);
+                    }
+                    if (index == size - 1) {
+                        map.put(store, received);
+                        stores.add(index, store);
+                    }
+                    index++;
+                }
+            }
+        }
+        return stores;
+    }
+
     public void sortHighReceived() {
-//        ArrayList<String> stores = new ArrayList<>();
-//        HashMap<String, Integer> map = new HashMap<>();
-//        if (role == Role.Seller) {
-//            for (String store : this.stores) {
-//                if (!stats.containsKey(store)) {
-//                    continue;
-//                }
-//                if (!map.containsKey(store)) {
-//                    map.put(store, (int) stats.get(store).get(2));
-//                }
-//                if (stores.size() == 0) {
-//                    stores.add(store);
-//                }
-//            }
-//        } else {
-//            for () {
-//
-//            }
-//        }
-//
+        storeList.setListData(getReceivedArray().toArray());
+        storeList.updateUI();
     }
 
     public void sortLowReceived() {
-
+        ArrayList<String> list = getReceivedArray();
+        Collections.reverse(list);
+        storeList.setListData(list.toArray());
+        storeList.updateUI();
     }
 
     public void setStats(HashMap<String, ArrayList<Object>> stats) {
@@ -192,8 +226,8 @@ public class DashboardGUI implements Runnable {
             msg = "Statistic:\nMessages Received: %d\nMost Common words: %s";
             msg = String.format(msg, (int) stat.get(2), (String) stat.get(3));
         } else {
-            msg = "Statistic:\nMessages Received: %d\nMessages Sent: %d";
-            msg = String.format(msg, (int) stat.get(0), (int) stat.get(1));
+            msg = "Statistic:\nSeller: %s\nMessages Received: %d\nMessages Sent: %d";
+            msg = String.format(msg, storeMap.get(store), (int) stat.get(0), (int) stat.get(1));
         }
         return msg;
     }
@@ -217,12 +251,14 @@ public class DashboardGUI implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Insert sort command here
+                sortLowReceived();
             }
         });
         sortAscendingReceivedNum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Insert sort command here
+                sortHighReceived();
             }
         });
         backButton.addActionListener(new ActionListener() {
@@ -267,8 +303,17 @@ public class DashboardGUI implements Runnable {
         board.repaint();
     }
 
-    public void placeCenter() {
-        statisticLabel.setLocation(240,200);
+    public void noData(String store) {
+        String msg = "";
+        ArrayList<Object> stat = stats.get(store);
+        if (role == Role.Seller) {
+            msg = "Statistic:\nMessages Received: 0\nMost Common words: N/A";
+        } else {
+            msg = "Statistic:\nSeller: %s\nMessages Received: 0\nMessages Sent: 0";
+            msg = String.format(msg, storeMap.get(store));
+        }
+        statisticLabel.setText(msg);
+        statisticLabel.updateUI();
     }
     public void placeUp() {
         statisticLabel.setLocation(160,80);
