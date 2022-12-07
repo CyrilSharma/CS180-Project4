@@ -282,7 +282,7 @@ public class MessageManager {
             }
             HashMap<String,Boolean> read = getReadStatus(senderID);
             if (read.get(id) != null) {
-                saveReadStatus(read);
+                saveReadStatus(senderID, read);
             }
             File f = new File(historyDir + id + "-messageHistory.txt");
             PrintWriter pw = new PrintWriter(f);
