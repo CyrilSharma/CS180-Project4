@@ -297,6 +297,7 @@ public class PeopleView implements Runnable {
         invisibleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //TODO: Test
                 try {
                     String email;
                     if (user.get("role").equals(Role.Customer.toString())) {
