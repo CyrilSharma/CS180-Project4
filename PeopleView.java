@@ -54,6 +54,7 @@ public class PeopleView implements Runnable {
         this.user = user;
         this.role = Role.valueOf(user.get("role"));
         String[] ex = {"Online", "Offline", "Online"};
+        
         status = new ArrayList<>(Arrays.asList(ex));
         HashMap<String,String> stores;
         if (role.equals(Role.Customer)) {
