@@ -292,10 +292,11 @@ public class MessageManager {
                         .toLocalDateTime().toString();
                     text += String.join(",", String.valueOf(i), 
                         sender, recipient, message.get("store"), timeStamp, 
-                        message.get("message")) + "\n";
+                        "\"" + (message.get("message")).replace("\"", "\"\"")) + "\"\n";
                 }
             }
         }
+        System.out.println(text);
         return text;
     }
 
