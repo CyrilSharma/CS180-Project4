@@ -36,9 +36,10 @@ public class AccountManagerGUI {
                         try {
                             aic.modifyUsername(currentUserName, editedUsername);
                             JOptionPane.showMessageDialog(null, "Username Edited");
+                            loginName.setText(editedUsername);
                         } catch (Exception error) {
                             JOptionPane.showMessageDialog(null, 
-                                "We're having trouble communicating with the server.",
+                                error.getMessage(),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }

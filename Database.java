@@ -279,6 +279,12 @@ public class Database {
         if (!validate(val, key)) {
             throw new InvalidUserException("That is not a valid email");
         }
+        System.out.println(key);
+        System.out.println(val);
+        if (key.equals("email") && 
+            get("email", val) != null) {
+            throw new InvalidUserException("Email is already taken!");    
+        }
         for (int i = 0; i < database.size(); i++) {
             HashMap<String, String> user = database.get(i);
             if (user.get("email").equals(email)) {

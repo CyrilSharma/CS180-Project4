@@ -28,7 +28,7 @@ public class AccountInterfaceClient {
     public String modifyUsername(String email, String newUsername) throws Exception {
         String object = "Database";
         String function = "modify";
-        String[] args = {email, "username", newUsername};
+        String[] args = {email, "email", newUsername};
         Object o = translator.query(new Query(object, function, args));
         if (o == null) {
             return "INVALID";
