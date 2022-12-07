@@ -14,7 +14,7 @@ public class DashboardGUI implements Runnable {
     private ArrayList<String> stores;
     private HashMap<String,String> user;
     private JList storeList;
-    private JList messageSentList;
+    private JList customerList;
     private JList messageReceivedList;
     private JList wordList;
     private JList displayList;
@@ -35,6 +35,7 @@ public class DashboardGUI implements Runnable {
     private Container content;
     private JScrollPane convPane;
     private JScrollPane scrollPane;
+    private JScrollPane scrollPane2;
     private Role role;
     private HashMap<String, ArrayList<Object>> stats;
     private HashMap<String, String> storeMap;
@@ -48,7 +49,7 @@ public class DashboardGUI implements Runnable {
         storeMap = stores;
         role = user.get("role").equals("Seller") ? Role.Seller : Role.Customer;
         dig = new DashboardInterfaceGUI();
-        storeMap = dig.getStoreMap(role);
+        storeMap = dig.getStoreMap(role, user.get("email"));
         this.stores = new ArrayList<String>(storeMap.keySet());
 
     }
@@ -59,7 +60,13 @@ public class DashboardGUI implements Runnable {
         upperPanel.setSize(430,70);
         convPane.setSize(500,400);
         //convPane.setBackground(Color.GRAY);
-        scrollPane.setBounds(0,70,150,330);
+        if (role == Role.Customer) {
+            scrollPane.setBounds(0,70,150,330);
+        } else {
+            scrollPane.setBounds(0,70,150,165);
+            scrollPane2.setBounds(0,235,150,165);
+        }
+
         convPane.setPreferredSize(new Dimension(370, 800));
         title.setBounds(10,10, 200, 50);
         Font f = new Font("Helvetica", Font.BOLD, 25);
@@ -89,8 +96,10 @@ public class DashboardGUI implements Runnable {
         content.setLayout(new BorderLayout());
         convPane = new JScrollPane();
         storeList = new JList(stores.toArray());
+        customerList = new JList();
         scrollPane = new JScrollPane(storeList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setPreferredSize(new Dimension(370,400));
+        scrollPane2 = new JScrollPane(customerList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         //statusList = new JList(status.toArray(new String[0]));
         //people.setBackground(Color.gray);
         rightPanel = new JPanel();
@@ -122,6 +131,7 @@ public class DashboardGUI implements Runnable {
         convPane.add(upperPanel);
         convPane.add(rightPanel);
         convPane.add(scrollPane);
+        convPane.add(scrollPane2);
         convPane.add(statisticLabel);
         addActionListeners();
         storeList.addListSelectionListener(new ListSelectionListener() {
@@ -150,12 +160,12 @@ public class DashboardGUI implements Runnable {
     }
 
     public void sortAlphabet() {
-        Collections.sort(stores);
+        Collections.sort(stores, String.CASE_INSENSITIVE_ORDER);
         storeList.setListData(stores.toArray());
         storeList.updateUI();
     }
     public void sortAlphabetBackwards() {
-        Collections.sort(stores);
+        Collections.sort(stores, String.CASE_INSENSITIVE_ORDER);
         Collections.reverse(stores);
         storeList.setListData(stores.toArray());
         storeList.updateUI();

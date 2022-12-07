@@ -1,9 +1,9 @@
 SVKDPpthcfbtsZ###bob@gmail.com###password###Customer###2022-11-23T23:38:38.655388200Z###null###null
-5DGK8kXmvmbd6C###avadakedavera@gmail.com###password###Seller###2022-11-23T23:40:22.298113300Z###null###null
+5DGK8kXmvmbd6C###avadakedavera@gmail.com###password###Seller###2022-12-07T04:12:21.247711Z###null###null
 xe0IEz0cFpVQyW###Qyril@gmail.com###password###Customer###2022-12-06T22:19:32.321216800Z###null###null
 NZbmG6amDPO3Ld###sharma.cyril@gmail.com###urmomlol###Customer###2022-11-30T21:36:26.025162Z###null###null
 7p1D8oRPGBEK6t###user1@gmail.com###password###Customer###2022-12-03T16:15:14.202789Z###null###null
-P7rv2kBQVCqrlV###palpatine@senate.gov###password###Seller###2022-12-07T03:24:43.396335Z###null###null
+P7rv2kBQVCqrlV###palpatine@senate.gov###password###Seller###2022-12-07T04:15:47.965077Z###null###null
 SOG61tpYM3KYMa###anakin@jedi.org###password###Customer###2022-12-04T07:34:56.463663200Z###null###null
 VFobuBDkdBY7Fs###user2@gmail.com###password###Customer###2022-12-04T19:18:51.519153Z###null###null
 NWfPsI3PP4UHW8###user3@gmail.com###password###Seller###2022-12-04T19:24:36.752644Z###null###null
@@ -15,7 +15,7 @@ ilVWzIx5eh2n14###user70@gmail.com###password###Seller###2022-12-04T20:31:48.3524
 W8WNJQ04aHOYoC###user71@gmail.com###password###Seller###2022-12-04T20:35:46.794994Z###null###null
 l6tEFIIHyfYFV9###user691@gmail.com###password###Seller###2022-12-04T20:38:36.602303Z###null###null
 M5npvidvl9ppch###user659@gmail.com###password###Seller###2022-12-04T20:39:49.737420Z###null###null
-JzRAgr8GSq8L9o###user6901@gmail.com###password###Seller###2022-12-04T21:00:52.048738Z###null###null
+JzRAgr8GSq8L9o###user6901@gmail.com###password###Seller###2022-12-07T03:50:27.096940Z###null###null
 XYZYM9FE7NCL6X###user01@gmail.com###password###Seller###2022-12-04T21:07:20.454572Z###null###null
 IdlvaccnwniNmM###user0001@gmail.com###password###Seller###2022-12-04T21:14:31.470033Z###null###null
 Ofl8tY2BYwsgxg###idrc@gmail.com###password###Seller###2022-12-04T21:33:51.343011Z###null###null

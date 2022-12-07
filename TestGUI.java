@@ -47,6 +47,7 @@ public class TestGUI {
         Translator tr = new Translator();
 
         try {
+            //tr.query(new Query("Database", "verify", new String[]{"avadakedavera@gmail.com", "password"}));
             tr.query(new Query("Database", "verify", new String[]{"palpatine@senate.gov", "password"}));
             DashboardGUI gui = new DashboardGUI(frame, stores, tr.get("email", "bob@gmail.com"));
             gui.show();

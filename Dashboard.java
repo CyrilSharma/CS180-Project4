@@ -60,6 +60,17 @@ public class Dashboard {
         return map;
     }
 
+    public HashMap<String, String> getMyStoreMap(String email) {
+        HashMap<String, String> map = getStoreMap();
+        HashMap<String, String> newMap = new HashMap<>();
+        for (String key: map.keySet()) {
+            if (map.get(key).equals(email)) {
+                newMap.put(key, email);
+            }
+        }
+        return newMap;
+    }
+
     /**
      * initializes the role field to the Role Enum:
      * Seller or Customer
