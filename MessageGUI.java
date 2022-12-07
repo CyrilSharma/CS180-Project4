@@ -1,14 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.*;
 import java.awt.event.*;
 
 //TODO: Add the ability to import files, create multiple line messages
@@ -16,9 +15,7 @@ import java.awt.event.*;
 public class MessageGUI extends MouseAdapter implements PropertyChangeListener, KeyListener {
     private JFrame messageBoard;
     private Container container;
-    private JButton editMessage;
     private JScrollPane scrollPane;
-    private JButton deleteMessage;
     private JButton sendMessage;
     //list of messages
     private JList messages = new JList();
@@ -87,21 +84,17 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         Font f = new Font("Helvetica", Font.TRUETYPE_FONT, 15);
         recipientText.setFont(f);
         recipientText.setText(this.emailSelected + " via " + this.selectedStore);
-        messageText = new JTextField(12);
+        messageText = new JTextField(26);
         messageText.setForeground(Color.GRAY);
         messageText.setText("Insert Message...");
         upperPanel = new JPanel();
         rightPanel = new JPanel();
         leftPanel = new JPanel();
         upperPanel.add(recipientText);
-        editMessage = new JButton("Edit Message");
-        deleteMessage = new JButton("Delete Message");
         sendMessage = new JButton("Send Message");
         backButton = new JButton("Back");
         leftPanel.add(messageText);
         leftPanel.add(sendMessage);
-        leftPanel.add(editMessage);
-        leftPanel.add(deleteMessage);
         leftPanel.add(backButton);
 
         panel.add(upperPanel);
@@ -118,21 +111,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     }
 
     private void addActionListeners() {
-        //Select message and edit
-        editMessage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-            }
-        });
-        //Select message and delete
-        deleteMessage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                //else if no don't do anything
-            }
-        });
         //Send a new message
         sendMessage.addActionListener(new ActionListener() {
             @Override
@@ -230,21 +208,19 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
                 boolean isSelected, boolean cellHasFocus) {
             // TODO Auto-generated method stub
-            //JLabel label = (JLabel) renderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            JTextPane textArea = new JTextPane();
-            textArea.setText(value);
+            JLabel label = (JLabel) renderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             int maxWidth = (int) (scrollPane.getWidth() * .7);
             int r;
             int g;
             int b;
             if (conversationHistory.size() > index && !conversationHistory.get(index).getSender().equals(otherID)) {
-                textArea.setAlignmentX(JTextArea.RIGHT_ALIGNMENT);
+                label.setHorizontalAlignment(JLabel.RIGHT);
                 //label.setForeground(new Color(7, 252, 3));
                 r = 7;
                 g = 252;
                 b = 3;
             } else {
-                textArea.setAlignmentX(JTextArea.LEFT_ALIGNMENT);
+                label.setHorizontalAlignment(JLabel.LEFT);
                 //label.setForeground(new Color(179, 186, 184));
                 r = 179;
                 g = 186;
@@ -254,13 +230,13 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("eee, MMM d, YYYY 'at' h:mm a");
             LocalDateTime localTime = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalDateTime();
             String timeString =  localTime.format(dateTimeFormatter);
-            if (textArea.getPreferredSize().getWidth() >= maxWidth - 10) {
+            if (label.getPreferredSize().getWidth() >= maxWidth - 10) {
                 value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
             } else {
-                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, (int) textArea.getPreferredSize().getWidth() + 10, r, g, b, value);
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px;\">%s</div></html>", timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
             }
-            textArea.setText(value);
-            return textArea;
+            label.setText(value);
+            return label;
         }
 
     }
@@ -288,9 +264,12 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
+        System.out.println(e.getButton());
         if (e.getButton() == 3) {
             messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
             showContextMenu(e);
+        } else if (e.getButton() == 1) {
+            e.consume();
         }
     }
 
@@ -355,6 +334,19 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 }
             }
         });
+        JMenuItem copy = new JMenuItem("Copy");
+        copy.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                StringSelection stringSelection = new StringSelection((String) messages.getSelectedValue());
+                clipboard.setContents(stringSelection, null);
+            }
+            
+        });
+        popupMenu.add(copy);
         popupMenu.add(editItem);
         popupMenu.add(deleteItem);
         popupMenu.show(messages, e.getX(), e.getY());

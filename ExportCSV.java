@@ -28,6 +28,7 @@ public class ExportCSV {
         list = new JList<String>();
         listModel = new DefaultListModel<>();
         list.setModel(listModel);
+        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         csvDir = PathManager.storeDir + "csv/";
     }
 
