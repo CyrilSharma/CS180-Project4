@@ -47,4 +47,14 @@ public class Translator {
         }
         return (HashMap<String, String>) o;
     }
+
+    public void refresh() throws Exception {
+        try {
+            socket = new Socket("localhost", Constants.port);
+            ois = new ObjectInputStream(socket.getInputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
+        } catch (Exception e) {
+            throw new Exception();
+        }
+    }
 }

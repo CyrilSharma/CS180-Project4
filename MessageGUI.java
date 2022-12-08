@@ -33,6 +33,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private JLabel recipientText;
     private JButton backButton;
     private JButton sendFile;
+    private JLabel online;
     private String emailSelected;
     //allows for GUI to update after each send/edit/delete
     private DefaultListModel messageList = new DefaultListModel();
@@ -41,6 +42,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private String otherID;
     private PeopleView parent;
     private MessageInterfaceClient mic;
+    private HashMap<String, String> user;
     
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
         PeopleView parent) {
@@ -55,6 +57,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         //stored in a ArrayListString
         try {
             otherID = mic.getTranslator().get("email", emailSelected).get("id");
+            user = mic.getTranslator().get("email", username);
             //conversationHistory = mic.getConversation(otherID, selectedStore);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -96,6 +99,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         rightPanel = new JPanel();
         leftPanel = new JPanel();
         upperPanel.add(recipientText);
+        online = new JLabel("<html><div style=\"color: green\">Connected</div></html>");
+        upperPanel.add(online);
         sendMessage = new JButton("Send Message");
         backButton = new JButton("Back");
         sendFile = new JButton("Send File");
@@ -129,6 +134,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 try {
                     emailSelected = emailSelected.split(" ")[0];
                     mic.message(message, mic.getID(), otherID, selectedStore);
+                    messageText.setText(null);
                     JOptionPane.showMessageDialog(null, "Message Sent");
                 } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -212,7 +218,14 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                         pcs.firePropertyChange("changeUI", conversationHistory, conversationHistory2);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    try {
+                        mic.getTranslator().refresh();
+                        mic.getTranslator().query(new Query("Database", "verify", new String[]{user.get("email"), user.get("password")}));
+                        pcs.firePropertyChange("setStatus", false, true);
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        pcs.firePropertyChange("setStatus", true, false);
+                    }
                 }
                 try {
                     Thread.sleep(1000);
@@ -248,6 +261,22 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 // TODO Auto-generated catch block
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } else if (evt.getPropertyName().equals("setStatus")) {
+            boolean result = (boolean) evt.getNewValue();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (result) {
+                        online.setText("<html><div style=\"color: green\">Connected</div></html>");
+                    } else {
+                        online.setText("<html><div style=\"color: red\">Disconnected</div></html>");
+                    }
+                    SwingUtilities.updateComponentTreeUI(online);
+                }
+                
+            });
         }
     }
 
@@ -320,12 +349,10 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
-        System.out.println(e.getButton());
         if (e.getButton() == 3) {
             messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
             showContextMenu(e);
         } else if (e.getButton() == 1) {
-            System.out.println((String) messages.getSelectedValue());
             e.consume();
         }
     }
