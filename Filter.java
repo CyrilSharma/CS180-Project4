@@ -15,6 +15,7 @@ public class Filter {
     private File f;
     private HashMap<String, String> map;
     private ArrayList<String[]> userWordList;
+    private Database db;
 
     private boolean on = false;
 
@@ -34,6 +35,7 @@ public class Filter {
             }
         }
         userWordList = new ArrayList<>();
+        this.db = db;
         read();
     }
 
@@ -65,12 +67,13 @@ public class Filter {
      * @return result, arraylist of filtered words
      */
     public ArrayList<String> get() {
+        read();
         String[] words = new String[0];
         for (String[] userData: userWordList) {
             if (userData[0].equals(map.get("id"))) {
                 if (userData.length == 1) {
                     words = new String[1];
-                    words[0] = "no word";
+                    words[0] = "No Word";
                 } else {
                     words = userData[1].split(";");
                 }
@@ -78,6 +81,63 @@ public class Filter {
         }
         ArrayList<String> result = new ArrayList<>(Arrays.asList(words));
         return result;
+    }
+
+    public HashMap<String, Boolean> getStatuses() {
+        String path = "store/FilterStatus.txt";
+        MessageManager mm = new MessageManager(db);
+        HashMap<String, Boolean> map = new HashMap<>();
+        try {
+            String[] contents = mm.readTextFromFile(path);
+            for (String line: contents) {
+                if (line.indexOf("::") == -1) {
+                    continue;
+                }
+                String[] data = line.split("::");
+                if (data[1].equals("true")) {
+                    map.put(data[0], true);
+                } else {
+                    map.put(data[0], false);
+                }
+            }
+            return map;
+        } catch (IOException e) {
+
+        }
+        return new HashMap<>();
+    }
+    public boolean getStatus(String id) {
+        for (String status: getStatuses().keySet()) {
+            String[] filterStatus = status.split("::");
+            if (filterStatus[0].equals(id)) {
+                if (filterStatus[1].equals("true")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+    public synchronized void setFilterStatus(boolean status, String id) {
+        System.out.println("status " + status + " id " + id);
+        String path = "store/FilterStatus.txt";
+        File f = new File(path);
+        FileOutputStream fos;
+        PrintWriter pw;
+        try {
+            fos = new FileOutputStream(f, false);
+            pw = new PrintWriter(fos);
+            HashMap<String, Boolean> map = getStatuses();
+            map.put(id, status);
+            for (String user: map.keySet()) {
+                String line = user + "::" + map.get(user);
+                pw.println(line);
+            }
+            pw.close();
+        } catch (Exception e) {
+            System.out.println("Exception occurred!!");
+        }
     }
 
     /**
@@ -210,20 +270,28 @@ public class Filter {
     /**
      * write file
      */
-    public void write() {
+    public synchronized void write() {
+        read();
         FileOutputStream fos;
         PrintWriter pw;
+        HashSet<String> written = new HashSet<>();
         try {
             fos = new FileOutputStream(f, false);
             pw = new PrintWriter(fos);
             for (String[] data: userWordList) {
-                ArrayList<String> list = new ArrayList<String>(Arrays.asList(data[1]));
-                String line = data[0] + "::" + toTxtFileFormat(list);
-                pw.println(line);
+                if (!written.contains(data[0])) {
+                    ArrayList<String> list = new ArrayList<String>(Arrays.asList(data[1]));
+                    String line = data[0] + "::" + toTxtFileFormat(list);
+                    pw.println(line);
+                    written.add(data[0]);
+                }
+
+
             }
             pw.close();
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Exception occurred!!");
         }
     }

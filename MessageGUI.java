@@ -214,6 +214,21 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             while (true) {
                 try {
                     ArrayList<Message> conversationHistory2 = mic.getConversation(otherID, selectedStore);
+                    if (FilterInterfaceGUI.status()) {
+                        int index = 0;
+                        for (Message msg: conversationHistory2) {
+                            String message = msg.getMessage();
+                            String ID = msg.getMessageID();
+                            String sender = msg.getSender();
+                            String rec = msg.getRecipient();
+                            Instant inst = msg.getTimeStamp();
+                            String store = msg.getStore();
+                            Message newMsg = new Message(FilterInterfaceGUI.filterMsg(message), ID,
+                                    sender, rec, inst, store);
+                            conversationHistory2.set(index, msg);
+                            index++;
+                        }
+                    }
                     if (!conversationHistory2.equals(conversationHistory)) {
                         pcs.firePropertyChange("changeUI", conversationHistory, conversationHistory2);
                     }
@@ -248,6 +263,13 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             String[] msg;
             try {
                 msg = mic.messagesToArray(conversationHistory);
+                int index = 0;
+                if (FilterInterfaceGUI.status()) {
+                    for (String mes: msg) {
+                        msg[index] = FilterInterfaceGUI.filterMsg(mes);
+                        index++;
+                    }
+                }
                 messageList.removeAllElements();
                 messageList.addAll(Arrays.asList(msg));
                 messages.setModel(messageList);

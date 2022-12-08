@@ -15,6 +15,7 @@ public class AccountManagerGUI {
     private JButton deleteAccountButton;
     private JButton blockUserButton;
     private JButton exportCSV;
+    private JButton backButton;
     private String currentUserName;
     private AccountInterfaceClient aic;
 
@@ -97,7 +98,7 @@ public class AccountManagerGUI {
         filterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FilterPanel gui = new FilterPanel(accountBoard);
+                FilterPanel gui = new FilterPanel(accountBoard, currentUserName);
                 gui.show();
             }
         });
@@ -106,6 +107,19 @@ public class AccountManagerGUI {
             public void actionPerformed(ActionEvent e) {
                 LogInGUI gui = new LogInGUI(accountBoard);
                 gui.show();
+            }
+        });
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Translator tr = new Translator();
+                try {
+                    MainMenuGUI gui = new MainMenuGUI(accountBoard, tr.get("email", currentUserName));
+                    gui.show();
+                } catch (Exception er) {
+
+                }
+
             }
         });
         blockUserButton.addActionListener(new ActionListener() {
@@ -153,6 +167,7 @@ public class AccountManagerGUI {
         dashboardButton = new JButton("Access Dashboard");
         filterButton = new JButton("Access Filter");
         signOutButton = new JButton("Sign out");
+        backButton = new JButton("back");
         deleteAccountButton = new JButton("Delete Account");
         blockUserButton = new JButton("Unblock/Visibility");
         exportCSV = new JButton("Export Conversations");
@@ -165,6 +180,7 @@ public class AccountManagerGUI {
         editPasswordButton.setBounds(20, 60, 160,30);
         blockUserButton.setBounds(20, 20, 160, 30);
         exportCSV.setBounds(20, 240, 160, 30);
+        backButton.setBounds(20,280,160,30);
         JPanel contents = new JPanel();
         contents.add(dashboardButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -177,6 +193,8 @@ public class AccountManagerGUI {
         contents.add(blockUserButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(exportCSV);
+        contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+        contents.add(backButton);
         System.out.println("WHERE THIS AT");
         accountBoard.setVisible(true);
         addActionListeners();

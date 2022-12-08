@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FilterPanel implements Runnable {
     private JFrame board;
@@ -16,15 +17,21 @@ public class FilterPanel implements Runnable {
     private JPanel mainPan;
     private JPanel rightPan;
     private Translator tr;
-    private boolean enabled;
+    private boolean enabled = false;
     private ArrayList<String> words;
+    private FilterInterfaceGUI fig;
+    private String name;
+    private HashMap<String, String> userdata;
 
-    public FilterPanel(JFrame frame) {
+    public FilterPanel(JFrame frame, String name) {
         frame.setSize(600,400);
         board = frame;
         this.words = new ArrayList<>();
         tr = new Translator();
+        fig = new FilterInterfaceGUI();
+        this.name = name;
     }
+
 
     public void setWords(ArrayList<String> words) {
         this.words = words;
@@ -39,13 +46,12 @@ public class FilterPanel implements Runnable {
 
     //not tested method
     public boolean checkSpecialChar(String word) {
-        boolean result = false;
         for (int i = 0; i < word.length(); i++) {
             if (!(word.charAt(i) > 64 && word.charAt(i) <= 122)) {
-                return true;
+                return false;
             }
         }
-        return result;
+        return true;
     }
     public void createAndAdd() {
         content = board.getContentPane();
@@ -70,6 +76,7 @@ public class FilterPanel implements Runnable {
         pan.add(mainPan);
         pan.add(rightPan);
         content.add(pan);
+        System.out.println(fig.getWords().toString());
     }
     public void setFrame() {
         pan.setLayout(null);
@@ -85,19 +92,25 @@ public class FilterPanel implements Runnable {
         removeButton.setBounds(25, 120, 150, 30);
         backButton.setBounds(25,330,150,30);
         label.setBackground(Color.green);
+        if (enabled) {
+            enableButton.setText("Disable Filter");
+        }
+        updateLabel();
     }
     public void updateLabel() {
-        String str = "Filtered Words: ";
+        String msg = "Filtered Words: ";
+        ArrayList<String> words = fig.getWords();
+        String str = "";
         for (int i = 0; i < words.size(); i++) {
             str += words.get(i);
             if (i != words.size() - 1) {
                 str += ", ";
             }
         }
-        if (words.size() == 0) {
+        if (str.length() == 0) {
             str += "No word";
         }
-        label.setText(str);
+        label.setText(msg + str);
         label.updateUI();
     }
     public void addActionListeners() {
@@ -107,8 +120,9 @@ public class FilterPanel implements Runnable {
                 //TODO: Check if special character exists
                 String word = txtField.getText();
                 if (checkSpecialChar(word)) {
-                    words.add(word);
+                    fig.addWord(word.toLowerCase());
                     updateLabel();
+                    txtField.setText("");
                 } else {
                     JOptionPane.showMessageDialog(null, "Enter a word without special character!",
                                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -122,9 +136,10 @@ public class FilterPanel implements Runnable {
 
                 try {
                     String word = txtField.getText();
-                    if (checkSpecialChar(word)) {
-                        words.remove(word);
+                    if (checkSpecialChar(word.toLowerCase())) {
+                        fig.removeWord(word);
                         updateLabel();
+                        txtField.setText("");
                     } else {
                         JOptionPane.showMessageDialog(null, "Enter a word without special character!",
                                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -139,17 +154,21 @@ public class FilterPanel implements Runnable {
         enableButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //fig.setStatus(name, true);
                 enabled = !enabled;
+                FilterInterfaceGUI.changeStatus(enabled);
                 if (enabled) {
                     enableButton.setText("Disable Filter");
+                } else {
+                    enableButton.setText("Enable Filter");
                 }
             }
         });
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: FIX THIS CONSTRUCTOR
-                AccountManagerGUI gui = new AccountManagerGUI(board, null);
+                AccountManagerGUI gui = new AccountManagerGUI(board, name);
+                gui.show();
             }
         });
 
