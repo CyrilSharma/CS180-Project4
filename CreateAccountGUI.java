@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CreateAccountGUI implements Runnable {
     private JFrame board;
@@ -141,7 +142,9 @@ public class CreateAccountGUI implements Runnable {
                             }
                         }
                         if (!(o instanceof Exception)) {
-                            MainMenuGUI gui = new MainMenuGUI(board, translator.get("email", email));
+                            HashMap<String, String> user = translator.get("email", email);
+                            translator.setUser(user);
+                            MainMenuGUI gui = new MainMenuGUI(board, user);
                             gui.show();
                         } else {
                             throw new InvalidUserException(((Exception) o).getMessage());

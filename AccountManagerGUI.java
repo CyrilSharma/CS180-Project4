@@ -74,6 +74,9 @@ public class AccountManagerGUI {
                 if (ans == JOptionPane.YES_OPTION) {
                     try {
                         aic.deleteAccount(currentUserName);
+                        aic.logout();
+                        LogInGUI gui = new LogInGUI(accountBoard);
+                        gui.show();
                     } catch (Exception error) {
                         JOptionPane.showMessageDialog(null, 
                         "We're having trouble communicating with the server.",
@@ -105,8 +108,16 @@ public class AccountManagerGUI {
         signOutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LogInGUI gui = new LogInGUI(accountBoard);
-                gui.show();
+                try {
+                    aic.logout();
+                    LogInGUI gui = new LogInGUI(accountBoard);
+                    gui.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, "We are having trouble logging you out", "Error", JOptionPane.ERROR_MESSAGE);
+                    LogInGUI gui = new LogInGUI(accountBoard);
+                    gui.show();
+                }
             }
         });
         backButton.addActionListener(new ActionListener() {

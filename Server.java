@@ -43,6 +43,12 @@ public class Server implements Runnable {
                 Object o = null;
                 String function = query.getFunction();
                 Object[] args = query.getArgs();
+                if (function.equals("logout")) {
+                    db.modify(user.getEmail(), "lastOnline", Instant.now().toString());
+                    loggedIn = false;
+                    oos.writeObject("CONFIRMED");
+                    continue;
+                }
                 if (query.getObject().equals("Database") && (function.equals("verify") || function.equals("add"))) {
                     o = db;
                 } else if (loggedIn) {
@@ -71,9 +77,6 @@ public class Server implements Runnable {
                     dashboard = new Dashboard(argsString[0], mm.getHistoryLocation(db.get("email", argsString[0]).get("id")), db);
                     filter = new Filter(argsString[0], db);
                     db.modify(argsString[0], "lastOnline", Instant.now().toString());
-                } else if (function.equals("logout")) {
-                    db.modify(user.getEmail(), "lastOnline", Instant.now().toString());
-                    loggedIn = false;
                 }
                 oos.writeObject(result);
                 oos.flush();

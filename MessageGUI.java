@@ -232,15 +232,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                     if (!conversationHistory2.equals(conversationHistory)) {
                         pcs.firePropertyChange("changeUI", conversationHistory, conversationHistory2);
                     }
+                    pcs.firePropertyChange("setStatus", false, true);
                 } catch (Exception e) {
-                    try {
-                        mic.getTranslator().refresh();
-                        mic.getTranslator().query(new Query("Database", "verify", new String[]{user.get("email"), user.get("password")}));
-                        pcs.firePropertyChange("setStatus", false, true);
-                    } catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        pcs.firePropertyChange("setStatus", true, false);
-                    }
+                    pcs.firePropertyChange("setStatus", true, false);
                 }
                 try {
                     Thread.sleep(1000);
@@ -398,7 +392,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 int index = messages.getSelectedIndex();
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
-                    String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE));
+                    String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE, null, null, originalMessage));
                     if (editedMessage != null) {
                         emailSelected = emailSelected.split(" ")[0];
                         try {
