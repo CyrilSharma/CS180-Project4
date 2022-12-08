@@ -26,12 +26,12 @@ public class FilterInterfaceGUI {
         }
     }
 
-    public void removeWord(String word) {
+    public void removeWord(String word) throws InvalidWordException {
         try {
             String[] param = {word};
             tr.query(new Query("Filter", "remove", param));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new InvalidWordException("No such word!");
         }
     }
     public static void changeStatus(boolean stat) {

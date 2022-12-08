@@ -17,7 +17,7 @@ public class FilterPanel implements Runnable {
     private JPanel mainPan;
     private JPanel rightPan;
     private Translator tr;
-    private boolean enabled = false;
+    private boolean enabled = FilterInterfaceGUI.status();
     private ArrayList<String> words;
     private FilterInterfaceGUI fig;
     private String name;
@@ -123,6 +123,7 @@ public class FilterPanel implements Runnable {
                     fig.addWord(word.toLowerCase());
                     updateLabel();
                     txtField.setText("");
+                    JOptionPane.showMessageDialog(null, "Word Added!", "Notification", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Enter a word without special character!",
                                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -133,13 +134,18 @@ public class FilterPanel implements Runnable {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 try {
                     String word = txtField.getText();
                     if (checkSpecialChar(word.toLowerCase())) {
-                        fig.removeWord(word);
-                        updateLabel();
-                        txtField.setText("");
+                        try {
+                            fig.removeWord(word);
+                            updateLabel();
+                            txtField.setText("");
+                            JOptionPane.showMessageDialog(null, "Word removed!", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (InvalidWordException er) {
+                            JOptionPane.showMessageDialog(null, er.getMessage(), "Alert", JOptionPane.ERROR_MESSAGE);
+                        }
+
                     } else {
                         JOptionPane.showMessageDialog(null, "Enter a word without special character!",
                                 "Error", JOptionPane.ERROR_MESSAGE);

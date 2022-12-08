@@ -272,6 +272,7 @@ public class Filter {
      */
     public synchronized void write() {
         read();
+        System.out.println("writing");
         FileOutputStream fos;
         PrintWriter pw;
         HashSet<String> written = new HashSet<>();
