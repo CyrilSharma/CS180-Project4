@@ -1,9 +1,14 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,11 +32,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private JPanel rightPanel; //houses the message history
     private JLabel recipientText;
     private JButton backButton;
-
-    private String currentUser;
-
+    private JButton sendFile;
+    private JLabel online;
     private String emailSelected;
-    private String messageChoice;
     //allows for GUI to update after each send/edit/delete
     private DefaultListModel messageList = new DefaultListModel();
     private ArrayList<Message> conversationHistory;
@@ -39,22 +42,22 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private String otherID;
     private PeopleView parent;
     private MessageInterfaceClient mic;
+    private HashMap<String, String> user;
     
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
         PeopleView parent) {
         board.setSize(600,550);
         messageBoard = board;
-        this.currentUser = username; //logged in user
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email; //selected user
         this.selectedStore = selectedStore;
-        this.messageChoice = messageChoice;
         this.mic = new MessageInterfaceClient();
         this.parent = parent;
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
         try {
             otherID = mic.getTranslator().get("email", emailSelected).get("id");
+            user = mic.getTranslator().get("email", username);
             //conversationHistory = mic.getConversation(otherID, selectedStore);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -96,12 +99,16 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         rightPanel = new JPanel();
         leftPanel = new JPanel();
         upperPanel.add(recipientText);
+        online = new JLabel("<html><div style=\"color: green\">Connected</div></html>");
+        upperPanel.add(online);
         sendMessage = new JButton("Send Message");
         backButton = new JButton("Back");
+        sendFile = new JButton("Send File");
         messagePane.setSize(scrollPane.getWidth() - sendMessage.getWidth(), sendMessage.getHeight());
         messageText.setSize(messagePane.getWidth(), messagePane.getHeight());
         leftPanel.add(messagePane);
         leftPanel.add(sendMessage);
+        leftPanel.add(sendFile);
         leftPanel.add(backButton);
 
         panel.add(upperPanel);
@@ -127,6 +134,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 try {
                     emailSelected = emailSelected.split(" ")[0];
                     mic.message(message, mic.getID(), otherID, selectedStore);
+                    messageText.setText(null);
                     JOptionPane.showMessageDialog(null, "Message Sent");
                 } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -139,6 +147,49 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             public void actionPerformed(ActionEvent e) {
                 parent.show();
             }
+        });
+
+        sendFile.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileFilter(new FileFilter() {
+
+                    @Override
+                    public boolean accept(File f) {
+                        // TODO Auto-generated method stub
+                        return f.getName().endsWith(".txt") || f.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        // TODO Auto-generated method stub
+                        return "Text files only";
+                    }
+                    
+                });
+                int result = fileChooser.showOpenDialog(messageBoard);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        File file = fileChooser.getSelectedFile();
+                        BufferedReader bfr = new BufferedReader(new FileReader(file));
+                        String line;
+                        String message = "";
+                        while ((line = bfr.readLine()) != null) {
+                            message += line + "\n";
+                        }
+                        emailSelected = emailSelected.split(" ")[0];
+                        mic.message(message, mic.getID(), otherID, selectedStore);
+                        bfr.close();
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+            
         });
     }
 
@@ -167,7 +218,14 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                         pcs.firePropertyChange("changeUI", conversationHistory, conversationHistory2);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    try {
+                        mic.getTranslator().refresh();
+                        mic.getTranslator().query(new Query("Database", "verify", new String[]{user.get("email"), user.get("password")}));
+                        pcs.firePropertyChange("setStatus", false, true);
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        pcs.firePropertyChange("setStatus", true, false);
+                    }
                 }
                 try {
                     Thread.sleep(1000);
@@ -203,6 +261,22 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 // TODO Auto-generated catch block
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } else if (evt.getPropertyName().equals("setStatus")) {
+            boolean result = (boolean) evt.getNewValue();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (result) {
+                        online.setText("<html><div style=\"color: green\">Connected</div></html>");
+                    } else {
+                        online.setText("<html><div style=\"color: red\">Disconnected</div></html>");
+                    }
+                    SwingUtilities.updateComponentTreeUI(online);
+                }
+                
+            });
         }
     }
 
@@ -275,12 +349,10 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
-        System.out.println(e.getButton());
         if (e.getButton() == 3) {
             messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
             showContextMenu(e);
         } else if (e.getButton() == 1) {
-            System.out.println((String) messages.getSelectedValue());
             e.consume();
         }
     }

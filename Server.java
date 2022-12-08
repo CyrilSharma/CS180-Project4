@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@SuppressWarnings({"rawtypes", "resource"})
+@SuppressWarnings({"resource"})
 public class Server implements Runnable {
     
     private MessageManager mm;

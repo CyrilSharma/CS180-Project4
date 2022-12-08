@@ -29,7 +29,7 @@ public class PeopleView implements Runnable {
     private JButton viewButton;
     private JButton placeholder;
     private JButton backButton;
-    private JButton testButton;
+    private JButton invisibleButton;
     private ArrayList<String> users;
     private Role role;
     private ArrayList<String> status;
@@ -54,6 +54,7 @@ public class PeopleView implements Runnable {
         this.user = user;
         this.role = Role.valueOf(user.get("role"));
         String[] ex = {"Online", "Offline", "Online"};
+        
         status = new ArrayList<>(Arrays.asList(ex));
         HashMap<String,String> stores;
         if (role.equals(Role.Customer)) {
@@ -85,7 +86,7 @@ public class PeopleView implements Runnable {
         blockButton = new JButton("Block");
         viewButton = new JButton("Message");
         backButton = new JButton("Back");
-        testButton = new JButton("test");
+        invisibleButton = new JButton("Invisible");
         upperPanel = new JPanel();
         searchBar = new JTextField("Search...");
         storeSearchBar = new JTextField("Search stores...");
@@ -105,7 +106,7 @@ public class PeopleView implements Runnable {
         rightPanel.add(blockButton);
         rightPanel.add(viewButton);
         rightPanel.add(backButton);
-        rightPanel.add(testButton);
+        rightPanel.add(invisibleButton);
         convPane.add(upperPanel);
         convPane.add(rightPanel);
         convPane.add(scrollPane);
@@ -184,7 +185,7 @@ public class PeopleView implements Runnable {
         title.setFont(f);
         rightPanel.setBounds(400,0, 200, 530);
         blockButton.setBounds(20, 20, 160,30);
-        testButton.setBounds(20, 100, 160,30);
+        invisibleButton.setBounds(20, 100, 160,30);
         viewButton.setBounds(20, 60, 160,30);
         backButton.setBounds(100, 450, 80, 30);
         if (role == Role.Customer) {
@@ -253,6 +254,7 @@ public class PeopleView implements Runnable {
                     blockGUIInterface.blockUser(email, false);
                     PeopleView peopleView = new PeopleView(board, user);
                     peopleView.show();
+                    JOptionPane.showMessageDialog(null, "Successful!", "Message", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -293,25 +295,28 @@ public class PeopleView implements Runnable {
                 }
             }
         });
-        testButton.addActionListener(new ActionListener() {
+        invisibleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (role == Role.Customer) {
-                    HashMap<String, ArrayList<String>> map = new HashMap<>();
-                    ArrayList<String> userrr = new ArrayList<>();
-                    userrr.add("helloworld@gmail.com");
-                    map.put("Store1", userrr);
-                    updateNotif(map);
-                    //updateUserUI();
-                    updateStoreUI();
-                } else {
-                    HashMap<String, ArrayList<String>> map = new HashMap<>();
-                    ArrayList<String> userrr = new ArrayList<>();
-                    userrr.add("helloworld@gmail.com");
-                    map.put("Store1", userrr);
-                    updateNotif(map);
-                    //updateUserUI();
-                    updateStoreUI();
+                //TODO: Test
+                try {
+                    String email;
+                    if (user.get("role").equals(Role.Customer.toString())) {
+                        String store = (String) storeList.getSelectedValue();
+                        email = (String) translator.query(new Query("User", "getEmailFromStore", store));
+                    } else {
+                        email = (String) people.getSelectedValue();
+                    }
+                    String msg = "Trying to become invisible from " + email;
+                    JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
+                    BlockGUIInterface blockGUIInterface = new BlockGUIInterface();
+                    blockGUIInterface.blockUser(email, true);
+                    PeopleView peopleView = new PeopleView(board, user);
+                    peopleView.show();
+                    JOptionPane.showMessageDialog(null, "Successful!", "Message", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
             }

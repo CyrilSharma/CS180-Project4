@@ -1,0 +1,23 @@
+Message Number,Sender,Recipient,Store,Time Stamp,Message Contents
+1,anakin@jedi.org,obi-wan@jedi.org,The Republic,2022-12-07T16:20:43.753490100,"This is a multi-line String!
+Can you not see?"
+2,anakin@jedi.org,obi-wan@jedi.org,The Republic,2022-12-07T16:26:38.043939,"More multi-lines
+Hooray!"
+3,anakin@jedi.org,obi-wan@jedi.org,The Republic,2022-12-07T16:33:58.707798600,"Multi-line is back, baby!
+This has been fixed completely
+THere are totally no problems, ever"
+4,anakin@jedi.org,obi-wan@jedi.org,The Republic,2022-12-07T16:36:35.910459500,"Multi-line is back, baby!
+This has been fixed completely
+THere are totally no problems, ever
+Can I send these with impunity?"
+5,anakin@jedi.org,obi-wan@jedi.org,The Republic,2022-12-07T16:36:45.980228800,"IT seems that I can"
+6,anakin@jedi.org,obi-wan@jedi.org,The Republic,2022-12-07T16:37:13.827706600,"IT seems that I can
+Cool stuff
+And its multiline
+So that's pretty wizard"
+7,anakin@jedi.org,obi-wan@jedi.org,The Republic,2022-12-07T16:37:53.027859500,"IT seems that I can
+Cool stuff
+And its multiline
+So that's pretty wizard
+This is a message
+This is another one in the same message"

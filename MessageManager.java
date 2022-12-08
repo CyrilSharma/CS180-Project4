@@ -48,6 +48,56 @@ public class MessageManager {
     }
 
     /**
+     * Returns the read status of all the users conversations.
+     */
+    public synchronized HashMap<String, Boolean> getReadStatus(String id) throws IOException {
+        File f = new File(historyDir + id + "-convosRead.txt");
+        f.createNewFile();
+        try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
+            HashMap<String, Boolean> read = new HashMap<String, Boolean>();
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                String[] tokens = line.split(tokenSep);
+                read.put(tokens[0], tokens[1].equals("1"));
+            }
+            return read;
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Updates the read status of a conversation.
+     */
+    public synchronized void updateReadStatus(String id, String convoID, boolean status) {
+        HashMap<String, Boolean> read;
+        try {
+            read = getReadStatus(id);
+            read.put(convoID, status);
+            saveReadStatus(id, read);
+        } catch (Exception e) {}
+    }
+
+    /**
+     * Sabe the read status of a users conversations.
+     */
+    public synchronized void saveReadStatus(String senderId, HashMap<String, Boolean> entries) throws IOException {
+        File f = new File(historyDir + senderId + "-convosRead.txt");
+        f.createNewFile();
+        try (PrintWriter pw = new PrintWriter(f)) {
+            for (Map.Entry<String,Boolean> entry : entries.entrySet()) {
+                String line = String.format("%s%s%s", entry.getKey(),
+                    tokenSep, entry.getValue());
+                pw.write(line);
+            }
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        }
+    }
+
+    /**
      * Returns the personal message history of the user
      */
     public synchronized ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
@@ -182,8 +232,7 @@ public class MessageManager {
                             int num = random.nextInt(50);
                             messageID += (char)('0' + num);
                         }
-                        // lookup ID efficiently.
-                    } while (false);
+                    } while (db.get("id", messageID) != null);
                 }
                 HashMap<String, String> historyLoc = new HashMap<String, String>();
                 historyLoc.put("recipient", id.equals(senderID) ? recipientID : senderID);
@@ -230,6 +279,10 @@ public class MessageManager {
                         }
                     }
                 }
+            }
+            HashMap<String,Boolean> read = getReadStatus(senderID);
+            if (read.get(id) != null) {
+                saveReadStatus(senderID, read);
             }
             File f = new File(historyDir + id + "-messageHistory.txt");
             PrintWriter pw = new PrintWriter(f);
