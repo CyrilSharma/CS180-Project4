@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 //TODO: Need to pull role, create database interface
 public class DashboardGUI implements Runnable {
@@ -36,21 +37,25 @@ public class DashboardGUI implements Runnable {
     private JScrollPane convPane;
     private JScrollPane scrollPane;
     private JScrollPane scrollPane2;
+    private String selectedStore;
     private Role role;
     private HashMap<String, ArrayList<Object>> stats;
     private HashMap<String, String> storeMap;
     private DashboardInterfaceGUI dig;
-    public DashboardGUI(JFrame board, HashMap<String, String> stores, HashMap<String,String> user) {
+    private HashMap<String, HashMap<String, ArrayList<Object>>> statistics;
+    public DashboardGUI(JFrame board, HashMap<String,String> user) {
         this.board = board;
-        Set<String> keySet = stores.keySet();
-        this.stores = new ArrayList<String>(keySet);
         board.setSize(600,500);
         this.user = user;
-        storeMap = stores;
         role = user.get("role").equals("Seller") ? Role.Seller : Role.Customer;
         dig = new DashboardInterfaceGUI();
         storeMap = dig.getStoreMap(role, user.get("email"));
         this.stores = new ArrayList<String>(storeMap.keySet());
+        if (role == Role.Seller) {
+            statistics = dig.sellerStats(user.get("id"));
+        } else {
+            statistics = dig.customerStats(user.get("id"));
+        }
 
     }
     public void setFrame() {
@@ -63,8 +68,8 @@ public class DashboardGUI implements Runnable {
         if (role == Role.Customer) {
             scrollPane.setBounds(0,70,150,330);
         } else {
-            scrollPane.setBounds(0,70,150,165);
-            scrollPane2.setBounds(0,235,150,165);
+            scrollPane.setBounds(0,70,150,150);
+            scrollPane2.setBounds(0,220,150,150);
         }
 
         convPane.setPreferredSize(new Dimension(370, 800));
@@ -87,7 +92,7 @@ public class DashboardGUI implements Runnable {
         sortAscendingReceivedNum.setBounds(20, 140, 140,30);
         sortDescendingReceivedNum.setBounds(20, 180, 140,30);
         backButton.setBounds(20, 330, 140, 30);
-        statisticLabel.setBounds(180,100,180,100);
+        statisticLabel.setBounds(180,100,200,100);
         placeUp();
     }
 
@@ -112,6 +117,7 @@ public class DashboardGUI implements Runnable {
         mostCommonWords = new JButton("Most Common Words");
         backButton = new JButton("Back");
         statisticLabel = new JTextArea("");
+        statisticLabel.setEditable(false);
         upperPanel = new JPanel();
         upperPanel.add(title);
         rightPanel.add(sortAscendingSentNum);
@@ -134,23 +140,52 @@ public class DashboardGUI implements Runnable {
         convPane.add(scrollPane2);
         convPane.add(statisticLabel);
         addActionListeners();
+        customerList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (customerList.getSelectedValue() == null) {
+                    return;
+                }
+                if (storeList.getSelectedValue() == null) {
+                    //JOptionPane.showMessageDialog(null, "Please select a store!", "Alert", JOptionPane.ERROR_MESSAGE);
+                }
+                String user = (String) customerList.getSelectedValue();
+                String store = selectedStore;
+                String id = dig.getID(user);
+                String msg = "Statistic:\nMessages Received: %d\nMost Common words: %s";
+                msg = String.format(msg, (int) statistics.get(store).get(id).get(0),
+                        (String) statistics.get(store).get(id).get(1));
+                statisticLabel.setText(msg);
+            }
+        });
         storeList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (storeList.getSelectedValue() == null) {
                     return;
                 }
-                String store = (String) storeList.getSelectedValue();
-                if (stats.containsKey(store)) {
+                if (role == Role.Customer) {
+                    String store = (String) storeList.getSelectedValue();
                     statisticLabel.setText(getStats(store));
-                    placeUp();
                 } else {
-                    noData(store);
-                    placeUp();
+                    String store = (String) storeList.getSelectedValue();
+                    if (store != null) {
+                        selectedStore = store;
+                    }
+
+                    String[] users = statistics.get(store).keySet().toArray(new String[0]);
+                    int index = 0;
+                    for (String user: users) {
+                        users[index] = dig.getEmail(user);
+                        index++;
+                    }
+                    customerList.setListData(users);
                 }
+
 
             }
         });
+        storeList.setListData(statistics.keySet().toArray(new String[0]));
         HashMap<String, ArrayList<Object>> stat = new HashMap<>();
         ArrayList<Object> sample = new ArrayList<>();
         sample.add(4); sample.add(3); sample.add(6); sample.add("Doge Coin");
@@ -160,59 +195,105 @@ public class DashboardGUI implements Runnable {
     }
 
     public void sortAlphabet() {
-        Collections.sort(stores, String.CASE_INSENSITIVE_ORDER);
-        storeList.setListData(stores.toArray());
+        String[] strArr = statistics.keySet().toArray(new String[0]);
+        ArrayList<String> data = new ArrayList<>(java.util.List.of(strArr));
+        Collections.sort(data, String.CASE_INSENSITIVE_ORDER);
+        storeList.setListData(data.toArray());
         storeList.updateUI();
+        if (role == Role.Seller && customerList.getModel().getSize() != 0 && selectedStore != null) {
+            String[] strArr2 = statistics.get(selectedStore).keySet().toArray(new String[0]);
+            ArrayList<String> data2 = new ArrayList<>(java.util.List.of(strArr2));
+            int index = 0;
+            for (String val: data2) {
+                data2.set(index, dig.getEmail(val));
+                index++;
+            }
+            Collections.sort(data2, String.CASE_INSENSITIVE_ORDER);
+            customerList.setListData(data2.toArray());
+            customerList.updateUI();
+        }
     }
     public void sortAlphabetBackwards() {
-        Collections.sort(stores, String.CASE_INSENSITIVE_ORDER);
-        Collections.reverse(stores);
-        storeList.setListData(stores.toArray());
+        String[] strArr = statistics.keySet().toArray(new String[0]);
+        ArrayList<String> data = new ArrayList<>(java.util.List.of(strArr));
+        Collections.sort(data, String.CASE_INSENSITIVE_ORDER);
+        Collections.reverse(data);
+        storeList.setListData(data.toArray());
         storeList.updateUI();
+        if (role == Role.Seller && customerList.getModel().getSize() != 0 && selectedStore != null) {
+            String[] strArr2 = statistics.get(selectedStore).keySet().toArray(new String[0]);
+            ArrayList<String> data2 = new ArrayList<>(java.util.List.of(strArr2));
+            int index = 0;
+            for (String val: data2) {
+                data2.set(index, dig.getEmail(val));
+                index++;
+            }
+            Collections.sort(data2, String.CASE_INSENSITIVE_ORDER);
+            Collections.reverse(data2);
+            customerList.setListData(data2.toArray());
+            customerList.updateUI();
+        }
     }
 
-    public ArrayList<String> getReceivedArray() {
-        ArrayList<String> stores = new ArrayList<>();
+    public ArrayList<String> getReceivedArray(String store) {
+        ArrayList<String> users = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
-        for (String store : this.stores) {
-            if (!stats.containsKey(store)) {
-                map.put(store, 0);
-                stores.add(store);
-                continue;
-            }
-            int received = (role == Role.Customer) ? (int) stats.get(store).get(0) :(int) stats.get(store).get(2);
+        System.out.println(1);
+        for (String user : statistics.get(store).keySet()) {
+            System.out.println(2);
+            int received = (int) statistics.get(store).get(user).get(0);
+            System.out.println(user + " " + received);
             if (map.size() == 0) {
-                map.put(store, received);
-                stores.add(store);
+                map.put(user, received);
+                users.add(user);
             } else {
                 int index = 0;
                 int size = map.size();
-                for (String storr: map.keySet()) {
-                    if (received < map.get(storr)) {
-                        map.put(store, received);
-                        stores.add(index, store);
+                for (String userr: map.keySet()) {
+                    if (received < map.get(userr)) {
+                        map.put(user, received);
+                        users.add(index, user);
                     }
                     if (index == size - 1) {
-                        map.put(store, received);
-                        stores.add(index, store);
+                        System.out.println(user + " " + index);
+                        map.put(user, received);
+                        users.add(user);
                     }
                     index++;
                 }
             }
         }
-        return stores;
+        return users;
     }
 
     public void sortHighReceived() {
-        storeList.setListData(getReceivedArray().toArray());
-        storeList.updateUI();
+        if (selectedStore == null) {
+            return;
+        }
+        ArrayList<String> data2 = getReceivedArray(selectedStore);
+        int index = 0;
+        for (String val: data2) {
+            System.out.println(val);
+            data2.set(index, dig.getEmail(val));
+            index++;
+        }
+        customerList.setListData(data2.toArray());
+        customerList.updateUI();
     }
 
     public void sortLowReceived() {
-        ArrayList<String> list = getReceivedArray();
-        Collections.reverse(list);
-        storeList.setListData(list.toArray());
-        storeList.updateUI();
+        if (selectedStore == null) {
+            return;
+        }
+        ArrayList<String> data2 = getReceivedArray(selectedStore);
+        int index = 0;
+        for (String val: data2) {
+            data2.set(index, dig.getEmail(val));
+            index++;
+        }
+        Collections.reverse(data2);
+        customerList.setListData(data2.toArray());
+        customerList.updateUI();
     }
 
     public void setStats(HashMap<String, ArrayList<Object>> stats) {
@@ -221,13 +302,16 @@ public class DashboardGUI implements Runnable {
 
     public String getStats(String store) {
         String msg = "";
-        ArrayList<Object> stat = stats.get(store);
+        String otherEmail = storeMap.get(store);
+        String rec = dig.getID(otherEmail);
         if (role == Role.Seller) {
             msg = "Statistic:\nMessages Received: %d\nMost Common words: %s";
-            msg = String.format(msg, (int) stat.get(2), (String) stat.get(3));
+            msg = String.format(msg, (int) statistics.get(store).get(rec).get(0),
+                    (String) statistics.get(store).get(rec).get(1));
         } else {
             msg = "Statistic:\nSeller: %s\nMessages Received: %d\nMessages Sent: %d";
-            msg = String.format(msg, storeMap.get(store), (int) stat.get(0), (int) stat.get(1));
+            msg = String.format(msg, otherEmail, (int) statistics.get(store).get(rec).get(0),
+                    (int) statistics.get(store).get(rec).get(1));
         }
         return msg;
     }
@@ -267,10 +351,10 @@ public class DashboardGUI implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
                 try {
-                    /**
-                    AccountManagerGUI accountManagerGUI = new AccountManagerGUI(board, (String) blockGUIInterface.geTranslator().query(new Query("User", "getEmail")));
+
+                    AccountManagerGUI accountManagerGUI = new AccountManagerGUI(board, user.get("email"));
                     accountManagerGUI.show();
-                     */
+
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

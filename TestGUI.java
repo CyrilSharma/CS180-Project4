@@ -48,8 +48,8 @@ public class TestGUI {
 
         try {
             //tr.query(new Query("Database", "verify", new String[]{"avadakedavera@gmail.com", "password"}));
-            tr.query(new Query("Database", "verify", new String[]{"palpatine@senate.gov", "password"}));
-            DashboardGUI gui = new DashboardGUI(frame, stores, tr.get("email", "bob@gmail.com"));
+            tr.query(new Query("Database", "verify", new String[]{"obi-wan@jedi.org", "password"}));
+            DashboardGUI gui = new DashboardGUI(frame, tr.get("email", "obi-wan@jedi.org"));
             gui.show();
 //            PeopleView gui = new PeopleView(frame, tr.get("email", "bob@gmail.com"));
 //            gui.show();
