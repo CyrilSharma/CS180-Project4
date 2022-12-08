@@ -84,15 +84,21 @@ public class AccountManagerGUI {
         dashboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //DashBoardGui gui = new DashBoardGUI(board, "view", email, "test", store);
-                //gui.show();
+                Translator tr = new Translator();
+                try {
+                    DashboardGUI gui = new DashboardGUI(accountBoard, tr.get("email", currentUserName));
+                    gui.show();
+                } catch (Exception er) {
+                    er.getMessage();
+                }
+
             }
         });
         filterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //FilterGUI gui = new FilterGUI(board, "view", email, "test", store);
-                //gui.show();
+                FilterPanel gui = new FilterPanel(accountBoard);
+                gui.show();
             }
         });
         signOutButton.addActionListener(new ActionListener() {

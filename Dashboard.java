@@ -19,6 +19,7 @@ public class Dashboard {
     private String email;
     private File textDatabase;
     private Database database;
+    private MessageManager mm;
 
     /**
      * initializes the instance field variables
@@ -31,10 +32,10 @@ public class Dashboard {
         loadUserFromDatabase(email);
         allConversations = new ArrayList<>();
         myConversations = new ArrayList<>();
+        mm = new MessageManager(database);
     }
 
     public HashMap<String, String> getStoreMap() {
-        System.out.println("!!!x!!!");
         HashMap<String, String> map = new HashMap<>();
         File f = new File("store/Stores.txt");
         FileReader fr;
@@ -50,8 +51,8 @@ public class Dashboard {
                 if (line == null) {
                     break;
                 }
-                String store = line.substring(0,line.indexOf('-'));
-                String seller = line.substring(line.indexOf('-') + 1);
+                String store = line.substring(0,line.indexOf("---"));
+                String seller = line.substring(line.indexOf("---") + 3);
                 map.put(store, seller);
             }
         } catch (IOException e) {
@@ -71,6 +72,108 @@ public class Dashboard {
         return newMap;
     }
 
+    public HashMap<String, HashMap<String, ArrayList<Object>>> getSellerStats(String id) {
+        HashMap<String, HashMap<String, ArrayList<Object>>> map = new HashMap<>();
+        try {
+            String store = "";
+            String rec = "";
+            String msg = "";
+            String bigMsg = "";
+            int received = 0;
+            for (HashMap<String, String> history: mm.getPersonalHistory(id)) {
+                System.out.println("Store " + history.get("store"));
+                System.out.println("Rec " + history.get("recipient"));
+                System.out.println("mes " + history.get("message"));
+                if (history.get("message") == null) {
+                    //System.out.println(history.get("message"));
+                    if (history.get("message") == null && history.get("recipient") == null && history.get("store") == null) {
+                        if (map.containsKey(store)) {
+                            HashMap<String, ArrayList<Object>> miniMap = map.get(store);
+                            ArrayList<Object> data = new ArrayList<>();
+                            //System.out.println("REC " + received);
+                            data.add(received);
+                            data.add(findMostCommonMsg(bigMsg));
+                            miniMap.put(rec, data);
+                            map.put(store, miniMap);
+                        } else {
+                            HashMap<String, ArrayList<Object>> miniMap = new HashMap<>();
+                            ArrayList<Object> data = new ArrayList<>();
+                            //System.out.println("REC " + received);
+                            data.add(received);
+                            data.add(findMostCommonMsg(bigMsg));
+                            miniMap.put(rec, data);
+                            map.put(store, miniMap);
+                        }
+                        received = 0;
+                        bigMsg = "";
+                    } else {
+                        rec = history.get("recipient");
+                    }
+                    continue;
+                } else {
+                    System.out.println(history.get("message") + " " + received);
+                    store = history.get("store");
+                    if (!rec.equals(id)) {
+                        received++;
+                    }
+                    bigMsg += history.get("message");
+                }
+            }
+
+        } catch (Exception e) {
+        }
+        return map;
+    }
+
+    public HashMap<String, HashMap<String, ArrayList<Object>>> getCustomerStats(String id) {
+        HashMap<String, HashMap<String, ArrayList<Object>>> map = new HashMap<>();
+        try {
+            String store = "";
+            String rec = "";
+            int sent = 0;
+            int received = 0;
+            for (HashMap<String, String> history: mm.getPersonalHistory(id)) {
+                if (history.get("message") == null) {
+                    System.out.println(history.get("message"));
+                    if (history.get("message") == null && history.get("recipient") == null && history.get("store") == null) {
+                        if (map.containsKey(store)) {
+                            HashMap<String, ArrayList<Object>> miniMap = map.get(store);
+                            ArrayList<Object> data = new ArrayList<>();
+                            System.out.println("REC " + received);
+                            data.add(received);
+                            data.add(sent);
+                            miniMap.put(rec, data);
+                            map.put(store, miniMap);
+                        } else {
+                            HashMap<String, ArrayList<Object>> miniMap = new HashMap<>();
+                            ArrayList<Object> data = new ArrayList<>();
+                            System.out.println("REC " + received);
+                            data.add(received);
+                            data.add(sent);
+                            miniMap.put(rec, data);
+                            map.put(store, miniMap);
+                        }
+                        received = 0;
+                        sent = 0;
+                    }
+                    continue;
+                } else {
+                    System.out.println(history.get("message") + " " + received);
+                    store = history.get("store");
+                    rec = history.get("recipient");
+                    if (!rec.equals(id)) {
+                        received++;
+                    } else {
+                        sent++;
+                    }
+
+                }
+            }
+
+        } catch (Exception e) {
+        }
+        return map;
+    }
     /**
      * initializes the role field to the Role Enum:
      * Seller or Customer
@@ -174,9 +277,36 @@ public class Dashboard {
     /**
      * finds the most common word from conversation(excluding special characters)
      *
-     * @param conversation ArrayList String[] containing conversation split by lines in a String array
+     * @param msg one String message containing every message
      * @return returns word that occurs most often
      */
+
+    public String findMostCommonMsg(String msg) {
+
+        HashMap<String, Integer> map = new HashMap<>();
+        if (msg.indexOf("\n") != -1) {
+            msg = msg.replace("\n", " ");
+        }
+        String[] words = msg.split(" ");
+        for (String word: words) {
+            word = word.toLowerCase();
+            word = removeSpecialChar(word);
+            if (map.containsKey(word)) {
+                map.put(word, map.get(word) + 1);
+            } else {
+                map.put(word, 1);
+            }
+        }
+        String word = "";
+        int num = 0;
+        for (String key: map.keySet()) {
+            if (map.get(key) > num) {
+                word = key;
+                num = map.get(key);
+            }
+        }
+        return word;
+    }
     public String findMostCommonWord(ArrayList<String[]> conversation) {
         HashMap<String, Integer> map = new HashMap<>();
         for (String[] msg: conversation) {

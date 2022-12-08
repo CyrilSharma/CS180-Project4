@@ -19,10 +19,10 @@ public class FilterPanel implements Runnable {
     private boolean enabled;
     private ArrayList<String> words;
 
-    public FilterPanel(JFrame frame, ArrayList<String> words) {
+    public FilterPanel(JFrame frame) {
         frame.setSize(600,400);
         board = frame;
-        this.words = words;
+        this.words = new ArrayList<>();
         tr = new Translator();
     }
 
