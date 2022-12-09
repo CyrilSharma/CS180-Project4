@@ -14,7 +14,7 @@ public class Translator {
         // There is only socket active at any time.
         if (socket == null) {
             try {
-                socket = new Socket("localhost", Constants.port);
+                socket = new Socket(Constants.hostname, Constants.port);
                 ois = new ObjectInputStream(socket.getInputStream());
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 loggedInUser = null;
@@ -93,7 +93,7 @@ public class Translator {
 
     public void refresh() throws Exception {
         try {
-            socket = new Socket("localhost", Constants.port);
+            socket = new Socket(Constants.hostname, Constants.port);
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
         } catch (Exception e) {

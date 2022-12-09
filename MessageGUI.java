@@ -116,6 +116,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         rightPanel.add(scrollPane);
         panel.add(rightPanel);
         addActionListeners();
+        if (!messageList.isEmpty()) {
+            messages.ensureIndexIsVisible(messageList.lastIndexOf(messageList.lastElement()));
+        }
         container.add(panel, BorderLayout.CENTER);
         sendMessage.addKeyListener(this);
         messageText.addKeyListener(this);
@@ -287,6 +290,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 messageList.removeAllElements();
                 messageList.addAll(Arrays.asList(msg));
                 messages.setModel(messageList);
+                if (!messageList.isEmpty() && messages.getLastVisibleIndex() == messageList.getSize() - 2) {
+                    messages.ensureIndexIsVisible(messageList.lastIndexOf(messageList.lastElement()));
+                }
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -367,6 +373,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         }
         else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             sendMessage.doClick();
+            e.consume();
         }
     }
 
