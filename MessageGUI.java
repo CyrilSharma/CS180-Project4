@@ -392,8 +392,37 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 int index = messages.getSelectedIndex();
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
-                    String editedMessage = (String) (JOptionPane.showInputDialog(null, "Please enter your edited message: ", "Message", JOptionPane.QUESTION_MESSAGE, null, null, originalMessage));
-                    if (editedMessage != null) {
+                    JTextArea textArea = new JTextArea(originalMessage);
+                    JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+                    textArea.addKeyListener(new KeyListener() {
+
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                            // TODO Auto-generated method stub
+                            
+                        }
+
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+                            // TODO Auto-generated method stub
+                            if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
+                                textArea.append("\n");
+                            }
+                        }
+
+                        @Override
+                        public void keyReleased(KeyEvent e) {
+                            // TODO Auto-generated method stub
+                            
+                        }
+                        
+                    });
+                    int result = JOptionPane.showConfirmDialog(null, scrollPane, "Edit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+                    String editedMessage = textArea.getText();
+                    System.out.println(editedMessage);
+                    if (result == JOptionPane.OK_OPTION && !editedMessage.equals("")) {
                         emailSelected = emailSelected.split(" ")[0];
                         try {
                             mic.editMessage(mic.getID(), otherID, editedMessage, conversationHistory.get(index).getMessageID());
