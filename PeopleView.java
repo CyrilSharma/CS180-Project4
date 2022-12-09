@@ -117,9 +117,6 @@ public class PeopleView implements Runnable {
         }
 
         convPane.add(scroll2);
-        if (FilterInterfaceGUI.status()) {
-            System.out.println(FilterInterfaceGUI.filterMsg("multi-lines"));
-        }
         //scrollPane.add(people);
     }
 

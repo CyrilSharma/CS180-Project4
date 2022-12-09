@@ -46,7 +46,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
         PeopleView parent) {
-        board.setSize(600,550);
+        board.setSize(700,550);
         messageBoard = board;
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email; //selected user
@@ -121,6 +121,25 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         messageText.addKeyListener(this);
         sendMessage.setFocusable(true);
         messageText.setFocusable(true);
+        messageText.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                JTextArea field = (JTextArea)e.getComponent();
+                if (field.getText().equals("Insert Message...")) {
+                    field.setText("");
+                }
+                field.setForeground(Color.BLACK);
+                //field.removeFocusListener(this);
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (messageText.getText().isEmpty()) {
+                    messageText.setForeground(Color.GRAY);
+                    messageText.setText("Insert Message...");
+                }
+            }
+
+        });
         messages.addMouseListener(this);
     }
 
@@ -134,7 +153,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 try {
                     emailSelected = emailSelected.split(" ")[0];
                     mic.message(message, mic.getID(), otherID, selectedStore);
-                    messageText.setText(null);
+                    messageText.setText("Insert Message...");
+                    messageText.setForeground(Color.GRAY);
                     JOptionPane.showMessageDialog(null, "Message Sent");
                 } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
