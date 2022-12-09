@@ -37,7 +37,6 @@ public class AccountInterfaceClient {
     }
 
     public void logout() throws Exception {
-        translator.setUser(null);
         translator.query(new Query(null, "logout"));
     }
 }

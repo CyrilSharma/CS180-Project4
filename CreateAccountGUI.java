@@ -143,7 +143,6 @@ public class CreateAccountGUI implements Runnable {
                         }
                         if (!(o instanceof Exception)) {
                             HashMap<String, String> user = translator.get("email", email);
-                            translator.setUser(user);
                             MainMenuGUI gui = new MainMenuGUI(board, user);
                             gui.show();
                         } else {
