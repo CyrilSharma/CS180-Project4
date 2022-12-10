@@ -38,6 +38,7 @@ public class LogInGUI {
 
     }
 
+
     public void show() {
         board.setContentPane(new Container());
         run();

@@ -113,6 +113,7 @@ public class FilterPanel implements Runnable {
         label.setText(msg + str);
         label.updateUI();
     }
+
     public void addActionListeners() {
         addButton.addActionListener(new ActionListener() {
             @Override

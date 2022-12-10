@@ -11,6 +11,7 @@ import java.util.*;
  * @version November 13, 2022
  *
  */
+
 public class Filter {
     private File f;
     private HashMap<String, String> map;
