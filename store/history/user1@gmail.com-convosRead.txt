@@ -1,6 +1,1 @@
-user69@gmail.com|||||false
-obi-wan@jedi.org|||||true
-user0001@gmail.com|||||true
-anotherone@gmail.com|||||true
-palpatine@senate.gov|||||true
-user6901@gmail.com|||||true
+user69@gmail.com|||||spinach|||||false
