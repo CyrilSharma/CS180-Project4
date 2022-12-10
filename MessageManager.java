@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.time.Instant;
 /**
  * Project 4 -> MessageManager
@@ -50,15 +51,15 @@ public class MessageManager {
     /**
      * Returns the read status of all the users conversations.
      */
-    public synchronized HashMap<String, Boolean> getReadStatus(String id) throws IOException {
-        File f = new File(historyDir + id + "-convosRead.txt");
+    public synchronized HashMap<String, Boolean> getReadStatus(String email) throws IOException {
+        File f = new File(historyDir + email + "-convosRead.txt");
         f.createNewFile();
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             HashMap<String, Boolean> read = new HashMap<String, Boolean>();
             String line;
             while ((line = bfr.readLine()) != null) {
-                String[] tokens = line.split(tokenSep);
-                read.put(tokens[0], tokens[1].equals("1"));
+                String[] tokens = line.split(Pattern.quote(tokenSep));
+                read.put(tokens[0], tokens[1].equals("true"));
             }
             return read;
         } catch (FileNotFoundException e) {
@@ -71,24 +72,28 @@ public class MessageManager {
     /**
      * Updates the read status of a conversation.
      */
-    public synchronized void updateReadStatus(String id, String convoID, boolean status) {
+    public synchronized void updateReadStatus(String sender, String recepient) {
         HashMap<String, Boolean> read;
         try {
-            read = getReadStatus(id);
-            read.put(convoID, status);
-            saveReadStatus(id, read);
+            read = getReadStatus(sender);
+            read.put(recepient, true);
+            saveReadStatus(sender, read);
+
+            read = getReadStatus(recepient);
+            read.put(sender, false);
+            saveReadStatus(recepient, read);
         } catch (Exception e) {}
     }
 
     /**
-     * Sabe the read status of a users conversations.
+     * Save the read status of a users conversations.
      */
-    public synchronized void saveReadStatus(String senderId, HashMap<String, Boolean> entries) throws IOException {
-        File f = new File(historyDir + senderId + "-convosRead.txt");
+    public synchronized void saveReadStatus(String sender, HashMap<String, Boolean> entries) throws IOException {
+        File f = new File(historyDir + sender + "-convosRead.txt");
         f.createNewFile();
         try (PrintWriter pw = new PrintWriter(f)) {
             for (Map.Entry<String,Boolean> entry : entries.entrySet()) {
-                String line = String.format("%s%s%s", entry.getKey(),
+                String line = String.format("%s%s%s\n", entry.getKey(),
                     tokenSep, entry.getValue());
                 pw.write(line);
             }
@@ -280,10 +285,18 @@ public class MessageManager {
                     }
                 }
             }
-            HashMap<String,Boolean> read = getReadStatus(senderID);
-            if (read.get(id) != null) {
-                saveReadStatus(senderID, read);
-            }
+
+            // update read notifs on message.
+            String sender = db.get("id", senderID).get("email");
+            String recepient = db.get("id", recipientID).get("email");
+            HashMap<String,Boolean> read = getReadStatus(sender);
+            read.put(recepient, true);
+            saveReadStatus(sender, read);
+            // mark recepient conversation unread.
+            read = getReadStatus(recepient);
+            read.put(sender, false);
+            saveReadStatus(recepient, read);
+
             File f = new File(historyDir + id + "-messageHistory.txt");
             PrintWriter pw = new PrintWriter(f);
             pw.write(formatMessages(history));

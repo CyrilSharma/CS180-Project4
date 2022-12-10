@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class PeopleView implements Runnable {
@@ -39,10 +40,8 @@ public class PeopleView implements Runnable {
     private Translator translator;
     private HashMap<String, String> user;
     private HashMap<String, String> map;
-
-    private ArrayList<String> newUserNotif;
-    private ArrayList<String> newStoreNotif;
-    private HashMap<String, ArrayList<String>> userNotifications;
+    private HashMap<String, Boolean> userNotifications;
+    private HashMap<String, Boolean> storeNotifications;
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
@@ -63,7 +62,6 @@ public class PeopleView implements Runnable {
             stores = (HashMap<String, String>) translator.query(new Query("User", "getStores"));
         }
         map = stores;
-        userNotifications = new HashMap<>();
     }
     public void show() {
         board.setContentPane(new Container());
@@ -120,14 +118,9 @@ public class PeopleView implements Runnable {
         //scrollPane.add(people);
     }
 
-
-    public void updateNotif(HashMap<String, ArrayList<String>> notif) {
-        userNotifications = notif;
-    }
-
     public void removeStoreNotif(String store) {
-        if (userNotifications.containsKey(store)) {
-            userNotifications.remove(store);
+        if (storeNotifications.containsKey(store)) {
+            storeNotifications.remove(store);
         }
     }
 
@@ -141,11 +134,11 @@ public class PeopleView implements Runnable {
     public void updateUserUI(String store) {
         String[] newArray = new String[users.size()];
         int index = 0;
-        if (userNotifications == null || userNotifications.get(store) == null) {
+        if (storeNotifications == null || storeNotifications.get(store) == null) {
             return;
         }
         for (String user: users) {
-            if (userNotifications.get(store).contains(user)) {
+            if (userNotifications.get(user)) {
                 String newData = "<html><b><font color=blue>";
                 newData += user + "</font></b></html>";
                 newArray[index] = newData;
@@ -160,7 +153,7 @@ public class PeopleView implements Runnable {
         String[] newArray = new String[map.keySet().size()];
         int index = 0;
         for (String store: map.keySet()) {
-            if (userNotifications.keySet().contains(store)) {
+            if (storeNotifications.get(store) != null) {
                 String newData = "<html><b><font color=blue>";
                 newData += store + "</font></b></html>";
                 newArray[index] = newData;
@@ -355,6 +348,7 @@ public class PeopleView implements Runnable {
         });
     }
     public void run() {
+        initializeNotifs();
         createAndAdd();
         setFrame();
         addActionListeners();
@@ -429,6 +423,24 @@ public class PeopleView implements Runnable {
         });
         //people.setBackground(Color.GREEN);
         content.add(convPane, BorderLayout.CENTER);
+    }
+
+    public void initializeNotifs() {
+        try {
+            userNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", 
+            "getReadStatus", new Object[]{user.get("email")}));
+            //storeNotifications
+            String email = user.get("email");
+            ArrayList<String> stores = getUserStores(email);
+            storeNotifications = new HashMap<String, Boolean>();
+            for (String store: stores) {
+                String user = map.get(store);
+                boolean read = userNotifications.get(user);
+                storeNotifications.put(store, read);
+            }
+        } catch (Exception e) {
+            ; // idk what to do here yet.
+        }
     }
 
     public void searchUser() {
