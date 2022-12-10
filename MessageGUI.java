@@ -558,6 +558,31 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             
         });
         popupMenu.add(copy);
+        String messageSelected = (String) messages.getSelectedValue();
+        String[] stuffInMessages = messageSelected.split("\n| ");
+        int i = 0;
+        for (String stuff : stuffInMessages) {
+            if (stuff.matches("^((((https)|(http))://)|([w0-9])+\\.)[\\.a-zA-Z0-9]+([a-zA-Z0-9/-?=;,\"'+])+$")) {
+                i++;
+                JMenuItem link = new JMenuItem("Link " + i);
+                link.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // TODO Auto-generated method stub
+                        URI uri = URI.create(stuff);
+                        try {
+                            Desktop.getDesktop().browse(uri);
+                        } catch (IOException e1) {
+                            // TODO Auto-generated catch block
+                            JOptionPane.showMessageDialog(null, "Couldn't open link", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    
+                });
+                popupMenu.add(link);
+            }
+        }
         popupMenu.add(editItem);
         popupMenu.add(deleteItem);
         popupMenu.show(messages, e.getX(), e.getY());

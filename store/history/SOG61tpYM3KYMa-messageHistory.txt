@@ -19,4 +19,8 @@ message|||||xvlJsUyrEuyvwK|||||aCQPKHQR<<\T[Z|||||2022-12-10T21:45:38.037377200Z
 message message message|||||SOG61tpYM3KYMa|||||MZ852_T5]I^\U`|||||2022-12-10T21:47:01.481101300Z|||||The Republic-----
 message message|||||xvlJsUyrEuyvwK|||||_P<=3KS8@_5\N9|||||2022-12-10T21:51:34.875782700Z|||||The Republic-----
 message message message|||||SOG61tpYM3KYMa|||||RV@ZaH0?^LV[A<|||||2022-12-10T21:51:48.463626500Z|||||The Republic-----
+what if you have multiple links
+https://www.bbc.com
+www.google.com
+www.cnn.com|||||SOG61tpYM3KYMa|||||H9>K>NYA=9`CSM|||||2022-12-10T22:18:02.154298400Z|||||The Republic-----
 #####
