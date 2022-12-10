@@ -408,7 +408,9 @@ public class PeopleView implements Runnable {
         setFrame();
         initializeNotifs();
         addActionListeners();
-        storeList.setListData(map.keySet().toArray(new String[0]));
+        if (role == Role.Seller) {
+            storeList.setListData(map.keySet().toArray(new String[0]));
+        }
         //testAdd();
         searchBar.addFocusListener(new FocusAdapter() {
             @Override
