@@ -55,9 +55,12 @@ public class TestGUI {
             PeopleView gui = new PeopleView(frame, tr.get("email", "anakin@jedi.org"));
             //PeopleView gui = new PeopleView(frame, tr.get("email", "obi-wan@jedi.org"));
             gui.show();
+            //LogInGUI guii = new LogInGUI(frame);
+            //guii.show();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+
 
 
 //        LogInGUI mainMenu = new LogInGUI(users);

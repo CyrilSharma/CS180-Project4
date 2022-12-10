@@ -54,7 +54,7 @@ public class PeopleView implements Runnable {
         this.user = user;
         this.role = Role.valueOf(user.get("role"));
         String[] ex = {"Online", "Offline", "Online"};
-        
+
         status = new ArrayList<>(Arrays.asList(ex));
         HashMap<String,String> stores;
         if (role.equals(Role.Customer)) {
@@ -483,7 +483,7 @@ public class PeopleView implements Runnable {
     public void initializeNotifs() {
         try {
             notifications = (HashMap<String, HashMap<String, Boolean>>) translator.query(new Query("MessageManager",
-            "getReadStatus", new Object[]{user.get("email")}));
+                    "getReadStatus", new Object[]{user.get("email")}));
             updateUserUI();
             if (role == Role.Customer) {
                 checkStoreNotification();

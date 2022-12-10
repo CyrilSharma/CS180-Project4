@@ -113,12 +113,17 @@ public class FilterPanel implements Runnable {
         label.setText(msg + str);
         label.updateUI();
     }
+
     public void addActionListeners() {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: Check if special character exists
                 String word = txtField.getText();
+                if (word == null || word.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Please enter a word!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (checkSpecialChar(word)) {
                     fig.addWord(word.toLowerCase());
                     updateLabel();
@@ -136,6 +141,10 @@ public class FilterPanel implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String word = txtField.getText();
+                    if (word == null || word.equals("")) {
+                        JOptionPane.showMessageDialog(null, "Please enter a word!", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     if (checkSpecialChar(word.toLowerCase())) {
                         try {
                             fig.removeWord(word);

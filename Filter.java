@@ -11,6 +11,7 @@ import java.util.*;
  * @version November 13, 2022
  *
  */
+
 public class Filter {
     private File f;
     private HashMap<String, String> map;
@@ -197,7 +198,7 @@ public class Filter {
     public String toTxtFileFormat(ArrayList<String> words) {
         String str = "";
         for (int i = 0; i < words.size(); i++) {
-            if (words.get(i).equals("no word") || words.get(i).equals("") || words.get(i).equals(" ")) {
+            if (words.get(i).toLowerCase().equals("no word") || words.get(i).equals("") || words.get(i).equals(" ")) {
                 continue;
             }
             str += words.get(i);
