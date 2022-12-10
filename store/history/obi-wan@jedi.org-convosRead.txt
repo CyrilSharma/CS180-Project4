@@ -1,1 +1,2 @@
 user1@gmail.com|||||false
+anakin@jedi.org|||||true

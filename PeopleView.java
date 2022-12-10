@@ -66,6 +66,7 @@ public class PeopleView implements Runnable {
     public void show() {
         board.setContentPane(new Container());
         run();
+        board.setSize(600,540);
         board.revalidate();
         board.repaint();
     }
@@ -349,6 +350,12 @@ public class PeopleView implements Runnable {
     }
     public void run() {
         initializeNotifs();
+        for (String user: userNotifications.keySet()) {
+            System.out.println("User: " + user + " " + userNotifications.get(user));
+        }
+        for (String store: storeNotifications.keySet()) {
+            System.out.println("store: " + store + " " + storeNotifications.get(store));
+        }
         createAndAdd();
         setFrame();
         addActionListeners();

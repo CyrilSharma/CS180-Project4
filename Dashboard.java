@@ -113,10 +113,11 @@ public class Dashboard {
                 } else {
                     System.out.println(history.get("message") + " " + received);
                     store = history.get("store");
-                    if (!rec.equals(id)) {
+                    String other = history.get("recipient");
+                    if (!other.equals(id)) {
                         received++;
                     }
-                    bigMsg += history.get("message");
+                    bigMsg += history.get("message") + " ";
                 }
             }
 
@@ -132,7 +133,12 @@ public class Dashboard {
             String rec = "";
             int sent = 0;
             int received = 0;
+            String other = "";
             for (HashMap<String, String> history: mm.getPersonalHistory(id)) {
+                String recip = history.get("recipient");
+                if (recip != null && !recip.equals(id)) {
+                    other = recip;
+                }
                 if (history.get("message") == null) {
                     System.out.println(history.get("message"));
                     if (history.get("message") == null && history.get("recipient") == null && history.get("store") == null) {
@@ -142,7 +148,7 @@ public class Dashboard {
                             System.out.println("REC " + received);
                             data.add(received);
                             data.add(sent);
-                            miniMap.put(rec, data);
+                            miniMap.put(other, data);
                             map.put(store, miniMap);
                         } else {
                             HashMap<String, ArrayList<Object>> miniMap = new HashMap<>();
@@ -150,7 +156,7 @@ public class Dashboard {
                             System.out.println("REC " + received);
                             data.add(received);
                             data.add(sent);
-                            miniMap.put(rec, data);
+                            miniMap.put(other, data);
                             map.put(store, miniMap);
                         }
                         received = 0;
