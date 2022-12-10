@@ -8,10 +8,19 @@ import java.io.File;
 import java.util.*;
 import java.util.List;
 
-//TODO: Need to pull role, create database interface
+/**
+ * Project 5 -> DashboardGUI
+ *
+ * Allows user to view statistics regarding their messaging. Varies for customers
+ * and sellers.
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
+
 public class DashboardGUI implements Runnable {
-    //private ArrayList<ArrayList<String[]>> stores;
-    //private ArrayList<ArrayList<String[]>> myConversations;
     private ArrayList<String> stores;
     private HashMap<String,String> user;
     private JList storeList;
@@ -43,10 +52,17 @@ public class DashboardGUI implements Runnable {
     private HashMap<String, String> storeMap;
     private DashboardInterfaceGUI dig;
     private HashMap<String, HashMap<String, ArrayList<Object>>> statistics;
+
+    /**
+     * Creates DashboardGUI frame (board) for user
+     * @param board -> JFrame
+     * @param user -> user information pulled as hashmap
+     */
     public DashboardGUI(JFrame board, HashMap<String,String> user) {
         this.board = board;
         board.setSize(600,500);
         this.user = user;
+        //pull user
         role = user.get("role").equals("Seller") ? Role.Seller : Role.Customer;
         dig = new DashboardInterfaceGUI();
         storeMap = dig.getStoreMap(role, user.get("email"));
@@ -58,6 +74,9 @@ public class DashboardGUI implements Runnable {
         }
 
     }
+    /**
+     * Creates the actual frame layout (buttons, users, etc.) with locations and fonts
+     */
     public void setFrame() {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
@@ -78,14 +97,6 @@ public class DashboardGUI implements Runnable {
         title.setFont(f);
         title.setText("Dashboard");
         rightPanel.setBounds(430,0, 200, 400);
-        //TODO: add a way to choose which buttons are displayed based on seller/customer
-        /**
-         * if (role == seller) {
-         *     mostCommonWords.setBounds(20, 60, 140,30);
-         *     } else {
-         *     sortAscendingReceivedNum.setBounds(20, 140, 160,30);
-         *     sortDescendingReceivedNum.setBounds(20, 180, 160,30);
-         */
         sortLabel.setBounds(60,25,140,30);
         sortAscendingSentNum.setBounds(20, 60, 140,30);
         sortDescendingSentNum.setBounds(20, 100, 140,30);
@@ -95,7 +106,9 @@ public class DashboardGUI implements Runnable {
         statisticLabel.setBounds(180,100,200,100);
         placeUp();
     }
-
+    /**
+     * Creates the buttons and scrollbar (BorderLayout) used in setFrame()
+     */
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
@@ -124,14 +137,6 @@ public class DashboardGUI implements Runnable {
         rightPanel.add(sortDescendingSentNum);
         rightPanel.add(sortAscendingReceivedNum);
         rightPanel.add(sortDescendingReceivedNum);
-        //TODO: pull role and choose buttons to add
-        /**
-         * if (role == seller) {
-         *     rightPanel.add(mostCommonWords);
-         * } else {
-         *     rightPanel.add(sortAscendingReceivedNum);
-         *     rightPanel.add(sortDescendingReceivedNum);
-         */
         rightPanel.add(backButton);
         rightPanel.add(sortLabel);
         convPane.add(upperPanel);
@@ -140,6 +145,9 @@ public class DashboardGUI implements Runnable {
         convPane.add(scrollPane2);
         convPane.add(statisticLabel);
         addActionListeners();
+        /**
+         * adds ListSelectionListener to pull dashboard statistics for customer
+         */
         customerList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -158,6 +166,10 @@ public class DashboardGUI implements Runnable {
                 statisticLabel.setText(msg);
             }
         });
+        /**
+         * adds ListSelectionListener to pull dashboard statistics for a specific store
+         * associated with a seller
+         */
         storeList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -193,7 +205,9 @@ public class DashboardGUI implements Runnable {
         setStats(stat);
 
     }
-
+    /**
+     * sort the list of users alphabetically
+     */
     public void sortAlphabet() {
         String[] strArr = statistics.keySet().toArray(new String[0]);
         ArrayList<String> data = new ArrayList<>(java.util.List.of(strArr));
@@ -213,6 +227,9 @@ public class DashboardGUI implements Runnable {
             customerList.updateUI();
         }
     }
+    /**
+     * sort the list of users in reverse alphabetical order
+     */
     public void sortAlphabetBackwards() {
         String[] strArr = statistics.keySet().toArray(new String[0]);
         ArrayList<String> data = new ArrayList<>(java.util.List.of(strArr));
@@ -235,6 +252,11 @@ public class DashboardGUI implements Runnable {
         }
     }
 
+    /**
+     * Returns list of users who have sent messages to the current user
+     * @param store -> specific store of a seller
+     * @return ArrayList of users who have sent message(s) to current user
+     */
     public ArrayList<String> getReceivedArray(String store) {
         ArrayList<String> users = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
@@ -266,6 +288,9 @@ public class DashboardGUI implements Runnable {
         return users;
     }
 
+    /**
+     * Sort users by most received messages to least received
+     */
     public void sortHighReceived() {
         if (selectedStore == null) {
             return;
@@ -280,7 +305,9 @@ public class DashboardGUI implements Runnable {
         customerList.setListData(data2.toArray());
         customerList.updateUI();
     }
-
+    /**
+     * Sort users by least received messages to most received
+     */
     public void sortLowReceived() {
         if (selectedStore == null) {
             return;
@@ -296,10 +323,19 @@ public class DashboardGUI implements Runnable {
         customerList.updateUI();
     }
 
+    /**
+     * assign a value to the stats
+     * @param stats -> new stats values
+     */
     public void setStats(HashMap<String, ArrayList<Object>> stats) {
         this.stats = stats;
     }
 
+    /**
+     * get the stats of a user (store)
+     * @param store -> store to check
+     * @return stats of a certain store
+     */
     public String getStats(String store) {
         String msg = "";
         String otherEmail = storeMap.get(store);
@@ -316,53 +352,61 @@ public class DashboardGUI implements Runnable {
         return msg;
     }
 
+    /**
+     * actionListener sort buttons
+     */
     public void addActionListeners() {
         sortDescendingSentNum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Insert sort command here
+                //call sort reverse alphabet
                 sortAlphabetBackwards();
                 }
         });
         sortAscendingSentNum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Insert sort command here
+                //call sort alphabetical
                 sortAlphabet();
             }
         });
         sortDescendingReceivedNum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Insert sort command here
+                //call sort by least received messages
                 sortLowReceived();
             }
         });
         sortAscendingReceivedNum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Insert sort command here
+                //call sort by most received
                 sortHighReceived();
             }
         });
+        /**
+         * Go back to previous frame (accountManagerGUI)
+         */
         backButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
                 try {
 
                     AccountManagerGUI accountManagerGUI = new AccountManagerGUI(board, user.get("email"));
                     accountManagerGUI.show();
 
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
         });
     }
+
+    /**
+     * create frame and add content
+     */
     @Override
     public void run() {
 
@@ -370,7 +414,6 @@ public class DashboardGUI implements Runnable {
         try {
             List.addAll(blockGUIInterface.getAllUsers());
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
             JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
          */
@@ -380,6 +423,10 @@ public class DashboardGUI implements Runnable {
         content.add(convPane, BorderLayout.CENTER);
 
     }
+
+    /**
+     * show the frame
+     */
     public void show() {
         board.setContentPane(new Container());
         run();
@@ -387,6 +434,10 @@ public class DashboardGUI implements Runnable {
         board.repaint();
     }
 
+    /**
+     * assign default N/As and 0s to stats if a store/user has no data
+     * @param store -> store with no data
+     */
     public void noData(String store) {
         String msg = "";
         ArrayList<Object> stat = stats.get(store);
@@ -399,6 +450,10 @@ public class DashboardGUI implements Runnable {
         statisticLabel.setText(msg);
         statisticLabel.updateUI();
     }
+
+    /**
+     * set statistic label location
+     */
     public void placeUp() {
         statisticLabel.setLocation(160,80);
     }
