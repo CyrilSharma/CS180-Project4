@@ -3,8 +3,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-//TODO: implement invisibility, show in PeopleView, database integration, clean up formatting, autoupdate blocked list & all users,
-//remove blocked users from being visible, find name of user
+/**
+ * Project 5 -> BlockGUI
+ *
+ * Allows user to block other users from sending messages to them and edit their visibility to others
+ * User can view list of users they have blocked or are invisible to.
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class BlockGUI implements Runnable {
     private JFrame board;
@@ -39,13 +48,20 @@ public class BlockGUI implements Runnable {
     }
      * @throws Exception
      */
-    //Test constructor
+    /**
+     * Creates BlockGUI frame
+     * @param frame
+     * @throws Exception
+     */
     public BlockGUI(JFrame frame) throws Exception {
         //this.email = email;
         this.board = frame;
         blockGUIInterface = new BlockGUIInterface();
     }
-    
+
+    /**
+     * Creates the buttons and scrollbar (BorderLayout) used in setFrame()
+     */
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
@@ -81,6 +97,10 @@ public class BlockGUI implements Runnable {
         convPane.add(scrollPane);
         //scrollPane.add(people);
     }
+
+    /**
+     * Creates the actual frame layout (buttons, users, etc.) with locations and fonts
+     */
     public void setFrame() {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
@@ -107,6 +127,10 @@ public class BlockGUI implements Runnable {
         viewAllUsersButton.setBounds(20, 300, 160,30);
         backButton.setBounds(20, 340, 160, 30);
     }
+
+    /**
+     * show the BlockGUI (JFrame) when called
+     */
     public void show() {
         board.setContentPane(new Container());
         run();
@@ -114,32 +138,36 @@ public class BlockGUI implements Runnable {
         board.repaint();
     }
 
+    /**
+     * initialize the userList and button actionListeners
+     */
     @Override
     public void run() {
+        //pull all users from interface
         try {
             userList.addAll(blockGUIInterface.getAllUsers());
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
             JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
         board.setSize(600,400);
         users = new JList(userList);
         createAndAdd();
         setFrame();
         content.add(convPane, BorderLayout.CENTER);
+        //block a user from sending message to current user
         blockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Do an action for blocking a user/pull and send back to backend
                 String userEmail = (String) users.getSelectedValue();
                 String msg = "Trying to block " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 //check if user is blocked already, not needed if we stick with unblockedList
                 try {
+                    //call blockUser, invisible set to false
                     blockGUIInterface.blockUser(userEmail, false);
                     JOptionPane.showMessageDialog(null, userEmail + " has been blocked", "Success", JOptionPane.INFORMATION_MESSAGE);
                     ArrayList<String> allUsers = blockGUIInterface.getAllUsers();
+                    //reset list to show all users and update UI
                     userList.clear();
                     userList.addAll(allUsers);
                     users.updateUI();
@@ -149,6 +177,7 @@ public class BlockGUI implements Runnable {
                 }
             }
         });
+        //become invisible, no longer appear to the chosen user
         invisibleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -156,9 +185,11 @@ public class BlockGUI implements Runnable {
                 String msg = "Trying to become invisible from " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 try {
+                    //call blockUser, set invisible to true
                     blockGUIInterface.blockUser(userEmail, true);
                     JOptionPane.showMessageDialog(null, "You are invisible to " + userEmail, "Success", JOptionPane.INFORMATION_MESSAGE);
                     ArrayList<String> allUsers = blockGUIInterface.getAllUsers();
+                    //reset list to show all users and update UI
                     userList.clear();
                     userList.addAll(allUsers);
                     users.updateUI();
@@ -168,6 +199,7 @@ public class BlockGUI implements Runnable {
                 }
             }
         });
+        //unblock a previously blocked user
         unblockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -175,6 +207,7 @@ public class BlockGUI implements Runnable {
                 String msg = "Trying to unblock " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 try {
+                    //unblock the user
                     blockGUIInterface.unblockUser(userEmail, false);
                     BlockGUI blockGUI = new BlockGUI(board);
                     blockGUI.show();
@@ -184,6 +217,7 @@ public class BlockGUI implements Runnable {
                 }
             }
         });
+        //undo invisibility
         undoInvisibilityButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -191,6 +225,7 @@ public class BlockGUI implements Runnable {
                 String msg = "Trying to undo the invisibility of " + userEmail;
                 JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                 try {
+                    //unblock user and reset visibility
                     blockGUIInterface.unblockUser(userEmail, true);
                     BlockGUI blockGUI = new BlockGUI(board);
                     blockGUI.show();
@@ -200,11 +235,13 @@ public class BlockGUI implements Runnable {
                 }
             }
         });
+        //View list of all users the current user has blocked
         viewBlockedListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     ArrayList<String> blocked = blockGUIInterface.getUsers("blocked");
+                    //clear then set list to show blockedUsers and update UI
                     userList.clear();
                     userList.addAll(blocked);
                     users.updateUI();
@@ -214,11 +251,13 @@ public class BlockGUI implements Runnable {
                 }
             }
         });
+        //view list of every user, blocked or not
         viewAllUsersButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     ArrayList<String> allUsers = blockGUIInterface.getAllUsers();
+                    //set list to show allUsers and update UI
                     userList.clear();
                     userList.addAll(allUsers);
                     users.updateUI();
@@ -228,11 +267,13 @@ public class BlockGUI implements Runnable {
                 }
             }
         });
+        //view list of users that the current user is invisible to
         viewInvisibilityList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     ArrayList<String> invisible = blockGUIInterface.getUsers("invisible");
+                    //set list to show users set to invisible and update UI
                     userList.clear();
                     userList.addAll(invisible);
                     users.updateUI();
@@ -242,11 +283,13 @@ public class BlockGUI implements Runnable {
                 }
             }
         });
+        //view list of users that are currently not blocked
         viewUnblockedListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     ArrayList<String> unblockedUsers = blockGUIInterface.getUnblockedUsers();
+                    //set list to show unblockedUsers and update UI
                     userList.clear();
                     userList.addAll(unblockedUsers);
                     users.updateUI();
@@ -255,9 +298,10 @@ public class BlockGUI implements Runnable {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 //This shows the unblockedUsers list so that if a user wants to block
-                //a user from the unblocked user list, he/she can do so
+                //a user from the unblocked user list, they can do so
             }
         });
+        //go back to previous frame (accountManagerGUI)
         backButton.addActionListener(new ActionListener() {
 
             @Override
