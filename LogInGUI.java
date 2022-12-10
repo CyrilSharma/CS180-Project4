@@ -1,6 +1,9 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.HashMap;
 
 public class LogInGUI {
@@ -8,14 +11,31 @@ public class LogInGUI {
     private Container container;
     private JButton logInButton;
     private JButton createAccountButton;
+    private JLabel turkeyImage;
     private JTextField emailField;
     private JButton placeholder;
+    private JLabel title;
     private JPasswordField passwordField;
     private Translator translator;
+    private BufferedImage image;
+    private ImageIcon ii;
+    private URL url;
+
+
 
     public LogInGUI(JFrame frame) {
+        frame.setSize(600,540);
         board = frame;
         translator = new Translator();
+        try {
+            url = new URL("https://i.imgur.com/il2xdrq.jpg");
+            image = ImageIO.read(url);
+            Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH);
+            ii = new ImageIcon(newimg);
+        } catch (Exception e){
+
+        }
+
     }
 
     public void show() {
@@ -27,20 +47,23 @@ public class LogInGUI {
 
     public void setFrame() {
         emailField.setSize(150,30);
-        emailField.setBounds(board.getWidth()/2 - emailField.getWidth()/2, 150,
+        emailField.setBounds(board.getWidth()/2 - emailField.getWidth()/2, 240,
                 emailField.getWidth(), emailField.getHeight());
         emailField.setForeground(Color.GRAY);
         emailField.setText("Email...");
         passwordField.setSize(150,30);
-        passwordField.setBounds(board.getWidth()/2 - passwordField.getWidth()/2, 185,
+        passwordField.setBounds(board.getWidth()/2 - passwordField.getWidth()/2, 275,
                 passwordField.getWidth(), passwordField.getHeight());
         passwordField.setForeground(Color.GRAY);
         passwordField.setText("Password...");
         logInButton.setSize(150,30);
-        logInButton.setBounds(board.getWidth()/2 - logInButton.getWidth()/2, 220,
+        title.setBounds(board.getWidth()/2 - 200, 140, 400, 35);
+
+        turkeyImage.setBounds(board.getWidth()/2 - 45,30,90,90);
+        logInButton.setBounds(board.getWidth()/2 - logInButton.getWidth()/2, 310,
                 logInButton.getWidth(), logInButton.getHeight());
         createAccountButton.setSize(150,30);
-        createAccountButton.setBounds(board.getWidth()/2 - createAccountButton.getWidth()/2, 255,
+        createAccountButton.setBounds(board.getWidth()/2 - createAccountButton.getWidth()/2, 345,
                 createAccountButton.getWidth(), createAccountButton.getHeight());
     }
 
@@ -49,14 +72,22 @@ public class LogInGUI {
         emailField = new JTextField(10);
         passwordField = new JPasswordField(10);
         createAccountButton = new JButton("Create Account");
+        turkeyImage = new JLabel(ii);
         placeholder = new JButton();
+        title = new JLabel("Turkey Marketplace", SwingConstants.CENTER);
+        Font f = new Font("Baumans", Font.BOLD, 30);
+        title.setFont(f);
+        title.setForeground(new Color(102, 52 , 0));
         panel.add(placeholder);
         placeholder.setBounds(-1,-1,1,1);
+        panel.setBackground(Color.white);
         panel.setLayout(null);
         panel.add(emailField);
         panel.add(passwordField);
         panel.add(logInButton);
         panel.add(createAccountButton);
+        panel.add(turkeyImage);
+        panel.add(title);
     }
     public void run() {
         JPanel panel = new JPanel();
