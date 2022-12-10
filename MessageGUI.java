@@ -9,6 +9,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -405,7 +407,25 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         if (e.getButton() == 3) {
             messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
             showContextMenu(e);
-        } else if (e.getButton() == 1) {
+        } else if (e.getButton() == 1 && e.isControlDown()) {
+            messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
+            String messageSelected = (String) messages.getSelectedValue();
+            String[] stuffInMessages = messageSelected.split("\n| ");
+            ArrayList<String> links = new ArrayList<>();
+            for (String stuff : stuffInMessages) {
+                if (stuff.matches("^((((https)|(http))://)|([w0-9])+\\.)[\\.a-zA-Z0-9]+([a-zA-Z0-9/-?=;,\"'+])+$")) {
+                    links.add(stuff);
+                }
+            }
+            if (!links.isEmpty()) {
+                URI uri = URI.create(links.get(paneOfPane(((int) (messages.getWidth())), links.size(), e.getX())));
+                try {
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, "Couldn't open link", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
             e.consume();
         }
     }
