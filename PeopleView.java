@@ -468,6 +468,9 @@ public class PeopleView implements PropertyChangeListener {
                     }
                 } else {
                     if (user != null) {
+                        if (notifications == null) {
+                            return;
+                        }
                         if (user.contains("<")) {
                             user = storeHTMLRemover(user);
                         }

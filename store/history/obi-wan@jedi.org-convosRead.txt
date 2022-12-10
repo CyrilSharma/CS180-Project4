@@ -1,2 +1,1 @@
-user1@gmail.com|||||false
-anakin@jedi.org|||||true
+anakin@jedi.org|||||The Republic|||||true
