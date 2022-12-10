@@ -19,47 +19,11 @@ public class MainInterfaceGUI implements Runnable {
     @Override
     public void run() {
         frame = new JFrame("Turkey Shop");
-        homePage();
         frame.setSize(600,400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
-    }
-
-    public void homePage() {
-        Container content = frame.getContentPane();
-        login = new JButton("Login");
-        createAccount = new JButton("Create Account");
-        exit = new JButton("Exit");
-        JPanel stuff = new JPanel(new BorderLayout());
-        stuff.add(login, BorderLayout.NORTH);
-        stuff.add(createAccount, BorderLayout.CENTER);
-        stuff.add(exit, BorderLayout.SOUTH);
-        addListeners();
-        content.add(stuff, BorderLayout.CENTER);
-        frame.setContentPane(content);
-    }
-
-    private void addListeners() {
-        login.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LogInGUI loginGUI = new LogInGUI(frame);
-                loginGUI.show();
-            }
-        });
-        createAccount.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CreateAccountGUI createAccountGUI = new CreateAccountGUI(frame);
-                createAccountGUI.show();
-            }
-        });
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-            }
-        });
+        LogInGUI loginGUI = new LogInGUI(frame);
+        loginGUI.show();
     }
 }

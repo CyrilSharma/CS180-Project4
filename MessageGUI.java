@@ -40,9 +40,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private ArrayList<Message> conversationHistory;
     private String selectedStore;
     private String otherID;
-    private PeopleView parent;
     private MessageInterfaceClient mic;
     private HashMap<String, String> user;
+    private boolean running;
     
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
         PeopleView parent) {
@@ -52,7 +52,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         this.emailSelected = email; //selected user
         this.selectedStore = selectedStore;
         this.mic = new MessageInterfaceClient();
-        this.parent = parent;
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
         try {
@@ -168,7 +167,14 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parent.show();
+                try {
+                    PeopleView peopleView = new PeopleView(messageBoard, user);
+                    running = false;
+                    peopleView.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -234,9 +240,12 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
 
         @Override
         public void run() {
-            while (true) {
+            int i = 0;
+            while (running) {
                 try {
                     ArrayList<Message> conversationHistory2 = mic.getConversation(otherID, selectedStore);
+                    i++;
+                    System.out.println(i);
                     if (FilterInterfaceGUI.status()) {
                         int index = 0;
                         for (Message msg: conversationHistory2) {
@@ -270,6 +279,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private void updateMessages() {
         UpdateMessages um = new UpdateMessages(); 
         um.addPropertyChangeListeners(this);
+        running = true;
         new Thread(um).start();
     }
 

@@ -46,7 +46,7 @@ public class PeopleView implements PropertyChangeListener {
     private HashMap<String, Boolean> userNotifications;
     private HashMap<String, Boolean> storeNotifications;
     private HashMap<String, HashMap<String, Boolean>> notifications;
-    private Thread thread;
+    private boolean running;
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
@@ -71,6 +71,7 @@ public class PeopleView implements PropertyChangeListener {
     public void show() {
         board.setContentPane(new Container());
         run();
+        updateNotifications();
         board.setSize(600,540);
         board.revalidate();
         board.repaint();
@@ -334,11 +335,11 @@ public class PeopleView implements PropertyChangeListener {
                         JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                         try {
                             MessageGUI gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store, PeopleView.this);
+                            running = false;
                             gui.show();
                             String self = user.get("email");
                             String[] param = {self, email, store};
                             translator.query(new Query("MessageManager", "updateReadStatusSelf", param));
-                            thread.interrupt();
                         } catch (Exception e1) {
                             JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
@@ -379,7 +380,7 @@ public class PeopleView implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //will change to mainGUI if it is uploaded
-                thread.interrupt();
+                running = false;
                 MainMenuGUI gui = new MainMenuGUI(board, user);
                 gui.show();
             }
@@ -414,7 +415,6 @@ public class PeopleView implements PropertyChangeListener {
         setFrame();
         initializeNotifs();
         addActionListeners();
-        updateNotifications();
         if (role == Role.Seller) {
             storeList.setListData(map.keySet().toArray(new String[0]));
         }
@@ -501,7 +501,10 @@ public class PeopleView implements PropertyChangeListener {
         @Override
         public void run() {
             // TODO Auto-generated method stub
-            while (true) {
+            int i = 0;
+            while (running) {
+                i++;
+                System.out.println(i);
                 try {
                     HashMap<String, Boolean> newNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", "getReadStatus", user.get("email")));
                     if (!notifications.equals(newNotifications)) {
@@ -525,8 +528,8 @@ public class PeopleView implements PropertyChangeListener {
     private void updateNotifications() {
         UpdateNotifications updateNotifications = new UpdateNotifications();
         updateNotifications.addPropertyChangeListener(this);
-        thread = new Thread(updateNotifications);
-        thread.start();
+        running = true;
+        new Thread(updateNotifications).start();
     }
 
     public void initializeNotifs() {
@@ -591,8 +594,11 @@ public class PeopleView implements PropertyChangeListener {
                 @Override
                 public void run() {
                     // TODO Auto-generated method stub
-                    notifications = (HashMap<String, Boolean>) evt.getNewValue();
+                    notifications = (HashMap<String, HashMap<String, Boolean>>) evt.getNewValue();
                     updateUserUI();
+                    if (role == Role.Customer) {
+                        checkStoreNotification();
+                    }
                 }
 
             });
