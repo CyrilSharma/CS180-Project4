@@ -12,7 +12,53 @@ Report was submitted by Atharva Gupta on BrightSpace
 
 ## Testing
 
-All of the testing for classes were done by running TestMainInterface.java with inputs from each txt file and save all of the outputs in output.txt comparing it with the expected txt files 
+All of the testing can be found in Test.md
+
+## AccountInterfaceClient
+
+#### Functionality
+
+Uses translator to communicate with server to manage account info
+- User can delete their account
+- User can modify their password 
+- User can modify their email
+- User can log out
+
+#### Relationship
+
+This class is crucial in AccountManagerGUI as it allows client to communicate the server to modify or manager their account.
+
+## AccountManagerGUI
+
+#### Functionality
+
+GUI that allows users to 
+- access dashboard
+- access filter
+- unblock/undo invisible 
+- export conversation
+- delete their account
+- sign out
+- modify their email or password
+
+#### Relationship
+
+This class is important to mainMenuGUI as it serves a way for user to sign out or manage their account.
+
+## BlockGUI 
+
+#### Functionality
+
+GUI that allows users to 
+- unblock user
+- view a list of blocked users
+- view a list of unblocked users
+
+## BlockGUIInterface
+
+## Constant
+
+## CreateAccountGUI
 
 ## Dashboard
 
@@ -32,6 +78,10 @@ Manages the statistic of users.
 
 This class provides useful methods to MainInterface class so that MainInterface can give user option of presenting the dashboard. 
 
+## DashboardGUI
+
+## DashboardInterfaceGUI
+
 ## Database 
 
 #### Functionality
@@ -47,6 +97,8 @@ Manages the data of users.
 
 Its relationship to other classes are crucial as it provides an easy access of the user data. 
 
+## ExportCSV
+
 ## Filter
 
 #### Functionality
@@ -58,6 +110,10 @@ Manages the filter
 - has UserFilter.txt file that stores all of users filtered words.
 
 #### Relationship
+
+## FilterInterfaceGUI
+
+## FilterPanel
 
 This class provides useful methods to MainInterface class so that users can modify their filter through MainInterface and MainInterface can filter messages that contain words from filter list.  
 
@@ -91,35 +147,17 @@ Error that is thrown when the user is trying to add existing word to the filter 
 
 This class is necessary in Filter class as the program can notify user if the word is valid or not. 
 
-## MainInterface
+## Launch
 
-#### Functionality
+## LoginGUI
 
-This class serves as a main interface where users can access every functionality of this program.
-- In the outer menu, users can choose to 
-  - log in
-  - create account
-  - exit in the outer menu.
-- once user logs in or creates the account, the user is directed to the inner menu
-- In the inner menu, users can choose to 
-  - message a user
-  - view messages
-  - edit a message
-  - delete a message
-  - export a conversation
-  - block a user
-  - unblock a user
-  - view stores
-  - view customers
-  - add a store
-  - open dashboard
-  - open filter
-  - delete account
-  - exit
+## MainMenuGUI
 
-#### Relationship
+## Message
 
-This class is important to other classes as it works as a main tool that allow users to use every available features.
+## MessageGUI
+
+## MessageInterfaceClient
 
 ## MessageManager
 
@@ -148,6 +186,12 @@ A class that assists MessageManager class
 
 This class provides useful methods to MessageManager and MainInterface so that the user can view their conversation history or export their conversation.
 
+## PathManager
+
+## PeopleView
+
+## Query
+
 ## Role
 
 #### Functionality
@@ -157,6 +201,10 @@ Basic enum to separate between seller and customer or a deleted account
 #### Relationship
 
 This class is crucial to other classes as it provides ways to check if the user is seller or customer.
+
+## Server
+
+## Translator
  
 ## User
 
