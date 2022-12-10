@@ -121,10 +121,6 @@ public class PeopleView implements Runnable {
         //scrollPane.add(people);
     }
 
-    public void removeStoreNotif(String store) {
-
-    }
-
     public String storeHTMLRemover(String str) {
         str = str.substring(str.indexOf(">") + 1);
         str = str.substring(str.indexOf(">") + 1);
@@ -132,6 +128,7 @@ public class PeopleView implements Runnable {
         str = str.substring(0, str.indexOf("<"));
         return str;
     }
+
     public void updateUserUI() {
         String[] newArray = new String[users.size()];
         int index = 0;
@@ -180,6 +177,8 @@ public class PeopleView implements Runnable {
     public boolean checkStoreNotification(String user, String store) {
         if (notifications.get(user) == null) {
             return false;
+        } else if (notifications.get(user).get(store) == null) {
+            return false;
         }
         return !notifications.get(user).get(store);
     }
@@ -199,8 +198,8 @@ public class PeopleView implements Runnable {
         }
         storeList.setListData(newArray);
         storeList.updateUI();
-
     }
+
     public boolean check(String store) {
         for (Entry<String, HashMap<String, Boolean>> entry: notifications.entrySet()) {
             if (entry.getValue().get(store) != null) {
@@ -251,8 +250,6 @@ public class PeopleView implements Runnable {
 
             storeList.updateUI();
         }
-
-
     }
 
     public ArrayList<String> getMyStores(String myid) {

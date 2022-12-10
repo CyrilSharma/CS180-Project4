@@ -337,6 +337,7 @@ public class MessageManager {
             miniMap.put(store, true);
             read.put(recepient, miniMap);
             saveReadStatus(sender, read);
+            
             // mark recepient conversation unread.
             read = getReadStatus(recepient);
             if (read.containsKey(sender)) {
