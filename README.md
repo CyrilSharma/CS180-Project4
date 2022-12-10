@@ -1,10 +1,10 @@
 # Instruction
 
-To compile and run our project, go to MainInterface.java and run MainInterface. There, you can start by choosing to log in, create account, or exit. Once you log in or create an account, the program will take you to the inner menus where you can choose to do various things. 
+To compile and run our project, go to Server.java and run Server. Then, you should go to Launch.java, and run Launch java. There, you can start by choosing to log in, create account, or exit. Once you log in or create an account, the program will take you to the MainMenuGUI where you can choose to do various things. 
 
 # Submission
 
-Project 4 was submmited by Nitin Murthy in Vocareum. <br />
+Project 5 was submmited by Nitin Murthy in Vocareum. <br />
 Report was submitted by Atharva Gupta on BrightSpace
 
 
