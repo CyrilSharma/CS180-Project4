@@ -2,7 +2,16 @@ import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
-
+/**
+ * Project 5 -> Translator
+ *
+ * utilizes Query and the networking/concurrency.
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class Translator {
     private static Socket socket;
     private static ObjectInputStream ois;
@@ -23,7 +32,12 @@ public class Translator {
             }
         }
     }
-
+    /**
+     * returns a object query
+     * @param q
+     * @throws Exception
+     * @return Object
+     */
     public Object query(Query q) throws Exception {
         if (!inLoop) {
             try {
@@ -45,7 +59,6 @@ public class Translator {
 
                     @Override
                     public void run() {
-                        // TODO Auto-generated method stub
                         int i = 0;
                         while (true) {
                             System.out.println(i);
@@ -58,11 +71,9 @@ public class Translator {
                                 }
                                 break;
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e1) {
-                                    // TODO Auto-generated catch block
                                     
                                 }
                             }
@@ -91,6 +102,9 @@ public class Translator {
         return (HashMap<String, String>) o;
     }
 
+    /*
+     * Refreshes to ake sure the server is connected
+     */
     public void refresh() throws Exception {
         try {
             socket = new Socket(Constants.hostname, Constants.port);
@@ -100,7 +114,10 @@ public class Translator {
             throw new Exception("We can't connect to the server right now.");
         }
     }
-
+    /*
+     * sets the user from loggedInUser to the parameter
+     * @param user
+     */
     private void setUser(HashMap<String, String> user) {
         loggedInUser = user;
     }
