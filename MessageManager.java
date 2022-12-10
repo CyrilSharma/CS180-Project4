@@ -51,17 +51,19 @@ public class MessageManager {
     /**
      * Returns the read status of all the users conversations.
      */
-    public synchronized HashMap<String, Boolean> getReadStatus(String email) throws IOException {
+    public synchronized HashMap<String, HashMap<String, Boolean>> getReadStatus(String email) throws IOException {
         File f = new File(historyDir + email + "-convosRead.txt");
         f.createNewFile();
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
             HashMap<String, Boolean> read = new HashMap<String, Boolean>();
+            HashMap<String, HashMap<String, Boolean>> read2 = new HashMap<>();
             String line;
             while ((line = bfr.readLine()) != null) {
                 String[] tokens = line.split(Pattern.quote(tokenSep));
-                read.put(tokens[0], tokens[1].equals("true"));
+                read.put(tokens[1], tokens[2].equals("true"));
+                read2.put(tokens[0], read);
             }
-            return read;
+            return read2;
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
@@ -72,30 +74,66 @@ public class MessageManager {
     /**
      * Updates the read status of a conversation.
      */
-    public synchronized void updateReadStatus(String sender, String recepient) {
+    public synchronized void updateReadStatus(String sender, String recepient, String store) {
         HashMap<String, Boolean> read;
+        HashMap<String, HashMap<String, Boolean>> read2;
         try {
-            read = getReadStatus(sender);
-            read.put(recepient, true);
-            saveReadStatus(sender, read);
+            read2 = getReadStatus(sender);
+            read = read2.get(recepient);
+            if (read == null) {
+                read = new HashMap<>();
+            }
+            read.put(store, true);
+            read2.put(recepient, read);
+            saveReadStatus(sender, read2);
 
-            read = getReadStatus(recepient);
-            read.put(sender, false);
-            saveReadStatus(recepient, read);
+            read2 = getReadStatus(recepient);
+            read = read2.get(sender);
+            if (read == null) {
+                read = new HashMap<>();
+            }
+            read.put(store, false);
+            read2.put(sender, read);
+            saveReadStatus(recepient, read2);
         } catch (Exception e) {}
+    }
+
+    public synchronized void updateReadStatusSelf(String self, String other, String store) {
+        HashMap<String, Boolean> read;
+        HashMap<String, HashMap<String, Boolean>> read2;
+        try {
+            read2 = getReadStatus(self);
+            read = read2.get(other);
+            if (read == null) {
+                read = new HashMap<>();
+            }
+            read.put(store, true);
+            read2.put(other, read);
+            saveReadStatus(self, read2);
+        } catch (Exception e) {
+        }
     }
 
     /**
      * Save the read status of a users conversations.
      */
-    public synchronized void saveReadStatus(String sender, HashMap<String, Boolean> entries) throws IOException {
+    public synchronized void saveReadStatus(String sender, HashMap<String, HashMap<String, Boolean>> entries) throws IOException {
         File f = new File(historyDir + sender + "-convosRead.txt");
+        HashSet<String> entered = new HashSet<String>();
         f.createNewFile();
         try (PrintWriter pw = new PrintWriter(f)) {
-            for (Map.Entry<String,Boolean> entry : entries.entrySet()) {
-                String line = String.format("%s%s%s\n", entry.getKey(),
-                    tokenSep, entry.getValue());
-                pw.write(line);
+            for (String user: entries.keySet()) {
+                String line = "%s%s%s%s%s\n";
+                for (Map.Entry<String,Boolean> entry : entries.get(user).entrySet()) {
+                    if (entered.contains(user + entry.getKey())) {
+                        continue;
+                    } else {
+                        entered.add(user + entry.getKey());
+                    }
+                    line = String.format(line, user, tokenSep, entry.getKey(),
+                            tokenSep, entry.getValue());
+                    pw.write(line);
+                }
             }
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
@@ -289,12 +327,25 @@ public class MessageManager {
             // update read notifs on message.
             String sender = db.get("id", senderID).get("email");
             String recepient = db.get("id", recipientID).get("email");
-            HashMap<String,Boolean> read = getReadStatus(sender);
-            read.put(recepient, true);
+            HashMap<String, HashMap<String,Boolean>> read = getReadStatus(sender);
+            HashMap<String,Boolean> miniMap;
+            if (read.containsKey(recepient)) {
+                miniMap = read.get(recepient);
+            } else {
+                miniMap = new HashMap<>();
+            }
+            miniMap.put(store, true);
+            read.put(recepient, miniMap);
             saveReadStatus(sender, read);
             // mark recepient conversation unread.
             read = getReadStatus(recepient);
-            read.put(sender, false);
+            if (read.containsKey(sender)) {
+                miniMap = read.get(sender);
+            } else {
+                miniMap = new HashMap<>();
+            }
+            miniMap.put(store, false);
+            read.put(sender, miniMap);
             saveReadStatus(recepient, read);
 
             File f = new File(historyDir + id + "-messageHistory.txt");

@@ -1,2 +1,0 @@
-user1@gmail.com|||||false
-user2@gmail.com|||||false
