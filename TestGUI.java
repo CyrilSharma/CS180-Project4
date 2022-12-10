@@ -3,7 +3,16 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
+/**
+ * Project 5 -> TestGUI
+ *
+ * Testing our guis
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class TestGUI {
     public static void main(String[] args) {
         //LogInGUI gui = new LogInGUI();

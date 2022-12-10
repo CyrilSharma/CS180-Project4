@@ -2,13 +2,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 /**
- * Project 4 -> User
+ * Project 5 -> User
  *
  * Creates the Customer and Seller distinctions and their unique functions/restrictions
  *
  * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
  *
- * @version November 13, 2022
+ * @version December 10, 2022
  *
  */
 public class User implements Serializable {
