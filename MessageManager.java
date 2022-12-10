@@ -3,14 +3,14 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.time.Instant;
 /**
- * Project 4 -> MessageManager
+ * Project 5 -> MessageManager
  *
  * This class handles message sending for a particular user. It specifically adds create, edit, and remove message
  * functionality as well as the means to export conversations into a .CSV file.
  *
  * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
  *
- * @version November 13, 2022
+ * @version December 10, 2022
  *
  */
 public class MessageManager {
