@@ -5,13 +5,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class PeopleView implements Runnable {
+public class PeopleView implements PropertyChangeListener {
     //TODO 1: remove html after user checks that message
     //TODO 2: remove html tag when transferring data
     private JFrame board;
@@ -42,6 +45,8 @@ public class PeopleView implements Runnable {
     private HashMap<String, String> map;
     private HashMap<String, Boolean> userNotifications;
     private HashMap<String, Boolean> storeNotifications;
+    private HashMap<String, HashMap<String, Boolean>> notifications;
+    private Thread thread;
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
@@ -53,7 +58,7 @@ public class PeopleView implements Runnable {
         this.user = user;
         this.role = Role.valueOf(user.get("role"));
         String[] ex = {"Online", "Offline", "Online"};
-        
+
         status = new ArrayList<>(Arrays.asList(ex));
         HashMap<String,String> stores;
         if (role.equals(Role.Customer)) {
@@ -90,6 +95,7 @@ public class PeopleView implements Runnable {
         searchBar = new JTextField("Search...");
         storeSearchBar = new JTextField("Search stores...");
         //storeList = new JList(map.keySet().toArray(new String[0]));
+
         storeList = new JList();
         placeholder = new JButton();
         scroll2 = new JScrollPane(storeList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -119,12 +125,6 @@ public class PeopleView implements Runnable {
         //scrollPane.add(people);
     }
 
-    public void removeStoreNotif(String store) {
-        if (storeNotifications.containsKey(store)) {
-            storeNotifications.remove(store);
-        }
-    }
-
     public String storeHTMLRemover(String str) {
         str = str.substring(str.indexOf(">") + 1);
         str = str.substring(str.indexOf(">") + 1);
@@ -132,14 +132,12 @@ public class PeopleView implements Runnable {
         str = str.substring(0, str.indexOf("<"));
         return str;
     }
-    public void updateUserUI(String store) {
+
+    public void updateUserUI() {
         String[] newArray = new String[users.size()];
         int index = 0;
-        if (storeNotifications == null || storeNotifications.get(store) == null) {
-            return;
-        }
         for (String user: users) {
-            if (userNotifications.get(user)) {
+            if (checkNotification(user)) {
                 String newData = "<html><b><font color=blue>";
                 newData += user + "</font></b></html>";
                 newArray[index] = newData;
@@ -149,12 +147,25 @@ public class PeopleView implements Runnable {
             index++;
         }
         people.setListData(newArray);
+        people.updateUI();
     }
-    public void updateStoreUI() {
+
+    public boolean checkNotification(String user) {
+        if (notifications.get(user) == null) {
+            return false;
+        }
+        for (Entry<String, Boolean> entry: notifications.get(user).entrySet()) {
+            if (!entry.getValue()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void updateStoreUI(String user) {
         String[] newArray = new String[map.keySet().size()];
         int index = 0;
         for (String store: map.keySet()) {
-            if (storeNotifications.get(store) != null) {
+            if (checkStoreNotification(user, store)) {
                 String newData = "<html><b><font color=blue>";
                 newData += store + "</font></b></html>";
                 newArray[index] = newData;
@@ -164,6 +175,44 @@ public class PeopleView implements Runnable {
             index++;
         }
         storeList.setListData(newArray);
+        storeList.updateUI();
+    }
+
+    public boolean checkStoreNotification(String user, String store) {
+        if (notifications.get(user) == null) {
+            return false;
+        } else if (notifications.get(user).get(store) == null) {
+            return false;
+        }
+        return !notifications.get(user).get(store);
+    }
+
+    public void checkStoreNotification() {
+        String[] newArray = new String[map.keySet().size()];
+        int index = 0;
+        for (String store: map.keySet()) {
+            if (check(store)) {
+                String newData = "<html><b><font color=blue>";
+                newData += store + "</font></b></html>";
+                newArray[index] = newData;
+            } else {
+                newArray[index] = store;
+            }
+            index++;
+        }
+        storeList.setListData(newArray);
+        storeList.updateUI();
+    }
+
+    public boolean check(String store) {
+        for (Entry<String, HashMap<String, Boolean>> entry: notifications.entrySet()) {
+            if (entry.getValue().get(store) != null) {
+                if (!entry.getValue().get(store)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void setFrame() {
@@ -202,10 +251,9 @@ public class PeopleView implements Runnable {
             searchBar.setForeground(Color.GRAY);
             ArrayList<String> stores = getMyStores(user.get("id"));
             storeList.setListData(stores.toArray());
+
             storeList.updateUI();
         }
-
-
     }
 
     public ArrayList<String> getMyStores(String myid) {
@@ -262,17 +310,24 @@ public class PeopleView implements Runnable {
                     String email;
                     //email = email.split(" ")[0];
                     String store = (String) storeList.getSelectedValue();
+                    if (store.indexOf("<") != -1) {
+                        store = storeHTMLRemover(store);
+                    } else {
+                    }
                     if (role == Role.Customer) {
                         //ID OR EMAIL
                         email = map.get(store);
-                        if (store.indexOf("<") != -1) {
-                            store = storeHTMLRemover(store);
-                            removeStoreNotif(store);
-                        } else {
-                            removeStoreNotif(store);
-                        }
+
                     } else {
                         email = (String) people.getSelectedValue();
+                    }
+
+                    if (email == null) {
+                        String msg = "Please select a user to message!";
+                        JOptionPane.showMessageDialog(null, msg, "Alert", JOptionPane.ERROR_MESSAGE);
+                    }
+                    if (email.contains("<")) {
+                        email = storeHTMLRemover(email);
                     }
                     if (email != null && store != null) {
                         String msg = "Trying to view a conversation with " + email + " with " + store;
@@ -280,11 +335,16 @@ public class PeopleView implements Runnable {
                         try {
                             MessageGUI gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store, PeopleView.this);
                             gui.show();
+                            String self = user.get("email");
+                            String[] param = {self, email, store};
+                            translator.query(new Query("MessageManager", "updateReadStatusSelf", param));
+                            thread.interrupt();
                         } catch (Exception e1) {
                             JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 } catch (Exception e2) {
+                    e2.printStackTrace();
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -319,6 +379,7 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //will change to mainGUI if it is uploaded
+                thread.interrupt();
                 MainMenuGUI gui = new MainMenuGUI(board, user);
                 gui.show();
             }
@@ -349,17 +410,14 @@ public class PeopleView implements Runnable {
         });
     }
     public void run() {
-        initializeNotifs();
-        for (String user: userNotifications.keySet()) {
-            System.out.println("User: " + user + " " + userNotifications.get(user));
-        }
-        for (String store: storeNotifications.keySet()) {
-            System.out.println("store: " + store + " " + storeNotifications.get(store));
-        }
         createAndAdd();
         setFrame();
+        initializeNotifs();
         addActionListeners();
-        storeList.setListData(map.keySet().toArray(new String[0]));
+        updateNotifications();
+        if (role == Role.Seller) {
+            storeList.setListData(map.keySet().toArray(new String[0]));
+        }
         //testAdd();
         searchBar.addFocusListener(new FocusAdapter() {
             @Override
@@ -402,14 +460,18 @@ public class PeopleView implements Runnable {
         people.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                String user = (String) people.getSelectedValue();
                 if (role == Role.Customer) {
-                    String user = (String) people.getSelectedValue();
                     try {
-                        ArrayList<String> stores = getUserStores(user);
-                        storeList.setListData(stores.toArray());
-                        storeList.updateUI();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    if (user != null) {
+                        if (user.contains("<")) {
+                            user = storeHTMLRemover(user);
+                        }
+                        updateStoreUI(user);
                     }
                 }
             }
@@ -418,32 +480,59 @@ public class PeopleView implements Runnable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 //STORE NAME MUST NOT HAVE A SPECIAL CHARACTER
-                String store = (String) storeList.getSelectedValue();
-                if (store != null && store.indexOf("<") != -1) {
-                    store = storeHTMLRemover(store);
-                }
-                if (role == Role.Seller) {
-                    updateUserUI(store);
-                }
-
             }
         });
         //people.setBackground(Color.GREEN);
         content.add(convPane, BorderLayout.CENTER);
+
+    }
+
+    private class UpdateNotifications implements Runnable {
+
+        private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+        public void addPropertyChangeListener(PropertyChangeListener pcl) {
+            pcs.addPropertyChangeListener(pcl);
+        }
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            while (true) {
+                try {
+                    HashMap<String, Boolean> newNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", "getReadStatus", user.get("email")));
+                    if (!notifications.equals(newNotifications)) {
+                        pcs.firePropertyChange("updated", notifications, newNotifications);
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    
+                } finally {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateNotifications() {
+        UpdateNotifications updateNotifications = new UpdateNotifications();
+        updateNotifications.addPropertyChangeListener(this);
+        thread = new Thread(updateNotifications);
+        thread.start();
     }
 
     public void initializeNotifs() {
         try {
-            userNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", 
-            "getReadStatus", new Object[]{user.get("email")}));
-            //storeNotifications
-            String email = user.get("email");
-            ArrayList<String> stores = getUserStores(email);
-            storeNotifications = new HashMap<String, Boolean>();
-            for (String store: stores) {
-                String user = map.get(store);
-                boolean read = userNotifications.get(user);
-                storeNotifications.put(store, read);
+            notifications = (HashMap<String, HashMap<String, Boolean>>) translator.query(new Query("MessageManager",
+                    "getReadStatus", new Object[]{user.get("email")}));
+            updateUserUI();
+            if (role == Role.Customer) {
+                checkStoreNotification();
             }
         } catch (Exception e) {
             ; // idk what to do here yet.
@@ -451,10 +540,14 @@ public class PeopleView implements Runnable {
     }
 
     public void searchUser() {
+//        for (String content: users) {
+//            System.out.println(content);
+//        }
         if (searchBar.getText().equals("Search...") || searchBar.getText().isEmpty()) {
             //JOptionPane.showMessageDialog(null, "Please enter an email!", "Alert", JOptionPane.ERROR_MESSAGE);
             people.setListData(users.toArray());
             people.updateUI();
+            initializeNotifs();
             return;
         }
         String text = searchBar.getText().toLowerCase();
@@ -473,6 +566,7 @@ public class PeopleView implements Runnable {
             //JOptionPane.showMessageDialog(null, "Please enter an email!", "Alert", JOptionPane.ERROR_MESSAGE);
             storeList.setListData(map.keySet().toArray());
             storeList.updateUI();
+            initializeNotifs();
             return;
         }
         String text = storeSearchBar.getText().toLowerCase();
@@ -484,5 +578,21 @@ public class PeopleView implements Runnable {
         }
         storeList.setListData(updated.toArray());
         storeList.updateUI();
+    }
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // TODO Auto-generated method stub
+        if (evt.getPropertyName().equals("updated")) {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    notifications = (HashMap<String, Boolean>) evt.getNewValue();
+                    updateUserUI();
+                }
+
+            });
+        }
     }
 }
