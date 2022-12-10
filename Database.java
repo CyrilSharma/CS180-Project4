@@ -3,13 +3,13 @@ import java.time.Instant;
 import java.util.*;
 
 /**
- * Project 4 -> Database
+ * Project 5 -> Database
  *
  * class handles all the database manipulations
  *
  * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
  *
- * @version November 13, 2022
+ * @version December 10, 2022
  *
  */
 public class Database {
@@ -22,7 +22,6 @@ public class Database {
     /**
      * initializes the instance field variables
      *
-     * @param path of the database
      * @throws Exception
      */
     public Database() throws Exception {
@@ -351,7 +350,6 @@ public class Database {
     /**
      * formats the string based on the toString
      *
-     * @param key
      * @return String
      */
     public String toString() {
