@@ -1,14 +1,14 @@
 import java.util.*;
 import java.io.*;
 /**
- * Project 4 -> Dashboard
+ * Project 5 -> Dashboard
  *
  * Allows for user to access statistics related to user's messaging as well as unique statistics for sellers
  * and customers respectively, such as the most common word used.
  *
  * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
  *
- * @version November 13, 2022
+ * @version December 10, 2022
  *
  */
 

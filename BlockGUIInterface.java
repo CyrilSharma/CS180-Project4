@@ -1,7 +1,16 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
+/**
+ * Project 5 -> BlockGUIInterface
+ *
+ * Interface class that connects with the AccountGUI.
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class BlockGUIInterface {
     
     HashMap<String, String> user;
@@ -11,11 +20,21 @@ public class BlockGUIInterface {
         translator = new Translator();
         user = translator.get("id", (String) translator.query(new Query("User", "getID")));
     }
-
+    /**
+     * returns the translator instance field
+     *
+     * @return Translator object
+     */
     public Translator geTranslator() {
         return translator;
     }
 
+    /**
+     * returns the list of users that will be stores in an arrayList
+     *
+     * @param key
+     * @return ArrayList<String></String>
+     */
     public ArrayList<String> getUsers(String key) throws Exception {
         if (user.get(key).equals("null")) {
             return new ArrayList<>();
@@ -35,6 +54,11 @@ public class BlockGUIInterface {
         }
     }
 
+    /**
+     * returns the users that are unblocked
+     *
+     * @return ArrayList<String></String>
+     */
     public ArrayList<String> getUnblockedUsers() throws Exception {
         ArrayList<String> blockedUsers = getUsers("blocked");
         ArrayList<String> invisibleUsers = getUsers("invisible");
@@ -44,16 +68,31 @@ public class BlockGUIInterface {
         return allUsers;
     }
 
+    /**
+     * returns the list of all active users that will be stores in an arrayList
+     *
+     * @return ArrayList<String></String>
+     */
     public ArrayList<String> getAllUsers() throws Exception {
         ArrayList<String> allUsers = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
         return allUsers;
     }
 
+    /**
+     * blocks the user
+     *
+     * @param email, invisible
+     */
     public void blockUser(String email, boolean invisible) throws Exception {
         translator.query(new Query("Database", "block", new Object[]{user.get("email"), email, invisible}));
         user = translator.get("id", user.get("id"));
     }
 
+    /**
+     * unblocks the user
+     *
+     * @param email, invisible
+     */
     public void unblockUser(String email, boolean invisible) throws Exception {
         translator.query(new Query("Database", "unblock", new Object[]{user.get("email"), email, invisible}));
         user = translator.get("id", user.get("id"));
