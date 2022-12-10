@@ -48,7 +48,7 @@ public class AccountInterfaceClient {
     }
 
     /**
-     * modifies the username
+     * modifies the username of user
      *
      * @param email of the user
      * @param newUsername of the user
