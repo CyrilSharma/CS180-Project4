@@ -365,6 +365,20 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("eee, MMM d, YYYY 'at' h:mm a");
             LocalDateTime localTime = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalDateTime();
             String timeString =  localTime.format(dateTimeFormatter);
+            String[] valueArray = value.split("\n");
+            String newValue = "";
+            for (String valueString : valueArray) {
+                String[] anotherValueArray = valueString.split(" ");
+                for (String anotherValueString : anotherValueArray) {
+                    if (anotherValueString.matches("^((((https)|(http))://)|([w0-9])+\\.)[\\.a-zA-Z0-9]+([a-zA-Z0-9/-?=;,\"'+])+$")) {
+                        newValue += "<a href=\"" + anotherValueString + "\">" + anotherValueString + "</a> ";
+                    } else {
+                        newValue += anotherValueString + " ";
+                    }
+                }
+                newValue = newValue.strip() + "\n";
+            }
+            value = newValue.strip();
             value = value.replaceAll("\n", "<br>");
             if (label.getPreferredSize().getWidth() >= maxWidth - 10) {
                 value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
