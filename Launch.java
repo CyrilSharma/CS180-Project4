@@ -1,18 +1,23 @@
 import javax.swing.*;
 
+public class Launch implements Runnable {
+    
+    JFrame frame;
 
-public class Launch {
+    public Launch() {}
+
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Turkey Shop");
-        frame.setSize(600,540);
+        SwingUtilities.invokeLater(new Launch());
+    }
+
+    @Override
+    public void run() {
+        frame = new JFrame("Turkey Shop");
+        frame.setSize(600,400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
-        try {
-            LogInGUI gui = new LogInGUI(frame);
-            gui.show();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        LogInGUI loginGUI = new LogInGUI(frame);
+        loginGUI.show();
     }
 }
