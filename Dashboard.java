@@ -11,6 +11,7 @@ import java.io.*;
  * @version November 13, 2022
  *
  */
+
 public class Dashboard {
     private ArrayList<ArrayList<String[]>> allConversations;
     private ArrayList<ArrayList<String[]>> myConversations;
