@@ -253,6 +253,7 @@ public class DashboardGUI implements Runnable {
                     if (received < map.get(userr)) {
                         map.put(user, received);
                         users.add(index, user);
+                        break;
                     }
                     if (index == size - 1) {
                         System.out.println(user + " " + index);
@@ -265,35 +266,83 @@ public class DashboardGUI implements Runnable {
         }
         return users;
     }
+    public ArrayList<String> getReceivedArray() {
+        ArrayList<String> stores = new ArrayList<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String store : statistics.keySet()) {
+            String user = "";
+            for (String name: statistics.get(store).keySet()) {
+                user = name;
+            }
+            int received = (int) statistics.get(store).get(user).get(0);
+            System.out.println(store + " " + received);
+            if (map.size() == 0) {
+                map.put(store, received);
+                stores.add(store);
+            } else {
+                int index = 0;
+                int size = map.size();
+                for (String storee: map.keySet()) {
+                    if (received > map.get(storee)) {
+                        map.put(store, received);
+                        stores.add(index, store);
+                        break;
+                    }
+                    if (index == size - 1) {
+                        System.out.println(user + " " + index);
+                        map.put(store, received);
+                        stores.add(store);
+                    }
+                    index++;
+                }
+            }
+        }
+        return stores;
+    }
 
     public void sortHighReceived() {
-        if (selectedStore == null) {
-            return;
+        if (role == Role.Seller) {
+            if (selectedStore == null) {
+                return;
+            }
+            ArrayList<String> data2 = getReceivedArray(selectedStore);
+            int index = 0;
+            for (String val: data2) {
+                System.out.println(val);
+                data2.set(index, dig.getEmail(val));
+                index++;
+            }
+            customerList.setListData(data2.toArray());
+            customerList.updateUI();
+        } else {
+            ArrayList<String> data2 = getReceivedArray();
+            storeList.setListData(data2.toArray());
+            storeList.updateUI();
         }
-        ArrayList<String> data2 = getReceivedArray(selectedStore);
-        int index = 0;
-        for (String val: data2) {
-            System.out.println(val);
-            data2.set(index, dig.getEmail(val));
-            index++;
-        }
-        customerList.setListData(data2.toArray());
-        customerList.updateUI();
+
     }
 
     public void sortLowReceived() {
-        if (selectedStore == null) {
-            return;
+        if (role == Role.Seller) {
+            if (selectedStore == null) {
+                return;
+            }
+            ArrayList<String> data2 = getReceivedArray(selectedStore);
+            int index = 0;
+            for (String val: data2) {
+                data2.set(index, dig.getEmail(val));
+                index++;
+            }
+            Collections.reverse(data2);
+            customerList.setListData(data2.toArray());
+            customerList.updateUI();
+        } else {
+            ArrayList<String> data2 = getReceivedArray();
+            Collections.reverse(data2);
+            storeList.setListData(data2.toArray());
+            storeList.updateUI();
         }
-        ArrayList<String> data2 = getReceivedArray(selectedStore);
-        int index = 0;
-        for (String val: data2) {
-            data2.set(index, dig.getEmail(val));
-            index++;
-        }
-        Collections.reverse(data2);
-        customerList.setListData(data2.toArray());
-        customerList.updateUI();
+
     }
 
     public void setStats(HashMap<String, ArrayList<Object>> stats) {
