@@ -4,7 +4,7 @@ import java.util.HashMap;
 /**
  * Project 5 -> FilterInterfaceGUI
  *
- * FilterIntererface that connects to the Filter GUI
+ * FilterInterface that connects to the Filter GUI
  *
  * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
  *

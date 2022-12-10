@@ -1,5 +1,14 @@
 import javax.swing.*;
-
+/**
+ * Project 5 -> Launch
+ *
+ * Concurrency and Networking starts here
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class Launch implements Runnable {
     
     JFrame frame;
