@@ -430,6 +430,17 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         }
     }
 
+    private int paneOfPane(int totalWidth, int numberOfElements, int location) {
+        int sizeOfPane = totalWidth / numberOfElements;
+        int i = 0;
+        int count = 0;
+        while (i < location) {
+            i += sizeOfPane;
+            count++;
+        }
+        return count > numberOfElements ? numberOfElements - 1 : count - 1;
+    }
+
     public void showContextMenu(MouseEvent e) {
         JPopupMenu popupMenu = new JPopupMenu("Actions");
         JMenuItem editItem = new JMenuItem("Edit");
