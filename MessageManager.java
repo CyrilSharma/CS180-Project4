@@ -59,6 +59,7 @@ public class MessageManager {
             HashMap<String, HashMap<String, Boolean>> read2 = new HashMap<>();
             String line;
             while ((line = bfr.readLine()) != null) {
+
                 String[] tokens = line.split(Pattern.quote(tokenSep));
                 read.put(tokens[1], tokens[2].equals("true"));
                 read2.put(tokens[0], read);
@@ -142,8 +143,7 @@ public class MessageManager {
 
     /**
      * Returns the personal message history of the user
-     */
-    public synchronized ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
+     */public synchronized ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws IOException {
         File f = new File(historyDir + id + "-messageHistory.txt");
         f.createNewFile();
         try (BufferedReader bfr = new BufferedReader(new FileReader(f))) {
