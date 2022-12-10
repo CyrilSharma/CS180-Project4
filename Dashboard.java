@@ -114,7 +114,7 @@ public class Dashboard {
                     System.out.println(history.get("message") + " " + received);
                     store = history.get("store");
                     String other = history.get("recipient");
-                    if (!other.equals(id)) {
+                    if (other.equals(id)) {
                         received++;
                     }
                     bigMsg += history.get("message") + " ";
@@ -168,9 +168,9 @@ public class Dashboard {
                     store = history.get("store");
                     rec = history.get("recipient");
                     if (!rec.equals(id)) {
-                        received++;
-                    } else {
                         sent++;
+                    } else {
+                        received++;
                     }
 
                 }
