@@ -9,6 +9,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,9 +42,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private ArrayList<Message> conversationHistory;
     private String selectedStore;
     private String otherID;
-    private PeopleView parent;
     private MessageInterfaceClient mic;
     private HashMap<String, String> user;
+    private boolean running;
     
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
         PeopleView parent) {
@@ -52,7 +54,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         this.emailSelected = email; //selected user
         this.selectedStore = selectedStore;
         this.mic = new MessageInterfaceClient();
-        this.parent = parent;
         //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
         try {
@@ -168,7 +169,14 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parent.show();
+                try {
+                    PeopleView peopleView = new PeopleView(messageBoard, user);
+                    running = false;
+                    peopleView.show();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -234,9 +242,12 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
 
         @Override
         public void run() {
-            while (true) {
+            int i = 0;
+            while (running) {
                 try {
                     ArrayList<Message> conversationHistory2 = mic.getConversation(otherID, selectedStore);
+                    i++;
+                    System.out.println(i);
                     if (FilterInterfaceGUI.status()) {
                         int index = 0;
                         for (Message msg: conversationHistory2) {
@@ -270,6 +281,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private void updateMessages() {
         UpdateMessages um = new UpdateMessages(); 
         um.addPropertyChangeListeners(this);
+        running = true;
         new Thread(um).start();
     }
 
@@ -353,6 +365,20 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("eee, MMM d, YYYY 'at' h:mm a");
             LocalDateTime localTime = time.atZone(Calendar.getInstance().getTimeZone().toZoneId()).toLocalDateTime();
             String timeString =  localTime.format(dateTimeFormatter);
+            String[] valueArray = value.split("\n");
+            String newValue = "";
+            for (String valueString : valueArray) {
+                String[] anotherValueArray = valueString.split(" ");
+                for (String anotherValueString : anotherValueArray) {
+                    if (anotherValueString.matches("^((((https)|(http))://)|([w0-9])+\\.)[\\.a-zA-Z0-9]+([a-zA-Z0-9/-?=;,\"'+])+$")) {
+                        newValue += "<a href=\"" + anotherValueString + "\">" + anotherValueString + "</a> ";
+                    } else {
+                        newValue += anotherValueString + " ";
+                    }
+                }
+                newValue = newValue.strip() + "\n";
+            }
+            value = newValue.strip();
             value = value.replaceAll("\n", "<br>");
             if (label.getPreferredSize().getWidth() >= maxWidth - 10) {
                 value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
@@ -395,9 +421,38 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         if (e.getButton() == 3) {
             messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
             showContextMenu(e);
-        } else if (e.getButton() == 1) {
+        } else if (e.getButton() == 1 && e.isControlDown()) {
+            messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
+            String messageSelected = (String) messages.getSelectedValue();
+            String[] stuffInMessages = messageSelected.split("\n| ");
+            ArrayList<String> links = new ArrayList<>();
+            for (String stuff : stuffInMessages) {
+                if (stuff.matches("^((((https)|(http))://)|([w0-9])+\\.)[\\.a-zA-Z0-9]+([a-zA-Z0-9/-?=;,\"'+])+$")) {
+                    links.add(stuff);
+                }
+            }
+            if (!links.isEmpty()) {
+                URI uri = URI.create(links.get(paneOfPane(((int) (messages.getWidth())), links.size(), e.getX())));
+                try {
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    JOptionPane.showMessageDialog(null, "Couldn't open link", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
             e.consume();
         }
+    }
+
+    private int paneOfPane(int totalWidth, int numberOfElements, int location) {
+        int sizeOfPane = totalWidth / numberOfElements;
+        int i = 0;
+        int count = 0;
+        while (i < location) {
+            i += sizeOfPane;
+            count++;
+        }
+        return count > numberOfElements ? numberOfElements - 1 : count - 1;
     }
 
     public void showContextMenu(MouseEvent e) {

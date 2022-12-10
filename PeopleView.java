@@ -5,13 +5,18 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class PeopleView implements Runnable {
+public class PeopleView implements PropertyChangeListener {
+    //TODO 1: remove html after user checks that message
+    //TODO 2: remove html tag when transferring data
     private JFrame board;
     private Container content;
     private JScrollPane convPane;
@@ -41,6 +46,7 @@ public class PeopleView implements Runnable {
     private HashMap<String, Boolean> userNotifications;
     private HashMap<String, Boolean> storeNotifications;
     private HashMap<String, HashMap<String, Boolean>> notifications;
+    private boolean running;
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
@@ -65,6 +71,7 @@ public class PeopleView implements Runnable {
     public void show() {
         board.setContentPane(new Container());
         run();
+        updateNotifications();
         board.setSize(600,540);
         board.revalidate();
         board.repaint();
@@ -328,6 +335,7 @@ public class PeopleView implements Runnable {
                         JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                         try {
                             MessageGUI gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store, PeopleView.this);
+                            running = false;
                             gui.show();
                             String self = user.get("email");
                             String[] param = {self, email, store};
@@ -372,6 +380,7 @@ public class PeopleView implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //will change to mainGUI if it is uploaded
+                running = false;
                 MainMenuGUI gui = new MainMenuGUI(board, user);
                 gui.show();
             }
@@ -481,6 +490,48 @@ public class PeopleView implements Runnable {
 
     }
 
+    private class UpdateNotifications implements Runnable {
+
+        private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+        public void addPropertyChangeListener(PropertyChangeListener pcl) {
+            pcs.addPropertyChangeListener(pcl);
+        }
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            int i = 0;
+            while (running) {
+                i++;
+                System.out.println(i);
+                try {
+                    HashMap<String, Boolean> newNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", "getReadStatus", user.get("email")));
+                    if (!notifications.equals(newNotifications)) {
+                        pcs.firePropertyChange("updated", notifications, newNotifications);
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    
+                } finally {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateNotifications() {
+        UpdateNotifications updateNotifications = new UpdateNotifications();
+        updateNotifications.addPropertyChangeListener(this);
+        running = true;
+        new Thread(updateNotifications).start();
+    }
+
     public void initializeNotifs() {
         try {
             notifications = (HashMap<String, HashMap<String, Boolean>>) translator.query(new Query("MessageManager",
@@ -533,5 +584,24 @@ public class PeopleView implements Runnable {
         }
         storeList.setListData(updated.toArray());
         storeList.updateUI();
+    }
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // TODO Auto-generated method stub
+        if (evt.getPropertyName().equals("updated")) {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    notifications = (HashMap<String, HashMap<String, Boolean>>) evt.getNewValue();
+                    updateUserUI();
+                    if (role == Role.Customer) {
+                        checkStoreNotification();
+                    }
+                }
+
+            });
+        }
     }
 }
