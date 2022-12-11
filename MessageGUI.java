@@ -259,7 +259,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 try {
                     ArrayList<Message> conversationHistory2 = mic.getConversation(otherID, selectedStore);
                     i++;
-                    System.out.println(i);
                     if (FilterInterfaceGUI.status()) {
                         int index = 0;
                         for (Message msg: conversationHistory2) {
@@ -510,7 +509,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                     });
                     int result = JOptionPane.showConfirmDialog(null, scrollPane, "Edit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
                     String editedMessage = textArea.getText();
-                    System.out.println(editedMessage);
                     if (result == JOptionPane.OK_OPTION && !editedMessage.equals("")) {
                         emailSelected = emailSelected.split(" ")[0];
                         try {

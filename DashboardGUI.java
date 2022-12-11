@@ -260,11 +260,8 @@ public class DashboardGUI implements Runnable {
     public ArrayList<String> getReceivedArray(String store) {
         ArrayList<String> users = new ArrayList<>();
         HashMap<String, Integer> map = new HashMap<>();
-        System.out.println(1);
         for (String user : statistics.get(store).keySet()) {
-            System.out.println(2);
             int received = (int) statistics.get(store).get(user).get(0);
-            System.out.println(user + " " + received);
             if (map.size() == 0) {
                 map.put(user, received);
                 users.add(user);
@@ -277,7 +274,6 @@ public class DashboardGUI implements Runnable {
                         users.add(index, user);
                     }
                     if (index == size - 1) {
-                        System.out.println(user + " " + index);
                         map.put(user, received);
                         users.add(user);
                     }
@@ -298,7 +294,6 @@ public class DashboardGUI implements Runnable {
         ArrayList<String> data2 = getReceivedArray(selectedStore);
         int index = 0;
         for (String val: data2) {
-            System.out.println(val);
             data2.set(index, dig.getEmail(val));
             index++;
         }

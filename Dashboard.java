@@ -83,12 +83,8 @@ public class Dashboard {
             String bigMsg = "";
             int received = 0;
             for (HashMap<String, String> history: mm.getPersonalHistory(id)) {
-                System.out.println("Store " + history.get("store"));
-                System.out.println("Rec " + history.get("recipient"));
-                System.out.println("mes " + history.get("message"));
                 if (history.get("message") == null) {
                     if (history.get("message") == null && history.get("recipient") == null && history.get("store") == null) {
-                        System.out.println("Session beep");
                         if (dataMap.containsKey(store)) {
                             Object[] dataSet = dataMap.get(store);
                             dataSet[0] = (int) dataSet[0] + received;
@@ -252,7 +248,6 @@ public class Dashboard {
         } else if (map.get("role").equals("Customer")) {
             role = Role.Customer; //Customer Enum
         } else {
-            System.out.println("DATABASE ERROR");
         }
         id = map.get("id");
         textDatabase = new File(PathManager.storeDir + "history/" + id + "-messageHistory.txt");
@@ -414,25 +409,14 @@ public class Dashboard {
         if (role == Role.Customer) {
             for (ArrayList<String[]> conv : myConversations) {
                 int[] data = getMessageData(conv);
-                System.out.printf("Store name: %s\n", getStoreName(conv));
-                System.out.printf("Seller name: %s\n", getOtherName(conv));
-                System.out.printf("Message Sent: %d\n", data[1]);
-                System.out.printf("Message Received: %d\n\n", data[0]);
             }
         } else if (role == Role.Seller) {
             for (ArrayList<String[]> conv : myConversations) {
                 if (getOtherName(conv).equals("No Customer")) {
-                    System.out.printf("Store name: %s\n", getStoreName(conv));
-                    System.out.println("No customers\n");
                 } else {
                     int[] data = getMessageData(conv);
-                    System.out.printf("Store name: %s\n", getStoreName(conv));
-                    System.out.printf("Customer name: %s\n", getOtherName(conv));
-                    System.out.printf("Message Received: %d\n", data[1]);
                     if (data[0] == 0) {
-                        System.out.println();
                     } else {
-                        System.out.printf("Most Common Word: %s\n\n", findMostCommonWord(conv));
                     }
                 }
             }
