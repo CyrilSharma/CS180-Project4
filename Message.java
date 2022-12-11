@@ -1,6 +1,15 @@
 import java.io.Serializable;
 import java.time.Instant;
-
+/**
+ * Project 5 -> Message
+ *
+ * class handles the message timestamp sender and messageID
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class Message implements Serializable {
     
     private String message;
@@ -18,31 +27,59 @@ public class Message implements Serializable {
         this.store = store;
         this.messageID = messageID;
     }
-
+    /**
+     * returns the message instance field
+     *
+     * @return message
+     */
     public String getMessage() {
         return message;
     }
-
+    /**
+     * returns the sender instance field
+     *
+     * @return sender
+     */
     public String getSender() {
         return sender;
     }
-
+    /**
+     * returns the recipient instance field
+     *
+     * @return recipient
+     */
     public String getRecipient() {
         return recipient;
     }
-
+    /**
+     * returns the time instance filed
+     *
+     * @return time
+     */
     public Instant getTimeStamp() {
         return timeStamp;
     }
-
+    /**
+     * returns the store instance field
+     *
+     * @return store
+     */
     public String getStore() {
         return store;
     }
-
+    /**
+     * returns the messageID instance field
+     *
+     * @return messageID
+     */
     public String getMessageID() {
         return messageID;
     }
-
+    /**
+     * returns true or false if two objects are equal
+     *
+     * @return True or False
+     */
     @Override
     public boolean equals(Object o) {
         if (o instanceof Message) {
