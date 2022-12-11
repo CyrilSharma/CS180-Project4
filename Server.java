@@ -113,8 +113,6 @@ public class Server implements Runnable {
                 new Thread(server).start();
             }
         } catch (IOException e) {
-            //TODO: Change this
-            e.printStackTrace();
         }
     }
 

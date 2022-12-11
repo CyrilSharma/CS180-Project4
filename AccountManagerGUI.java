@@ -231,7 +231,6 @@ public class AccountManagerGUI {
         contents.add(exportCSV);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(backButton);
-        System.out.println("WHERE THIS AT");
         accountBoard.setVisible(true);
         addActionListeners();
         container.add(rightPanel, BorderLayout.EAST);

@@ -31,7 +31,6 @@ public class Filter {
             try {
                 f.createNewFile();
             } catch (Exception e) {
-                System.out.println("Error occured while trying to create a file!");
             }
         }
         userWordList = new ArrayList<>();
@@ -58,7 +57,6 @@ public class Filter {
                 userWordList.add(users);
             }
         } catch (Exception e) {
-            System.out.println("Database Error!");
         }
     }
 
@@ -120,7 +118,6 @@ public class Filter {
         return false;
     }
     public synchronized void setFilterStatus(boolean status, String id) {
-        System.out.println("status " + status + " id " + id);
         String path = "store/FilterStatus.txt";
         File f = new File(path);
         FileOutputStream fos;
@@ -136,7 +133,6 @@ public class Filter {
             }
             pw.close();
         } catch (Exception e) {
-            System.out.println("Exception occurred!!");
         }
     }
 
@@ -272,7 +268,6 @@ public class Filter {
      */
     public synchronized void write() {
         read();
-        System.out.println("writing");
         FileOutputStream fos;
         PrintWriter pw;
         HashSet<String> written = new HashSet<>();
@@ -293,7 +288,6 @@ public class Filter {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Exception occurred!!");
         }
     }
 
@@ -319,64 +313,5 @@ public class Filter {
         }
 
         return format;
-    }
-
-    /**
-     * UI for user to utilize Filter class
-     */
-    public void presentFilterMenu(Scanner sc, boolean filter) {
-
-        String menu;
-        boolean ongoing = true;
-        while (ongoing) {
-            menu = "what do you want to do?\n";
-            if (on) {
-                menu += "1. disable filter\n";
-            } else {
-                menu += "1. enable filter\n";
-            }
-            menu += "2. see filtered words\n" +
-                    "3. add word to the filter\n" +
-                    "4. remove the word from filter\n" +
-                    "5. quit";
-            System.out.println(menu);
-            String option = sc.nextLine();
-            switch (option) {
-                case "1":
-                    on = !on;
-                    break;
-                case "2":
-                    System.out.println(toString());
-                    break;
-                case "3":
-                    System.out.println("please enter a word to be filtered");
-                    String word = sc.nextLine();
-                    try {
-                        add(word);
-                        System.out.println("Successfully added a word!");
-                        System.out.println(toString());
-                    } catch (Exception e) {
-                        System.out.println("Error while trying to add a word");
-                    }
-                    break;
-                case "4":
-                    System.out.println("please enter a word to remove from filter");
-                    String wor = sc.nextLine();
-                    try {
-                        remove(wor);
-                        System.out.println("Successfully removed a word!");
-                        System.out.println(toString());
-                    } catch (Exception e) {
-                        System.out.println("Error while trying to remove a word");
-                    }
-                    break;
-                case "5":
-                    ongoing = false;
-                    break;
-                default:
-                    System.out.println("Invalid input");
-                    break;
-            }
-        }
     }
 }

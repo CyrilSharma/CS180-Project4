@@ -104,7 +104,6 @@ public class FilterPanel implements Runnable {
         pan.add(mainPan);
         pan.add(rightPan);
         content.add(pan);
-        System.out.println(fig.getWords().toString());
     }
     /**
      * Creates the actual frame layout (buttons, users, etc.) with locations and fonts
