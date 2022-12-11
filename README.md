@@ -54,11 +54,37 @@ GUI that allows users to
 - view a list of blocked users
 - view a list of unblocked users
 
+#### Relationship
+
+This class is connected to AccountManagerGUI where users can select to unblock users.
+
 ## BlockGUIInterface
+
+#### Functionality
+
+Uses translator to communicate with server in order to receive blocked/unblocked user list 
+
+#### Relationship
+
+This class is crucial for BlockGUI as it connects the client with server to receive data
 
 ## Constant
 
+#### Functionality
+
+Classs that stores IP and port number for connecting server.
+
 ## CreateAccountGUI
+
+#### Functionality
+
+GUI that allows user to create a new account
+- users can type their email, password 
+- password has to be matched with password in ConfirmPassword Field
+
+#### Relationship
+
+If succeeded in creating account, this GUI connects user to the MainMenuGUI.
 
 ## Dashboard
 
@@ -80,7 +106,27 @@ This class provides useful methods to MainInterface class so that MainInterface 
 
 ## DashboardGUI
 
+#### Functionality
+
+GUI that displays statistics on each store or user.
+- Sellers can choose store and user to view the conversation statistic.
+- Customers can choose store to view the conversation statistic.
+
+#### Relationship
+
+This class is connected to AccountManagerGUI where users can choose to access dashboard.
+
 ## DashboardInterfaceGUI
+
+#### Functionality
+
+Uses translator to receive conversatoin data 
+- get a map of seller and store
+- get statistics for customers and sellers 
+
+#### Relationship
+
+This class is important to DashboardGUI as it offers the data from Dashboard in server.
 
 ## Database 
 
@@ -99,6 +145,14 @@ Its relationship to other classes are crucial as it provides an easy access of t
 
 ## ExportCSV
 
+#### Functionality
+
+GUI that allows user to save their conversation data into csv file and choose the location.
+
+#### Relationship
+
+This class is connected with AccountManagerGUi, where users can choose to expoert their conversations.
+
 ## Filter
 
 #### Functionality
@@ -111,9 +165,27 @@ Manages the filter
 
 #### Relationship
 
+This class gives data to FilterInterfaceGUI through Server.
+
 ## FilterInterfaceGUI
 
+#### Functionality
+
+The class that carry over client-server interaction from users. 
+
+#### Relationship
+
+This class is crucial in Filter as it offers ways to communicate with server through use of translator object. 
+
 ## FilterPanel
+
+#### Functionality
+
+GUI that allows users to interact with filter
+- allows users enable or disable filter
+- allows users to add or remove words from filter
+
+#### Relationship
 
 This class provides useful methods to MainInterface class so that users can modify their filter through MainInterface and MainInterface can filter messages that contain words from filter list.  
 
@@ -149,15 +221,75 @@ This class is necessary in Filter class as the program can notify user if the wo
 
 ## Launch
 
+#### Functionality
+
+The class that lets user to start this program
+- by running code here, user can open LogInGUI and use this software
+
+#### Relationship
+
+This class is crucial since it is a way to operate this program 
+
 ## LoginGUI
+
+#### Functionality
+
+GUI that prompts users to log in.
+- users can either type their credentials to log in or move to createAccountGUI.
+
+#### Relationship
+
+This class connects users to MainMenuGUI or CreateAccountGUI.
 
 ## MainMenuGUI
 
+#### Functionality
+
+GUI that allows users to move to other GUIS
+- users can move to peopleView or AccountManagerGUI through buttons.
+
+#### Relationship
+
+Once user is logged in, this class connects user to other GUIs that allow users to do various actions.
+
 ## Message
+
+#### Functionality
+
+basic class composed of message, sender, recipient, timeStamp, store, and messageID
+- offers better and easier ways to store data 
+
+#### Relationship
+
+MessageInterfaceClient uses this class in order to efficiently manage message data received from server. 
 
 ## MessageGUI
 
+#### Functionality
+
+GUI that displays the current conversation with recipient
+- displays real-time conversation chat
+- allows send, edit, or delete message 
+- color of the bubble differs depending on sender of the message
+- supports multi-line message
+
+#### Relationship
+
+This class provides methods to interact with other users, and this class relies on MessageInterfaceClient for conversation data.
+
 ## MessageInterfaceClient
+
+#### Functionality
+
+The class that carry over user interactions with messages through use of translator object.
+- allow users to send, edit, delete message through MessageManager class in server.
+- allow users to get their personal history through MessageManager.
+- allow users to export conversations
+- do other various works that need to be done for MessageGUI
+
+#### Relationship
+
+This class is important to MessageGUI where sending and receiving conversation data is required.
 
 ## MessageManager
 
@@ -179,8 +311,8 @@ This class is essential in the MainInterface class as it provides methods to sen
 
 A class that assists MessageManager class
 - allow users to export their conversation into .csv file
-- notifies users of new message
-- allow users to send message
+- notifies users of new message.
+- allow users to send message.
 
 #### Relationship
 
@@ -188,15 +320,44 @@ This class provides useful methods to MessageManager and MainInterface so that t
 
 ## PathManager
 
+#### Functionality
+
+Simple class that organizes paths for data files.
+
+#### Relationship
+
+This class can be used in any server-side class that refer to database in certain folders.
+
 ## PeopleView
-
-## Query
-
-## Role
 
 #### Functionality
 
-Basic enum to separate between seller and customer or a deleted account
+GUI that list users that the current user can message to. It differs depending on the user role
+- Customers can choose which store they want to message to and can block or be invisible to the stores.
+- Sellers can choose which customer they want to message to and pick which store they will use in order to contact the customer.
+  - They could also block customers or be invisible ot them.
+
+#### Relationship
+
+This GUI class is important to MessageGUI since this class offers a way for user to pick recipient for conversations.
+
+## Query
+
+#### Functionality
+
+Basic class composed of object, function, and parameter. 
+
+#### Relationship
+
+This class stores information in translator class and 
+
+## Role
+
+This class makes it much easier for translator to operate as all of necessary data can be stored in a single query class.
+
+#### Functionality
+
+Basic enum to separate between seller and customer or a deleted account.
 
 #### Relationship
 
@@ -204,8 +365,25 @@ This class is crucial to other classes as it provides ways to check if the user 
 
 ## Server
 
+Server communicates with various Client classes through Socket, ObjectOutStream, and ObjectInStream.
+- reads and accepts sockets sent by user  
+- send back the data requested by Client
+
+#### Relationship
+
+This class is essential in many client-side classes such as GUIs as this allows users to access data in server.
+
 ## Translator
+
+#### Functionality
+
+Translator serves as a bridge between client-server interactions
+- offers ways for client to access various data in server through use of Query
  
+#### Relationship
+
+This claass is very important in GUI classes where data need to be loaded from the server, such as MessageGUI, PeopleView, DashboardGUI, and FilterPanel. 
+
 ## User
 
 #### Functionality
