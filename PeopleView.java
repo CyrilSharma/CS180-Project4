@@ -384,7 +384,11 @@ public class PeopleView implements PropertyChangeListener {
                     } else {
                         email = (String) people.getSelectedValue();
                     }
+                    if (role == Role.Seller && store == null) {
+                        String msg = "Please select a store to message customer!";
+                        JOptionPane.showMessageDialog(null, msg, "Alert", JOptionPane.ERROR_MESSAGE);
 
+                    }
                     if (email == null) {
                         String msg = "Please select a user to message!";
                         JOptionPane.showMessageDialog(null, msg, "Alert", JOptionPane.ERROR_MESSAGE);

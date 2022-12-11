@@ -115,6 +115,7 @@ public class Dashboard {
                                 map.put(storeName, miniMap);
                             }
                         }
+                        dataMap = new HashMap<>();
                         received = 0;
                         bigMsg = "";
                     } else {

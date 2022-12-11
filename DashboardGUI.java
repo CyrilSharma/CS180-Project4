@@ -103,7 +103,7 @@ public class DashboardGUI implements Runnable {
         sortAscendingReceivedNum.setBounds(20, 140, 140,30);
         sortDescendingReceivedNum.setBounds(20, 180, 140,30);
         backButton.setBounds(20, 330, 140, 30);
-        statisticLabel.setBounds(180,100,200,100);
+        statisticLabel.setBounds(180,100,250,100);
         placeUp();
     }
     /**
@@ -269,9 +269,10 @@ public class DashboardGUI implements Runnable {
                 int index = 0;
                 int size = map.size();
                 for (String userr: map.keySet()) {
-                    if (received < map.get(userr)) {
+                    if (received > map.get(userr)) {
                         map.put(user, received);
                         users.add(index, user);
+                        break;
                     }
                     if (index == size - 1) {
                         map.put(user, received);
