@@ -59,10 +59,7 @@ public class Translator {
 
                     @Override
                     public void run() {
-                        int i = 0;
                         while (true) {
-                            System.out.println(i);
-                            i++;
                             try {
                                 refresh();
                                 inLoop = false;

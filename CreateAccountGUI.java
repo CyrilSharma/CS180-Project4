@@ -223,9 +223,6 @@ public class CreateAccountGUI implements Runnable {
         container = board.getContentPane();
         container.setLayout(new BorderLayout());
         board.setSize(450,450);
-        board.setLocationRelativeTo(null);
-        board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        board.setVisible(true);
         createAndAdd(panel);
         setFrame();
         passwordField.setEchoChar((char)0);
