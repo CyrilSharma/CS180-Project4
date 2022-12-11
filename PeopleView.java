@@ -407,7 +407,6 @@ public class PeopleView implements PropertyChangeListener {
                         }
                     }
                 } catch (Exception e2) {
-                    e2.printStackTrace();
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -570,7 +569,6 @@ public class PeopleView implements PropertyChangeListener {
             int i = 0;
             while (running) {
                 i++;
-                System.out.println(i);
                 try {
                     HashMap<String, Boolean> newNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", "getReadStatus", user.get("email")));
                     if (!notifications.equals(newNotifications)) {

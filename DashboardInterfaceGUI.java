@@ -33,7 +33,6 @@ public class DashboardInterfaceGUI {
                 map = (HashMap<String, String>) tr.query(new Query("Dashboard", "getMyStoreMap", param));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return map;
@@ -88,7 +87,6 @@ public class DashboardInterfaceGUI {
             map = tr.get("email", email);
             id = map.get("id");
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return id;
     }
@@ -105,7 +103,6 @@ public class DashboardInterfaceGUI {
             map = tr.get("id", ID);
             email = map.get("email");
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return email;
     }

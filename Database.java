@@ -278,8 +278,6 @@ public class Database {
         if (!validate(val, key)) {
             throw new InvalidUserException("That is not a valid email");
         }
-        System.out.println(key);
-        System.out.println(val);
         if (key.equals("email") && 
             get("email", val) != null) {
             throw new InvalidUserException("Email is already taken!");    

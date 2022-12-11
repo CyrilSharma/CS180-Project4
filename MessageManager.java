@@ -420,7 +420,6 @@ public class MessageManager {
                 }
             }
         }
-        System.out.println(text);
         return text;
     }
 
