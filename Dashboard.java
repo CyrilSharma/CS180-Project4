@@ -75,6 +75,7 @@ public class Dashboard {
 
     public HashMap<String, HashMap<String, ArrayList<Object>>> getSellerStats(String id) {
         HashMap<String, HashMap<String, ArrayList<Object>>> map = new HashMap<>();
+        HashMap<String, Object[]> dataMap = new HashMap<>();
         try {
             String store = "";
             String rec = "";
@@ -86,24 +87,37 @@ public class Dashboard {
                 System.out.println("Rec " + history.get("recipient"));
                 System.out.println("mes " + history.get("message"));
                 if (history.get("message") == null) {
-                    //System.out.println(history.get("message"));
                     if (history.get("message") == null && history.get("recipient") == null && history.get("store") == null) {
-                        if (map.containsKey(store)) {
-                            HashMap<String, ArrayList<Object>> miniMap = map.get(store);
-                            ArrayList<Object> data = new ArrayList<>();
-                            //System.out.println("REC " + received);
-                            data.add(received);
-                            data.add(findMostCommonMsg(bigMsg));
-                            miniMap.put(rec, data);
-                            map.put(store, miniMap);
+                        System.out.println("Session beep");
+                        if (dataMap.containsKey(store)) {
+                            Object[] dataSet = dataMap.get(store);
+                            dataSet[0] = (int) dataSet[0] + received;
+                            dataSet[1] = dataSet[1] + bigMsg;
+                            dataMap.put(store, dataSet);
                         } else {
-                            HashMap<String, ArrayList<Object>> miniMap = new HashMap<>();
-                            ArrayList<Object> data = new ArrayList<>();
-                            //System.out.println("REC " + received);
-                            data.add(received);
-                            data.add(findMostCommonMsg(bigMsg));
-                            miniMap.put(rec, data);
-                            map.put(store, miniMap);
+                            Object[] dataSet = new Object[2];
+                            dataSet[0] = received;
+                            dataSet[1] = bigMsg;
+                            dataMap.put(store, dataSet);
+                        }
+                        for (String storeName: dataMap.keySet()) {
+                            if (map.containsKey(storeName)) {
+                                HashMap<String, ArrayList<Object>> miniMap = map.get(storeName);
+                                ArrayList<Object> data = new ArrayList<>();
+                                Object[] array = dataMap.get(storeName);
+                                data.add(array[0]);
+                                data.add(findMostCommonMsg((String) array[1]));
+                                miniMap.put(rec, data);
+                                map.put(storeName, miniMap);
+                            } else {
+                                HashMap<String, ArrayList<Object>> miniMap = new HashMap<>();
+                                ArrayList<Object> data = new ArrayList<>();
+                                Object[] array = dataMap.get(storeName);
+                                data.add(array[0]);
+                                data.add(findMostCommonMsg((String) array[1]));
+                                miniMap.put(rec, data);
+                                map.put(storeName, miniMap);
+                            }
                         }
                         received = 0;
                         bigMsg = "";
@@ -112,7 +126,22 @@ public class Dashboard {
                     }
                     continue;
                 } else {
-                    System.out.println(history.get("message") + " " + received);
+                    if (!store.equals("") && !store.equals(history.get("store"))) {
+                        if (dataMap.containsKey(store)) {
+                            Object[] dataSet = dataMap.get(store);
+                            dataSet[0] = (int) dataSet[0] + received;
+                            dataSet[1] = dataSet[1] + bigMsg;
+                            dataMap.put(store, dataSet);
+                        } else {
+                            Object[] dataSet = new Object[2];
+                            dataSet[0] = received;
+                            dataSet[1] = bigMsg;
+                            dataMap.put(store, dataSet);
+                        }
+                        received = 0;
+                        bigMsg = "";
+
+                    }
                     store = history.get("store");
                     String other = history.get("recipient");
                     if (other.equals(id)) {
@@ -129,6 +158,8 @@ public class Dashboard {
 
     public HashMap<String, HashMap<String, ArrayList<Object>>> getCustomerStats(String id) {
         HashMap<String, HashMap<String, ArrayList<Object>>> map = new HashMap<>();
+        //HashMap<store, {received, msg}>
+        HashMap<String, int[]> dataMap = new HashMap<>();
         try {
             String store = "";
             String rec = "";
@@ -141,31 +172,58 @@ public class Dashboard {
                     other = recip;
                 }
                 if (history.get("message") == null) {
-                    System.out.println(history.get("message"));
                     if (history.get("message") == null && history.get("recipient") == null && history.get("store") == null) {
-                        if (map.containsKey(store)) {
-                            HashMap<String, ArrayList<Object>> miniMap = map.get(store);
-                            ArrayList<Object> data = new ArrayList<>();
-                            System.out.println("REC " + received);
-                            data.add(received);
-                            data.add(sent);
-                            miniMap.put(other, data);
-                            map.put(store, miniMap);
+                        if (dataMap.containsKey(store)) {
+                            int[] dataSet = dataMap.get(store);
+                            dataSet[0] = dataSet[0] + received;
+                            dataSet[1] = dataSet[1] + sent;
+                            dataMap.put(store, dataSet);
                         } else {
-                            HashMap<String, ArrayList<Object>> miniMap = new HashMap<>();
-                            ArrayList<Object> data = new ArrayList<>();
-                            System.out.println("REC " + received);
-                            data.add(received);
-                            data.add(sent);
-                            miniMap.put(other, data);
-                            map.put(store, miniMap);
+                            int[] dataSet = new int[2];
+                            dataSet[0] = received;
+                            dataSet[1] = sent;
+                            dataMap.put(store, dataSet);
+                        }
+                        for (String storeName: dataMap.keySet()) {
+                            if (map.containsKey(storeName)) {
+                                HashMap<String, ArrayList<Object>> miniMap = map.get(storeName);
+                                ArrayList<Object> data = new ArrayList<>();
+                                int[] nums = dataMap.get(storeName);
+                                data.add(nums[0]);
+                                data.add(nums[1]);
+                                miniMap.put(other, data);
+                                map.put(storeName, miniMap);
+                            } else {
+                                HashMap<String, ArrayList<Object>> miniMap = new HashMap<>();
+                                ArrayList<Object> data = new ArrayList<>();
+                                int[] nums = dataMap.get(storeName);
+                                data.add(nums[0]);
+                                data.add(nums[1]);
+                                miniMap.put(other, data);
+                                map.put(storeName, miniMap);
+                            }
                         }
                         received = 0;
                         sent = 0;
                     }
                     continue;
                 } else {
-                    System.out.println(history.get("message") + " " + received);
+                    if (!store.equals("") && !store.equals(history.get("store"))) {
+                        if (dataMap.containsKey(store)) {
+                            int[] dataSet = dataMap.get(store);
+                            dataSet[0] = dataSet[0] + received;
+                            dataSet[1] = dataSet[1] + sent;
+                            dataMap.put(store, dataSet);
+                        } else {
+                            int[] dataSet = new int[2];
+                            dataSet[0] = received;
+                            dataSet[1] = sent;
+                            dataMap.put(store, dataSet);
+                        }
+                        received = 0;
+                        sent = 0;
+
+                    }
                     store = history.get("store");
                     rec = history.get("recipient");
                     if (!rec.equals(id)) {

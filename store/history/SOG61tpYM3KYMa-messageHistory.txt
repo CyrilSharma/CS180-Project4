@@ -23,4 +23,6 @@ what if you have multiple links
 https://www.bbc.com
 www.google.com
 www.cnn.com|||||SOG61tpYM3KYMa|||||H9>K>NYA=9`CSM|||||2022-12-10T22:18:02.154298400Z|||||The Republic-----
+message|||||SOG61tpYM3KYMa|||||85^6F5QD4:VRD8|||||2022-12-11T01:02:31.831521Z|||||test-----
+msg|||||SOG61tpYM3KYMa|||||Z>[>RMM^F7@U@B|||||2022-12-11T01:03:09.340603Z|||||The Republic-----
 #####
