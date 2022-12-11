@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+
 /**
  * Project 5 -> AccountManagerGUI
  *
@@ -27,8 +29,10 @@ public class AccountManagerGUI {
     private JButton blockUserButton;
     private JButton exportCSV;
     private JButton backButton;
+    private JButton addStoreButton;
     private String currentUserName;
     private AccountInterfaceClient aic;
+    private Role role;
 
     /**
      * Create AccountManagerGUI frame for user (constructor)
@@ -40,6 +44,13 @@ public class AccountManagerGUI {
         accountBoard = board;
         this.currentUserName = currentUserName;
         aic = new AccountInterfaceClient();
+        Translator tr = new Translator();
+        try {
+            HashMap<String, String> userData = tr.get("email", currentUserName);
+            role = Role.valueOf(userData.get("role"));
+        } catch (Exception e) {
+
+        }
     }
 
     /**
@@ -47,6 +58,28 @@ public class AccountManagerGUI {
      */
     public void addActionListeners() {
         //edit username/email (cannot be one that exists)
+        addStoreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String val = JOptionPane.showInputDialog(null, "Please Enter Store Name", "Notification",JOptionPane.INFORMATION_MESSAGE);
+                if (val == null) {
+                    return;
+                }
+                if (val.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter a store name!", "Alert", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                try {
+                    Translator tr = new Translator();
+                    tr.query(new Query("User", "addStores", new Object[]{val}));
+                    JOptionPane.showMessageDialog(null, "Successfully added a store!", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception e1) {
+
+                }
+
+
+            }
+        });
         editUsernameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -203,6 +236,7 @@ public class AccountManagerGUI {
         dashboardButton = new JButton("Access Dashboard");
         filterButton = new JButton("Access Filter");
         signOutButton = new JButton("Sign out");
+        addStoreButton = new JButton("Add Store");
         backButton = new JButton("back");
         deleteAccountButton = new JButton("Delete Account");
         blockUserButton = new JButton("Unblock/Visibility");
@@ -216,7 +250,14 @@ public class AccountManagerGUI {
         editPasswordButton.setBounds(20, 60, 160,30);
         blockUserButton.setBounds(20, 20, 160, 30);
         exportCSV.setBounds(20, 240, 160, 30);
-        backButton.setBounds(20,280,160,30);
+        Translator tr = new Translator();
+        if (role == Role.Seller) {
+            addStoreButton.setBounds(20,280,160,30);
+            backButton.setBounds(20,320,160,30);
+        } else {
+            backButton.setBounds(20,280,160,30);
+        }
+
         JPanel contents = new JPanel();
         contents.add(dashboardButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -229,6 +270,10 @@ public class AccountManagerGUI {
         contents.add(blockUserButton);
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(exportCSV);
+        if (role == Role.Seller) {
+            contents.add(new JSeparator(SwingConstants.HORIZONTAL));
+            contents.add(addStoreButton);
+        }
         contents.add(new JSeparator(SwingConstants.HORIZONTAL));
         contents.add(backButton);
         accountBoard.setVisible(true);
