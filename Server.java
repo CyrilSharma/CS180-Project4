@@ -3,7 +3,16 @@ import java.net.*;
 import java.time.Instant;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+/**
+ * Project 5 -> Server
+ *
+ * class handles the implementation of server/concurrency/netowrking
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 @SuppressWarnings({"resource"})
 public class Server implements Runnable {
     
@@ -30,7 +39,10 @@ public class Server implements Runnable {
             run();
         }
     }
-
+    /**
+     * run method
+     *
+     */
     @Override
     public void run() {
         try {
@@ -86,6 +98,10 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * main method with try and catch block with handling server sockets
+     *
+     */
     public static void main(String[] args) throws Exception {
         try {
             ServerSocket ss = new ServerSocket(Constants.port);
@@ -102,6 +118,13 @@ public class Server implements Runnable {
         }
     }
 
+    /*
+     * Generics involved with generating classes. This method
+     * essentially generates the classes
+     *
+     * @param obj, function, args
+     * @return Method
+     */
     private <T> Method generateClasses(Object obj, String function, Object[] args) {
         Method[] methods = obj.getClass().getMethods();
         for (Method method : methods) {
@@ -111,7 +134,12 @@ public class Server implements Runnable {
         }
         return null;
     }
-
+    /*
+     * This method essentially executes the method classes.
+     *
+     * @param Object o, function, args
+     * @return Object
+     */
     private Object executeMethod(Object o, String function, Object[] args) {
         Method method = generateClasses(o, function, args);
         if (method == null) {
