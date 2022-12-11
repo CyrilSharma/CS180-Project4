@@ -11,3 +11,9 @@ The Republic---obi-wan@jedi.org
 test---obi-wan@jedi.org
 Onions---user69@gmail.com
 spinach---user69@gmail.com
+Turkey Shop---seller1@gmail.com
+Turkey Island---seller1@gmail.com
+Turkey Nation---seller1@gmail.com
+The Turkey Market---seller2@gmail.com
+The Turkey Department Store---seller2@gmail.com
+The Turkey Death Star---seller2@gmail.com

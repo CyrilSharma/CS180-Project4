@@ -407,7 +407,6 @@ public class PeopleView implements PropertyChangeListener {
                         }
                     }
                 } catch (Exception e2) {
-                    e2.printStackTrace();
                     JOptionPane.showMessageDialog(null, e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
