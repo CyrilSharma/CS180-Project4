@@ -47,7 +47,7 @@ public class Translator {
                 result = ois.readObject();
                 if (result instanceof Exception) {
                     throw new Exception(((Exception) result).getMessage());
-                } else if (q.getFunction().equals("verify")) {
+                } else if (q.getFunction().equals("verify") && (Boolean) result) {
                     setUser(get("email", (String) q.getArgs()[0]));
                 } else if (q.getFunction().equals("logout")) {
                     setUser(null);
