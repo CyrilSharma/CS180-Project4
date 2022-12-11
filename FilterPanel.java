@@ -3,6 +3,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+/**
+ * Project 5 -> FilterPanel
+ *
+ * Allows user to access filter, filter out certain words
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 
 public class FilterPanel implements Runnable {
     private JFrame board;
@@ -23,6 +33,11 @@ public class FilterPanel implements Runnable {
     private String name;
     private HashMap<String, String> userdata;
 
+    /**
+     * Initialize FilterPanel (constructor) with frame and username
+     * @param frame -> JFrame
+     * @param name -> username
+     */
     public FilterPanel(JFrame frame, String name) {
         frame.setSize(600,400);
         board = frame;
@@ -32,11 +47,17 @@ public class FilterPanel implements Runnable {
         this.name = name;
     }
 
-
+    /**
+     * set list of words in filter
+     * @param words -> list of filtered words
+     */
     public void setWords(ArrayList<String> words) {
         this.words = words;
     }
 
+    /**
+     * show FilterPanel (make visible)
+     */
     public void show() {
         board.setContentPane(new Container());
         run();
@@ -44,7 +65,11 @@ public class FilterPanel implements Runnable {
         board.repaint();
     }
 
-    //not tested method
+    /**
+     * Check if characters are special
+     * @param word -> word
+     * @return T/F, if word has a special character
+     */
     public boolean checkSpecialChar(String word) {
         for (int i = 0; i < word.length(); i++) {
             if (!(word.charAt(i) > 64 && word.charAt(i) <= 122)) {
@@ -53,6 +78,9 @@ public class FilterPanel implements Runnable {
         }
         return true;
     }
+    /**
+     * Creates the buttons and scrollbar (BorderLayout) used in setFrame()
+     */
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
@@ -78,6 +106,9 @@ public class FilterPanel implements Runnable {
         content.add(pan);
         System.out.println(fig.getWords().toString());
     }
+    /**
+     * Creates the actual frame layout (buttons, users, etc.) with locations and fonts
+     */
     public void setFrame() {
         pan.setLayout(null);
         rightPan.setLayout(null);
@@ -97,6 +128,9 @@ public class FilterPanel implements Runnable {
         }
         updateLabel();
     }
+    /**
+     * update label showing filtered words in filter
+     */
     public void updateLabel() {
         String msg = "Filtered Words: ";
         ArrayList<String> words = fig.getWords();
@@ -113,11 +147,13 @@ public class FilterPanel implements Runnable {
         label.setText(msg + str);
         label.updateUI();
     }
+    //add action listeners
     public void addActionListeners() {
+        //add word to filter
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Check if special character exists
+                //check if spec character exists
                 String word = txtField.getText();
                 if (word == null || word.equals("")) {
                     JOptionPane.showMessageDialog(null, "Please enter a word!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -135,6 +171,7 @@ public class FilterPanel implements Runnable {
 
             }
         });
+        //remove word from filter
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -165,6 +202,7 @@ public class FilterPanel implements Runnable {
                 updateLabel();
             }
         });
+        //turn filter on or off
         enableButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -178,6 +216,7 @@ public class FilterPanel implements Runnable {
                 }
             }
         });
+        //go back to previous frame (AccountManagerGUI)
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -187,7 +226,7 @@ public class FilterPanel implements Runnable {
         });
 
     }
-
+    //run filterpanel and create frame with actionListeners
     public void run() {
         createAndAdd();
         setFrame();

@@ -49,7 +49,7 @@ public class BlockGUI implements Runnable {
      * @throws Exception
      */
     /**
-     * Creates BlockGUI frame
+     * Initializes BlockGUI frame (constructor)
      * @param frame -> JFrame
      * @throws Exception
      */
