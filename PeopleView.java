@@ -566,9 +566,7 @@ public class PeopleView implements PropertyChangeListener {
 
         @Override
         public void run() {
-            int i = 0;
             while (running) {
-                i++;
                 try {
                     HashMap<String, Boolean> newNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", "getReadStatus", user.get("email")));
                     if (!notifications.equals(newNotifications)) {

@@ -1,4 +1,4 @@
-26GAAlvf3sE7nc###seller1@gmail.com###password###Seller###2022-12-11T20:07:48.490273700Z###null###null
-j9OFNmvT0lKyMh###customer1@gmail.com###password###Customer###2022-12-11T19:46:05.199788400Z###null###null
-XtJR102epixC5i###seller2@gmail.com###password###Seller###2022-12-11T19:42:43.686663300Z###null###null
-IgC3V4aZ8RNvkD###customer2@gmail.com###password###Customer###2022-12-11T19:42:45.891426800Z###null###null
+26GAAlvf3sE7nc###seller1@gmail.com###password###Seller###2022-12-11T20:28:43.678642300Z###null###null
+j9OFNmvT0lKyMh###customer1@gmail.com###password###Customer###2022-12-11T20:34:14.180002500Z###XtJR102epixC5i###null
+XtJR102epixC5i###seller2@gmail.com###password###Seller###2022-12-11T20:34:14.440123900Z###null###null
+IgC3V4aZ8RNvkD###customer2@gmail.com###password###Customer###2022-12-11T20:14:05.853448700Z###null###null
