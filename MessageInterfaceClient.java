@@ -1,12 +1,28 @@
 import java.util.*;
 import java.time.Instant;
-
+/**
+ * Project 5 -> MessageInterfaceClient
+ *
+ * class handles the MessageInterface that is used int he MessageGUI
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 @SuppressWarnings("unchecked")
 public class MessageInterfaceClient {
     private Translator translator;
     public MessageInterfaceClient() {
         translator = new Translator();
     }
+
+    /**
+     * returns String "SUCCESS" and "INVALID"
+     *
+     * @param message, id, recipientID, store
+     * @return String message
+     */
     public String message(String message, String id, String recipientId, String store) throws Exception {
         String object = "MessageManager";
         String function = "messageUser";
@@ -18,7 +34,12 @@ public class MessageInterfaceClient {
         }
         return "SUCCESS";
     }
-
+    /**
+     * returns String "SUCCESS" and "INVALID"
+     *
+     * @param id, recipientId, newMessage, messageID
+     * @return String message
+     */
     public String editMessage(String id, String recipientId, String newMessage, String messageID) throws Exception {
         String object = "MessageManager";
         String function = "editMessage";
@@ -30,7 +51,12 @@ public class MessageInterfaceClient {
         }
         return "SUCCESS";
     }
-
+    /**
+     * deletes the message and returns String "INVALID" or "SUCCESS"
+     *
+     * @param id, recipientId, newMessage, messageID
+     * @return String message
+     */
     public String deleteMessage(String id, String recipientId, String messageID) throws Exception {
         String object = "MessageManager";
         String function = "deleteMessage";
@@ -42,7 +68,12 @@ public class MessageInterfaceClient {
         }
         return "SUCCESS";
     }
-
+    /**
+     * gets the personalHistory from the id parameter
+     *
+     * @param id
+     * @return ArrayList<HashMap<String>> messages of the personal message history</String>
+     */
     public ArrayList<HashMap<String, String>> getPersonalHistory(String id) throws Exception {
         String object = "MessageManager";
         String function = "getPersonalHistory";
@@ -53,7 +84,12 @@ public class MessageInterfaceClient {
         }
         return (ArrayList<HashMap<String, String>>) o;
     }
-    
+    /**
+     * gets the missedMessages
+     *
+     * @param scanner, id, client
+     * @return ArrayList<HashMap<String>> messages of the personal message history</String>
+     */
     public ArrayList<HashMap<String, String>> missedMessages(Scanner scanner, String id, Translator client) throws Exception {
         Instant lastOnline = Instant.parse(client.get("id", id).get("lastOnline"));
         try {
@@ -72,7 +108,11 @@ public class MessageInterfaceClient {
             throw new Exception("There was a problem accessing your history");
         }
     }
-
+    /**
+     * exports the conversations
+     *
+     * @param id, otherIDs
+     */
     public void exportConversations(String id, String[] otherIDs) throws Exception {
         String object = "MessageManager";
         String function = "messagesToCSV";
@@ -84,7 +124,6 @@ public class MessageInterfaceClient {
     /**
      * Sort conversations based on timestamp of last message (newest to oldest)
      */
-
     private static void sort(ArrayList<HashMap<String, String>> messages) {
         boolean sorted = false;
         HashMap<String, String> previousMessage = null;
@@ -106,11 +145,20 @@ public class MessageInterfaceClient {
             }
         }
     }
-
+    /**
+     * gets the id
+     *
+     * @return String ID
+     */
     public String getID() throws Exception {
         return (String) translator.query(new Query("User", "getID"));
     }
-
+    /**
+     * gets the conversation
+     *
+     * @param id, store
+     * @return ArrayList<Message> of the conversation</Message>
+     */
     public ArrayList<Message> getConversation(String id, String store) throws Exception {
         String object = "MessageManager";
         String function = "getConversation";
@@ -118,11 +166,20 @@ public class MessageInterfaceClient {
         Object r = translator.query(new Query(object, function, args));
         return (ArrayList<Message>) r;
     }
-
+    /**
+     * gets the Translator from the instance field
+     *
+     * @return Translator
+     */
     public Translator getTranslator() {
         return translator;
     }
-
+    /**
+     * converts the messages to the array
+     *
+     * @param conversationHistory
+     * @return String[] of the arraylist converted to the array
+     */
     public String[] messagesToArray(ArrayList<Message> conversationHistory) throws Exception {
         String[] messages = new String[conversationHistory.size()];
         for (int i = 0; i < conversationHistory.size(); i++) {
