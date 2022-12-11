@@ -59,8 +59,10 @@ public class MessageManager {
             HashMap<String, HashMap<String, Boolean>> read2 = new HashMap<>();
             String line;
             while ((line = bfr.readLine()) != null) {
-
                 String[] tokens = line.split(Pattern.quote(tokenSep));
+                if (line.equals("")) {
+                    continue;
+                }
                 read.put(tokens[1], tokens[2].equals("true"));
                 read2.put(tokens[0], read);
             }

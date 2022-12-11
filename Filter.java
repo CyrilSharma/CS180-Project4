@@ -41,7 +41,7 @@ public class Filter {
     /**
      * read UserFilter.txt and bring the content into the list
      */
-    public void read() {
+    public synchronized void read() {
         String splitter = "::";
         FileReader fr;
         BufferedReader bfr;
