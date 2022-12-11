@@ -74,7 +74,7 @@ public class AccountManagerGUI {
                     tr.query(new Query("User", "addStores", new Object[]{val}));
                     JOptionPane.showMessageDialog(null, "Successfully added a store!", "Notification", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception e1) {
-
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
 
