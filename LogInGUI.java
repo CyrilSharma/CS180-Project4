@@ -5,7 +5,16 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
-
+/**
+ * Project 5 -> LogInGUI
+ *
+ * Allows user to log in to their account using username and password, or access createAccountGUI
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class LogInGUI {
     private JFrame board;
     private Container container;
@@ -22,12 +31,16 @@ public class LogInGUI {
     private URL url;
 
 
-
+    /**
+     * initialize LogInGUI frame (constructor)
+     * @param frame -> JFrame
+     */
     public LogInGUI(JFrame frame) {
         frame.setSize(600,540);
         board = frame;
         translator = new Translator();
         try {
+            //turkey image :)
             url = new URL("https://i.imgur.com/il2xdrq.jpg");
             image = ImageIO.read(url);
             Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH);
@@ -38,13 +51,18 @@ public class LogInGUI {
 
     }
 
+    /**
+     * Show LogInGUI (Visible)
+     */
     public void show() {
         board.setContentPane(new Container());
         run();
         board.revalidate();
         board.repaint();
     }
-
+    /**
+     * Creates the actual frame layout (buttons, users, etc.) with locations and fonts
+     */
     public void setFrame() {
         emailField.setSize(150,30);
         emailField.setBounds(board.getWidth()/2 - emailField.getWidth()/2, 240,
@@ -66,7 +84,9 @@ public class LogInGUI {
         createAccountButton.setBounds(board.getWidth()/2 - createAccountButton.getWidth()/2, 345,
                 createAccountButton.getWidth(), createAccountButton.getHeight());
     }
-
+    /**
+     * Creates the buttons and scrollbar (BorderLayout) used in setFrame()
+     */
     public void createAndAdd(JPanel panel) {
         logInButton = new JButton("Log In");
         emailField = new JTextField(10);
@@ -89,6 +109,9 @@ public class LogInGUI {
         panel.add(turkeyImage);
         panel.add(title);
     }
+    /**
+     * initialize the userList and button actionListeners, run GUI
+     */
     public void run() {
         JPanel panel = new JPanel();
         container = board.getContentPane();
@@ -96,6 +119,7 @@ public class LogInGUI {
         createAndAdd(panel);
         setFrame();
         passwordField.setEchoChar((char)0);
+        //field to enter email
         emailField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -115,6 +139,7 @@ public class LogInGUI {
             }
 
         });
+        //field to enter password
         passwordField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -135,7 +160,7 @@ public class LogInGUI {
                 }
             }
         });
-
+        //login button to attempt to log in with entered credentials
         logInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,6 +184,7 @@ public class LogInGUI {
                 }
             }
         });
+        //Open CreateAccountGUI
         createAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

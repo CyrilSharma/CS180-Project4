@@ -17,7 +17,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.awt.event.*;
 
-//TODO: Add the ability to import files, create multiple line messages
+/**
+ * Project 5 -> MessageGUI
+ *
+ * Allows user to send, edit, and delete messages, see conversation
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class MessageGUI extends MouseAdapter implements PropertyChangeListener, KeyListener {
     private JFrame messageBoard;
@@ -45,7 +54,16 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     private MessageInterfaceClient mic;
     private HashMap<String, String> user;
     private boolean running;
-    
+
+    /**
+     * Initialize MessageGUI (constructor)
+     * @param board -> JFrame
+     * @param messageChoice -> 'view'
+     * @param email -> email
+     * @param username ->  obtained from query
+     * @param selectedStore -> chosen store in PeopleView
+     * @param parent -> previous PeopleView
+     */
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
         PeopleView parent) {
         board.setSize(700,550);
@@ -54,18 +72,16 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         this.emailSelected = email; //selected user
         this.selectedStore = selectedStore;
         this.mic = new MessageInterfaceClient();
-        //TODO: get the conversationHistory from the translator module
         //stored in a ArrayListString
         try {
             otherID = mic.getTranslator().get("email", emailSelected).get("id");
             user = mic.getTranslator().get("email", username);
             //conversationHistory = mic.getConversation(otherID, selectedStore);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    //create button layout and font format, setup content panel, run actionListeners
     public void run() {
         JPanel panel = new JPanel();
         /*
@@ -74,7 +90,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             msg = mic.messagesToArray(conversationHistory);
             messageList.addAll(Arrays.asList(msg));
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             msg = new String[0];
         } */
@@ -125,6 +140,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         messageText.addKeyListener(this);
         sendMessage.setFocusable(true);
         messageText.setFocusable(true);
+        //create message text field
         messageText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -146,7 +162,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         });
         messages.addMouseListener(this);
     }
-
+    //add actionListeners for send and back
     private void addActionListeners() {
         //Send a new message
         sendMessage.addActionListener(new ActionListener() {
@@ -165,7 +181,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 }
             }
         });
-
+        //go back to previous frame (PeopleView)
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -174,29 +190,25 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                     running = false;
                     peopleView.show();
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-
+        //send text file
         sendFile.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileFilter(new FileFilter() {
 
                     @Override
                     public boolean accept(File f) {
-                        // TODO Auto-generated method stub
                         return f.getName().endsWith(".txt") || f.isDirectory();
                     }
 
                     @Override
                     public String getDescription() {
-                        // TODO Auto-generated method stub
                         return "Text files only";
                     }
                     
@@ -215,7 +227,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                         mic.message(message, mic.getID(), otherID, selectedStore);
                         bfr.close();
                     } catch (Exception e1) {
-                        // TODO Auto-generated catch block
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -223,7 +234,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             
         });
     }
-
+    //make frame visible (show MessageGUI)
     public void show() {
         messageBoard.setContentPane(new Container());
         run();
@@ -231,7 +242,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         messageBoard.repaint();
     }
 
-    //TODO: My source: https://stackoverflow.com/questions/27077508/infinite-loop-in-swing
+    //Source: https://stackoverflow.com/questions/27077508/infinite-loop-in-swing
+    //autoupdate
     private class UpdateMessages implements Runnable {
 
         private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -239,7 +251,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         public void addPropertyChangeListeners(PropertyChangeListener pcl) {
             pcs.addPropertyChangeListener(pcl);
         }
-
+        //run update
         @Override
         public void run() {
             int i = 0;
@@ -277,14 +289,14 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         }
 
     }
-
+    //update message command
     private void updateMessages() {
         UpdateMessages um = new UpdateMessages(); 
         um.addPropertyChangeListeners(this);
         running = true;
         new Thread(um).start();
     }
-
+    //update messageList visible on messageGUI
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("changeUI")) {
@@ -312,7 +324,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                     }
                 });
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else if (evt.getPropertyName().equals("setStatus")) {
@@ -321,7 +332,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
 
                 @Override
                 public void run() {
-                    // TODO Auto-generated method stub
                     if (result) {
                         online.setText("<html><div style=\"color: green\">Connected</div></html>");
                     } else {
@@ -334,7 +344,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         }
     }
 
-    //TODO: my source: https://docs.oracle.com/javase/8/docs/api/javax/swing/ListCellRenderer.html
+    //My source: https://docs.oracle.com/javase/8/docs/api/javax/swing/ListCellRenderer.html
+    //Timestamping for notis
     private class CellRenderer implements ListCellRenderer<String> {
 
         DefaultListCellRenderer renderer = new DefaultListCellRenderer();
@@ -390,10 +401,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         }
 
     }
-
+    //key pressed
     @Override
     public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
         if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
             messageText.append("\n");
         }
@@ -402,19 +412,18 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             e.consume();
         }
     }
-
+    //key typed (undefined)
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
 
+    }
+    //key released (undefined)
     @Override
     public void keyReleased(KeyEvent e) {
         // TODO Auto-generated method stub
         
     }
-
+    //mouseClick recognition
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
@@ -436,14 +445,13 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 try {
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, "Couldn't open link", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
             e.consume();
         }
     }
-
+    //set pane
     private int paneOfPane(int totalWidth, int numberOfElements, int location) {
         int sizeOfPane = totalWidth / numberOfElements;
         int i = 0;
@@ -455,6 +463,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         return count > numberOfElements ? numberOfElements - 1 : count - 1;
     }
 
+    /**
+     * show menu when right-clicking message (edit, delete, copy)
+     */
     public void showContextMenu(MouseEvent e) {
         JPopupMenu popupMenu = new JPopupMenu("Actions");
         JMenuItem editItem = new JMenuItem("Edit");
@@ -462,7 +473,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
                 String originalMessage = (String) messages.getSelectedValue();
                 if (originalMessage == null) {
                     JOptionPane.showMessageDialog(null, "You must select a message!",
@@ -482,13 +492,11 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
 
                         @Override
                         public void keyTyped(KeyEvent e) {
-                            // TODO Auto-generated method stub
-                            
+
                         }
 
                         @Override
                         public void keyPressed(KeyEvent e) {
-                            // TODO Auto-generated method stub
                             if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
                                 textArea.append("\n");
                             }
@@ -496,8 +504,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
 
                         @Override
                         public void keyReleased(KeyEvent e) {
-                            // TODO Auto-generated method stub
-                            
+
                         }
                         
                     });
@@ -517,11 +524,11 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             }
         });
         JMenuItem deleteItem = new JMenuItem("Delete");
+        //delete in right-click menu
         deleteItem.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
                 //Having issue where sometimes index is -1 with below command (specifically if an edit or delete is
                 // cancelled and then a delete/edit is attemped after (Resolved)
                 String deletedMessage = "";
@@ -546,11 +553,11 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             }
         });
         JMenuItem copy = new JMenuItem("Copy");
+        //copy
         copy.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 StringSelection stringSelection = new StringSelection((String) messages.getSelectedValue());
                 clipboard.setContents(stringSelection, null);
@@ -569,12 +576,10 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        // TODO Auto-generated method stub
                         URI uri = URI.create(stuff);
                         try {
                             Desktop.getDesktop().browse(uri);
                         } catch (IOException e1) {
-                            // TODO Auto-generated catch block
                             JOptionPane.showMessageDialog(null, "Couldn't open link", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }

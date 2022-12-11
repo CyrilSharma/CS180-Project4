@@ -12,11 +12,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
+/**
+ * Project 5 -> PeopleView
+ *
+ * Allows user to either access messageGUI, block, or become invisible
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class PeopleView implements PropertyChangeListener {
-    //TODO 1: remove html after user checks that message
-    //TODO 2: remove html tag when transferring data
+    //1: remove html after user checks that message
+    //2: remove html tag when transferring data
     private JFrame board;
     private Container content;
     private JScrollPane convPane;
@@ -50,6 +59,13 @@ public class PeopleView implements PropertyChangeListener {
 
     //pass a list of emails of users
     //HashMap of {key: store name, value: owner id} must be passed in order to show list of stores
+
+    /**
+     * initialize PeopleView (constructor)
+     * @param frame -> JFrame
+     * @param user -> current user from HashMap
+     * @throws Exception
+     */
     public PeopleView(JFrame frame, HashMap<String,String> user) throws Exception {
         translator = new Translator();
         frame.setSize(600,540);
@@ -68,6 +84,10 @@ public class PeopleView implements PropertyChangeListener {
         }
         map = stores;
     }
+
+    /**
+     * make PeopleView visible (show PeopleView)
+     */
     public void show() {
         board.setContentPane(new Container());
         run();
@@ -76,6 +96,9 @@ public class PeopleView implements PropertyChangeListener {
         board.revalidate();
         board.repaint();
     }
+    /**
+     * Creates the buttons and scrollbar (BorderLayout) used in setFrame()
+     */
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
@@ -126,6 +149,11 @@ public class PeopleView implements PropertyChangeListener {
         //scrollPane.add(people);
     }
 
+    /**
+     * remove HTML from store name
+     * @param str -> initial store name
+     * @return store name without html
+     */
     public String storeHTMLRemover(String str) {
         str = str.substring(str.indexOf(">") + 1);
         str = str.substring(str.indexOf(">") + 1);
@@ -134,6 +162,9 @@ public class PeopleView implements PropertyChangeListener {
         return str;
     }
 
+    /**
+     * update user UI
+     */
     public void updateUserUI() {
         String[] newArray = new String[users.size()];
         int index = 0;
@@ -151,6 +182,11 @@ public class PeopleView implements PropertyChangeListener {
         people.updateUI();
     }
 
+    /**
+     * Check user's notifications
+     * @param user -> current user
+     * @return true or false, dep if message has come since user last logged in
+     */
     public boolean checkNotification(String user) {
         if (notifications.get(user) == null) {
             return false;
@@ -162,6 +198,11 @@ public class PeopleView implements PropertyChangeListener {
         }
         return false;
     }
+
+    /**
+     * update store UI
+     * @param user -> current seller (store)
+     */
     public void updateStoreUI(String user) {
         String[] newArray = new String[map.keySet().size()];
         int index = 0;
@@ -179,6 +220,12 @@ public class PeopleView implements PropertyChangeListener {
         storeList.updateUI();
     }
 
+    /**
+     * Check store notification
+     * @param user -> current user
+     * @param store -> specific store
+     * @return T/F, if store has received message since last login
+     */
     public boolean checkStoreNotification(String user, String store) {
         if (notifications.get(user) == null) {
             return false;
@@ -187,7 +234,7 @@ public class PeopleView implements PropertyChangeListener {
         }
         return !notifications.get(user).get(store);
     }
-
+    //Check store notification
     public void checkStoreNotification() {
         String[] newArray = new String[map.keySet().size()];
         int index = 0;
@@ -204,7 +251,7 @@ public class PeopleView implements PropertyChangeListener {
         storeList.setListData(newArray);
         storeList.updateUI();
     }
-
+    //check notifications
     public boolean check(String store) {
         for (Entry<String, HashMap<String, Boolean>> entry: notifications.entrySet()) {
             if (entry.getValue().get(store) != null) {
@@ -215,7 +262,9 @@ public class PeopleView implements PropertyChangeListener {
         }
         return false;
     }
-
+    /**
+     * Creates the actual frame layout (buttons, users, etc.) with locations and fonts
+     */
     public void setFrame() {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
@@ -257,6 +306,11 @@ public class PeopleView implements PropertyChangeListener {
         }
     }
 
+    /**
+     * get stores apparent to user
+     * @param myid -> current user id
+     * @return list of stores
+     */
     public ArrayList<String> getMyStores(String myid) {
         ArrayList<String> stores = new ArrayList<>();
         for (String store: map.keySet()) {
@@ -267,6 +321,12 @@ public class PeopleView implements PropertyChangeListener {
         return stores;
     }
 
+    /**
+     * get stores visible to users
+     * @param email -> current user
+     * @return list of stores
+     * @throws Exception -> key
+     */
     public ArrayList<String> getUserStores(String email) throws Exception {
         //Need a translator here
         HashMap<String, String> data = translator.get("email", email.split(" ")[0]);
@@ -279,7 +339,9 @@ public class PeopleView implements PropertyChangeListener {
         }
         return stores;
     }
+    //add actionListeners
     public void addActionListeners() {
+        //block a user from sending message to current user
         blockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -299,11 +361,11 @@ public class PeopleView implements PropertyChangeListener {
                     peopleView.show();
                     JOptionPane.showMessageDialog(null, "Successful!", "Message", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+        //view a conversation
         viewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -350,10 +412,10 @@ public class PeopleView implements PropertyChangeListener {
                 }
             }
         });
+        //become invisible to a user
         invisibleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Test
                 try {
                     String email;
                     if (user.get("role").equals(Role.Customer.toString())) {
@@ -370,12 +432,12 @@ public class PeopleView implements PropertyChangeListener {
                     peopleView.show();
                     JOptionPane.showMessageDialog(null, "Successful!", "Message", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
             }
         });
+        //go back to previous frame (MainMenuGUI)
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -385,6 +447,7 @@ public class PeopleView implements PropertyChangeListener {
                 gui.show();
             }
         });
+        //searchbar for finding users
         searchBar.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 searchUser();
@@ -410,6 +473,9 @@ public class PeopleView implements PropertyChangeListener {
 
         });
     }
+    /**
+     * run PeopleView, create frame and run focusListeners, etc.
+     */
     public void run() {
         createAndAdd();
         setFrame();
@@ -479,6 +545,7 @@ public class PeopleView implements PropertyChangeListener {
                 }
             }
         });
+        //list of stores
         storeList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -489,7 +556,7 @@ public class PeopleView implements PropertyChangeListener {
         content.add(convPane, BorderLayout.CENTER);
 
     }
-
+    //update notifications
     private class UpdateNotifications implements Runnable {
 
         private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -500,7 +567,6 @@ public class PeopleView implements PropertyChangeListener {
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
             int i = 0;
             while (running) {
                 i++;
@@ -511,27 +577,25 @@ public class PeopleView implements PropertyChangeListener {
                         pcs.firePropertyChange("updated", notifications, newNotifications);
                     }
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     
                 } finally {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         
                     }
                 }
             }
         }
     }
-
+    //update notifications
     private void updateNotifications() {
         UpdateNotifications updateNotifications = new UpdateNotifications();
         updateNotifications.addPropertyChangeListener(this);
         running = true;
         new Thread(updateNotifications).start();
     }
-
+    //initialize notifications
     public void initializeNotifs() {
         try {
             notifications = (HashMap<String, HashMap<String, Boolean>>) translator.query(new Query("MessageManager",
@@ -545,6 +609,9 @@ public class PeopleView implements PropertyChangeListener {
         }
     }
 
+    /**
+     * search for a user
+     */
     public void searchUser() {
 //        for (String content: users) {
 //            System.out.println(content);
@@ -567,6 +634,9 @@ public class PeopleView implements PropertyChangeListener {
         people.updateUI();
     }
 
+    /**
+     * search for a store
+     */
     public void searchStore() {
         if (storeSearchBar.getText().equals("Search stores...") || storeSearchBar.getText().isEmpty()) {
             //JOptionPane.showMessageDialog(null, "Please enter an email!", "Alert", JOptionPane.ERROR_MESSAGE);
@@ -585,15 +655,19 @@ public class PeopleView implements PropertyChangeListener {
         storeList.setListData(updated.toArray());
         storeList.updateUI();
     }
+
+    /**
+     * change notifications
+     * @param evt A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO Auto-generated method stub
         if (evt.getPropertyName().equals("updated")) {
             SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
-                    // TODO Auto-generated method stub
                     notifications = (HashMap<String, HashMap<String, Boolean>>) evt.getNewValue();
                     updateUserUI();
                     if (role == Role.Customer) {

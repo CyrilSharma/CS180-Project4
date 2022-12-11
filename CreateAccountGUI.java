@@ -3,7 +3,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
+ * Project 5 -> CreateAccountGUI
+ *
+ * Allows user to create a new account w/ unique username and password
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class CreateAccountGUI implements Runnable {
     private JFrame board;
     private Container container;
@@ -22,17 +31,28 @@ public class CreateAccountGUI implements Runnable {
     private ArrayList<String> stores = new ArrayList<String>();
     private Translator translator;
 
+    /**
+     * initialize createAccountGUI (constructor) w frame
+     * @param frame -> JFrame
+     */
     public CreateAccountGUI(JFrame frame) {
         board = frame;
         translator = new Translator();
     }
 
+    /**
+     * Make CreateAccountGUI visible, (show GUI)
+     */
     public void show() {
         board.setContentPane(new Container());
         run();
         board.revalidate();
         board.repaint();
     }
+
+    /**
+     * Creates the actual frame layout (buttons, users, etc.) with locations and fonts
+     */
     public void setFrame() {
         placeholder = new JButton();
 
@@ -72,7 +92,9 @@ public class CreateAccountGUI implements Runnable {
         addStoreButton.setLocation(board.getWidth()/2 - addStoreButton.getWidth()/2, 325);
         addStoreButton.setVisible(false);
     }
-
+    /**
+     * Creates the buttons and scrollbar (BorderLayout) used in setFrame()
+     */
     public void createAndAdd(JPanel panel) {
         createButton = new JButton("Create Account");
         emailField = new JTextField(10);
@@ -102,7 +124,11 @@ public class CreateAccountGUI implements Runnable {
         emailField.setSize(150,30);
     }
 
+    /**
+     * add actionListeners
+     */
     public void addActionListeners() {
+        //create account with given credentials (check unique username)
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,6 +180,7 @@ public class CreateAccountGUI implements Runnable {
                 }
             }
         });
+        //go back to previous frame (LogInGUI)
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -161,6 +188,7 @@ public class CreateAccountGUI implements Runnable {
                 gui.show();
             }
         });
+        //set role to customer
         customerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -170,6 +198,7 @@ public class CreateAccountGUI implements Runnable {
                 storeField.setVisible(false);
             }
         });
+        //set role to seller
         sellerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,7 +208,7 @@ public class CreateAccountGUI implements Runnable {
                 storeField.setVisible(true);
             }
         });
-
+        //add store if new user is seller
         addStoreButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -188,7 +217,7 @@ public class CreateAccountGUI implements Runnable {
             }
         });
     }
-
+    //run actionListeners and create panel/frame
     public void run() {
         JPanel panel = new JPanel();
         container = board.getContentPane();
@@ -201,6 +230,7 @@ public class CreateAccountGUI implements Runnable {
         setFrame();
         passwordField.setEchoChar((char)0);
         confirmPasswordField.setEchoChar((char)0);
+        //email field
         emailField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -220,6 +250,7 @@ public class CreateAccountGUI implements Runnable {
             }
 
         });
+        //password field
         passwordField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -240,6 +271,7 @@ public class CreateAccountGUI implements Runnable {
                 }
             }
         });
+        //confirm password
         confirmPasswordField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -260,6 +292,7 @@ public class CreateAccountGUI implements Runnable {
                 }
             }
         });
+        //store name
         storeField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {

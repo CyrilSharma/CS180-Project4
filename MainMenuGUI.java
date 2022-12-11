@@ -2,7 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
-
+/**
+ * Project 5 -> MainMenuGUI
+ *
+ * Allows user to either access their conversations or manage their account
+ *
+ * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+ *
+ * @version December 10, 2022
+ *
+ */
 public class MainMenuGUI {
     private JFrame board;
     private Container container;
@@ -18,13 +27,22 @@ public class MainMenuGUI {
     private JButton peopleViewPressed;
     private JButton accountManagerPressed;
 
+    /**
+     * Initialize MainMenuGUI (constructor) with JFrame and the user from HashMap
+     * @param frame -> JFrame
+     * @param user -> current user
+     */
     public MainMenuGUI(JFrame frame, HashMap<String,String> user) {
         frame.setSize(600,400);
         this.board = frame;
         this.user = user;
-        // used frequently enough to justify a seperate variable.
+        // used frequently enough to justify a separate variable.
         this.role = Role.valueOf(user.get("role"));
     }
+
+    /**
+     * show MainMenuGUI (become visible)
+     */
     public void show() {
         board.setContentPane(new Container());
         run();
@@ -32,7 +50,11 @@ public class MainMenuGUI {
         board.repaint();
     }
 
+    /**
+     * add actionlisteners for two buttons, manage account and access conversations
+     */
     public void addActionListeners() {
+        //open peopleview gui
         peopleViewPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,7 +67,7 @@ public class MainMenuGUI {
                 }
             }
         });
-
+        //open AccountManagerGUI
         accountManagerPressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,7 +81,7 @@ public class MainMenuGUI {
         });
 
     }
-
+    //create button layout and font format, setup content panel, run actionListeners
     public void run() {
         JPanel panel = new JPanel();
         this.container = board.getContentPane();
