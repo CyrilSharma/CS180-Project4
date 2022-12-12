@@ -66,9 +66,9 @@ public class PeopleView implements PropertyChangeListener {
      * @param user -> current user from HashMap
      * @throws Exception
      */
-    public PeopleView(JFrame frame, HashMap<String,String> user) throws Exception {
+    public PeopleView(JFrame frame, HashMap<String, String> user) throws Exception {
         translator = new Translator();
-        frame.setSize(600,540);
+        frame.setSize(600, 540);
         board = frame;
         users = (ArrayList<String>) translator.query(new Query("User", "getUsers"));
         this.user = user;
@@ -76,7 +76,7 @@ public class PeopleView implements PropertyChangeListener {
         String[] ex = {"Online", "Offline", "Online"};
 
         status = new ArrayList<>(Arrays.asList(ex));
-        HashMap<String,String> stores;
+        HashMap<String, String> stores;
         if (role.equals(Role.Customer)) {
             stores = (HashMap<String, String>) translator.query(new Query("User", "viewStores"));
         } else {
@@ -92,7 +92,7 @@ public class PeopleView implements PropertyChangeListener {
         board.setContentPane(new Container());
         run();
         updateNotifications();
-        board.setSize(600,540);
+        board.setSize(600, 540);
         board.revalidate();
         board.repaint();
     }
@@ -102,12 +102,13 @@ public class PeopleView implements PropertyChangeListener {
     public void createAndAdd() {
         content = board.getContentPane();
         content.setLayout(new BorderLayout());
-        String[] user = users.toArray(new String[0]);
-        people = new JList(user);
+        String[] userThingy = users.toArray(new String[0]);
+        people = new JList(userThingy);
         statusList = new JList(status.toArray(new String[0]));
         convPane = new JScrollPane();
-        scrollPane = new JScrollPane(people, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(370,400));
+        scrollPane = new JScrollPane(people, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setPreferredSize(new Dimension(370, 400));
         //people.setBackground(Color.gray);
         rightPanel = new JPanel();
         title = new JLabel();
@@ -122,7 +123,8 @@ public class PeopleView implements PropertyChangeListener {
 
         storeList = new JList();
         placeholder = new JButton();
-        scroll2 = new JScrollPane(storeList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll2 = new JScrollPane(storeList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         if (role == Role.Customer) {
             title.setText("Stores");
         } else {
@@ -168,13 +170,13 @@ public class PeopleView implements PropertyChangeListener {
     public void updateUserUI() {
         String[] newArray = new String[users.size()];
         int index = 0;
-        for (String user: users) {
-            if (checkNotification(user)) {
+        for (String userThing: users) {
+            if (checkNotification(userThing)) {
                 String newData = "<html><b><font color=blue>";
-                newData += user + "</font></b></html>";
+                newData += userThing + "</font></b></html>";
                 newArray[index] = newData;
             } else {
-                newArray[index] = user;
+                newArray[index] = userThing;
             }
             index++;
         }
@@ -184,14 +186,14 @@ public class PeopleView implements PropertyChangeListener {
 
     /**
      * Check user's notifications
-     * @param user -> current user
+     * @param userThing -> current user
      * @return true or false, dep if message has come since user last logged in
      */
-    public boolean checkNotification(String user) {
-        if (notifications.get(user) == null) {
+    public boolean checkNotification(String userThing) {
+        if (notifications.get(userThing) == null) {
             return false;
         }
-        for (Entry<String, Boolean> entry: notifications.get(user).entrySet()) {
+        for (Entry<String, Boolean> entry: notifications.get(userThing).entrySet()) {
             if (!entry.getValue()) {
                 return true;
             }
@@ -201,13 +203,13 @@ public class PeopleView implements PropertyChangeListener {
 
     /**
      * update store UI
-     * @param user -> current seller (store)
+     * @param userThing -> current seller (store)
      */
-    public void updateStoreUI(String user) {
+    public void updateStoreUI(String userThing) {
         String[] newArray = new String[map.keySet().size()];
         int index = 0;
         for (String store: map.keySet()) {
-            if (checkStoreNotification(user, store)) {
+            if (checkStoreNotification(userThing, store)) {
                 String newData = "<html><b><font color=blue>";
                 newData += store + "</font></b></html>";
                 newArray[index] = newData;
@@ -222,17 +224,17 @@ public class PeopleView implements PropertyChangeListener {
 
     /**
      * Check store notification
-     * @param user -> current user
+     * @param userThing -> current user
      * @param store -> specific store
      * @return T/F, if store has received message since last login
      */
-    public boolean checkStoreNotification(String user, String store) {
-        if (notifications.get(user) == null) {
+    public boolean checkStoreNotification(String userThing, String store) {
+        if (notifications.get(userThing) == null) {
             return false;
-        } else if (notifications.get(user).get(store) == null) {
+        } else if (notifications.get(userThing).get(store) == null) {
             return false;
         }
-        return !notifications.get(user).get(store);
+        return !notifications.get(userThing).get(store);
     }
     //Check store notification
     public void checkStoreNotification() {
@@ -269,34 +271,34 @@ public class PeopleView implements PropertyChangeListener {
         convPane.setLayout(null);
         rightPanel.setLayout(null);
         upperPanel.setLayout(null);
-        convPane.setSize(500,400);
+        convPane.setSize(500, 400);
         //convPane.setBackground(Color.GRAY);
         storeSearchBar.setForeground(Color.GRAY);
-        upperPanel.setSize(400,70);
-        title.setBounds(10,10, 200, 50);
+        upperPanel.setSize(400, 70);
+        title.setBounds(10, 10, 200, 50);
         Font f = new Font("Helvetica", Font.BOLD, 25);
         title.setFont(f);
-        rightPanel.setBounds(400,0, 200, 530);
-        blockButton.setBounds(20, 20, 160,30);
-        invisibleButton.setBounds(20, 100, 160,30);
-        viewButton.setBounds(20, 60, 160,30);
+        rightPanel.setBounds(400, 0, 200, 530);
+        blockButton.setBounds(20, 20, 160, 30);
+        invisibleButton.setBounds(20, 100, 160, 30);
+        viewButton.setBounds(20, 60, 160, 30);
         backButton.setBounds(100, 450, 80, 30);
         if (role == Role.Customer) {
-            storeSearchBar.setBounds(200,25,200,20);
-            scroll2.setBounds(30,70,370,400);
+            storeSearchBar.setBounds(200, 25, 200, 20);
+            scroll2.setBounds(30, 70, 370, 400);
             storeList.setListData(map.keySet().toArray());
             storeList.updateUI();
         } else {
-            scrollPane.setBounds(30,70,370,250);
+            scrollPane.setBounds(30, 70, 370, 250);
             //scrollPane.setBackground(Color.green);
-            people.setBounds(0,0,330,5000);
+            people.setBounds(0, 0, 330, 5000);
             convPane.setPreferredSize(new Dimension(370, 800));
             storeSearchBar.setBounds(30, 340, 300, 20);
             //editButton.setBounds(20, 100, 160,30);
             //deleteButton.setBounds(20, 140, 160,30);
-            placeholder.setBounds(-1,-1,1,1);
+            placeholder.setBounds(-1, -1, 1, 1);
             //backButton.setBounds(100, 450, 80, 30);
-            searchBar.setBounds(200,25,200,20);
+            searchBar.setBounds(200, 25, 200, 20);
             scroll2.setBounds(30, 370, 370, 100);
             searchBar.setForeground(Color.GRAY);
             ArrayList<String> stores = getMyStores(user.get("id"));
@@ -400,7 +402,9 @@ public class PeopleView implements PropertyChangeListener {
                         String msg = "Trying to view a conversation with " + email + " with " + store;
                         JOptionPane.showMessageDialog(null, msg, "Message", JOptionPane.INFORMATION_MESSAGE);
                         try {
-                            MessageGUI gui = new MessageGUI(board, "view", email, (String) translator.query(new Query("User", "getEmail")), store, PeopleView.this);
+                            MessageGUI gui = new MessageGUI(board, "view", email, 
+                                (String) translator.query(new Query("User", "getEmail")), 
+                                store, PeopleView.this);
                             running = false;
                             gui.show();
                             String self = user.get("email");
@@ -529,21 +533,21 @@ public class PeopleView implements PropertyChangeListener {
         people.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                String user = (String) people.getSelectedValue();
+                String userThing = (String) people.getSelectedValue();
                 if (role == Role.Customer) {
                     try {
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    if (user != null) {
+                    if (userThing != null) {
                         if (notifications == null) {
                             return;
                         }
-                        if (user.contains("<")) {
-                            user = storeHTMLRemover(user);
+                        if (userThing.contains("<")) {
+                            userThing = storeHTMLRemover(userThing);
                         }
-                        updateStoreUI(user);
+                        updateStoreUI(userThing);
                     }
                 }
             }
@@ -560,6 +564,16 @@ public class PeopleView implements PropertyChangeListener {
 
     }
     //update notifications
+    /**
+     * Project 5 -> PeopleView -> UpdateNotifications
+     *
+     * Updates notifications
+     *
+     * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+     *
+     * @version December 12, 2022
+     *
+     */
     private class UpdateNotifications implements Runnable {
 
         private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -572,17 +586,18 @@ public class PeopleView implements PropertyChangeListener {
         public void run() {
             while (running) {
                 try {
-                    HashMap<String, Boolean> newNotifications = (HashMap<String, Boolean>) translator.query(new Query("MessageManager", "getReadStatus", user.get("email")));
+                    HashMap<String, Boolean> newNotifications = (HashMap<String, Boolean>) translator.query(
+                        new Query("MessageManager", "getReadStatus", user.get("email")));
                     if (!notifications.equals(newNotifications)) {
                         pcs.firePropertyChange("updated", notifications, newNotifications);
                     }
                 } catch (Exception e) {
-                    
+                    e.getMessage();
                 } finally {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        
+                        e.getMessage();
                     }
                 }
             }
@@ -605,7 +620,7 @@ public class PeopleView implements PropertyChangeListener {
                 checkStoreNotification();
             }
         } catch (Exception e) {
-            ; // idk what to do here yet.
+            e.getMessage(); // idk what to do here yet.
         }
     }
 
@@ -625,9 +640,9 @@ public class PeopleView implements PropertyChangeListener {
         }
         String text = searchBar.getText().toLowerCase();
         ArrayList<String> updated = new ArrayList<>();
-        for (String user: users) {
-            if (user.toLowerCase().contains(text)) {
-                updated.add(user);
+        for (String userThing: users) {
+            if (userThing.toLowerCase().contains(text)) {
+                updated.add(userThing);
             }
         }
         people.setListData(updated.toArray());

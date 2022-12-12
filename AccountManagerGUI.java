@@ -250,7 +250,6 @@ public class AccountManagerGUI {
         editPasswordButton.setBounds(20, 60, 160,30);
         blockUserButton.setBounds(20, 20, 160, 30);
         exportCSV.setBounds(20, 240, 160, 30);
-        Translator tr = new Translator();
         if (role == Role.Seller) {
             addStoreButton.setBounds(20,280,160,30);
             backButton.setBounds(20,320,160,30);

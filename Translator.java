@@ -28,7 +28,9 @@ public class Translator {
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 loggedInUser = null;
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "We can't connect to the server right now. Please try again later", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, 
+                    "We can't connect to the server right now. Please try again later", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -64,14 +66,16 @@ public class Translator {
                                 refresh();
                                 inLoop = false;
                                 if (loggedInUser != null) {
-                                    query(new Query("Database", "verify", new String[]{loggedInUser.get("email"), loggedInUser.get("password")}));
+                                    query(new Query("Database", "verify", 
+                                        new String[]{loggedInUser.get("email"), 
+                                        loggedInUser.get("password")}));
                                 }
                                 break;
                             } catch (Exception e) {
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e1) {
-                                    
+                                    e.getMessage();
                                 }
                             }
                         }
@@ -79,8 +83,7 @@ public class Translator {
                 });
                 thread.start();
                 throw new Exception("We can't connect to the server right now. Please try again later");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new Exception(e.getMessage());
             }
         }

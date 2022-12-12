@@ -79,7 +79,6 @@ public class Dashboard {
         try {
             String store = "";
             String rec = "";
-            String msg = "";
             String bigMsg = "";
             int received = 0;
             for (HashMap<String, String> history: mm.getPersonalHistory(id)) {

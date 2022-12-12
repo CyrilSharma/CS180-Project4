@@ -64,20 +64,19 @@ public class User implements Serializable {
      */
     public HashMap<String, String> viewStores() throws Exception {
         ArrayList<HashMap<String, String>> getSellers = db.getSelection("role", Role.Seller.toString());
-        HashMap<String, String> stores = new HashMap<>();
+        HashMap<String, String> storesThing = new HashMap<>();
         if (role.equals(Role.Customer)) {
             for (HashMap<String, String> sellerBlocked : getSellers) {
                 if (!sellerBlocked.get("invisible").contains(id)) {
                     ArrayList<String> stores2 = User.readStoresFromFile(sellerBlocked.get("email"));
-                    String email = sellerBlocked.get("email");
+                    String emailThing = sellerBlocked.get("email");
                     for (String store : stores2) {
-                        stores.put(store, email);
+                        storesThing.put(store, emailThing);
                     }
-                    //TODO: fix so that invisible people aren't added to the list
                 }
             }
         }
-        return stores;
+        return storesThing;
     }
 
     /**
@@ -107,8 +106,6 @@ public class User implements Serializable {
     /**
      * Seller can view list of customers that they can send messages to
      */
-
-    //TODO: Test this function, repeatedly
     public ArrayList<String> viewCustomers() {
         ArrayList<HashMap<String, String>> getCustomers = db.getSelection("role", Role.Customer.toString());
         ArrayList<String> customers = new ArrayList<>();

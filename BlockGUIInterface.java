@@ -11,6 +11,7 @@ import java.util.HashMap;
  * @version December 10, 2022
  *
  */
+@SuppressWarnings("unchecked")
 public class BlockGUIInterface {
     
     HashMap<String, String> user;
