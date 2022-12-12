@@ -13,7 +13,7 @@ Presentation was submitted by Jacob Choi
 
 ## Testing
 
-All of the testing can be found in Test.md
+All of the testing can be found in Tests.md and TestManageAccount.md
 
 ## AccountInterfaceClient
 
