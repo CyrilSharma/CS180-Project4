@@ -1,0 +1,159 @@
+Welcome to the Turkey Store!
+Here at the turkey store, we offer every variety of turkey imaginable!
+Feel free to contact any of our reputable sellers to learn about stores, 
+that you can buy our wonderful products from!
+
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email: 
+Please enter your password:
+Please enter your role (Seller/Customer):
+Account created!
+How many stores would you like to create?
+What is the name of store 1?
+testMainInterface/Stores.txt (No such file or directory)
+good turkey store has been created!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email: 
+Please enter your password:
+Please enter your role (Seller/Customer):
+Account created!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
+Login successful!
+
+You don't have any missed messages
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Stores:
+userAA@gmail.com: good turkey store
+Which store would you like to send a message to?
+How would you like to send a message?
+1. Console
+2. Text file
+Type your message and press enter:
+Message sent
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Stores:
+userAA@gmail.com: good turkey store
+Which store would you like to send a message to?
+How would you like to send a message?
+1. Console
+2. Text file
+Type your message and press enter:
+Message sent
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+what do you want to do?
+1. enable filter
+2. see filtered words
+3. add word to the filter
+4. remove the word from filter
+5. quit
+please enter a word to be filtered
+Successfully added a word!
+words: turkey
+
+what do you want to do?
+1. enable filter
+2. see filtered words
+3. add word to the filter
+4. remove the word from filter
+5. quit
+what do you want to do?
+1. disable filter
+2. see filtered words
+3. add word to the filter
+4. remove the word from filter
+5. quit
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Your conversations:
+1. userAA@gmail.com
+Enter the number or email you wish to see message history for
+Message History (oldest first):
+1. userBB@gmail.com->userAA@gmail.com (good ****** store) at 15:09:04.955325: do you sell ****** like a good ******?
+2. userBB@gmail.com->userAA@gmail.com (good ****** store) at 15:09:04.956689: I want ******!!
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Thank you for shopping at the turkey store!
+Have a nice rest of your day!

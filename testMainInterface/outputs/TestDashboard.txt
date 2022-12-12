@@ -1,0 +1,235 @@
+Welcome to the Turkey Store!
+Here at the turkey store, we offer every variety of turkey imaginable!
+Feel free to contact any of our reputable sellers to learn about stores, 
+that you can buy our wonderful products from!
+
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email: 
+Please enter your password:
+Please enter your role (Seller/Customer):
+Account created!
+How many stores would you like to create?
+What is the name of store 1?
+testMainInterface/Stores.txt (No such file or directory)
+good turkey store has been created!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email: 
+Please enter your password:
+Please enter your role (Seller/Customer):
+Account created!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
+Login successful!
+
+You don't have any missed messages
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Stores:
+userAA@gmail.com: good turkey store
+Which store would you like to send a message to?
+How would you like to send a message?
+1. Console
+2. Text file
+Type your message and press enter:
+Message sent
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Stores:
+userAA@gmail.com: good turkey store
+Which store would you like to send a message to?
+How would you like to send a message?
+1. Console
+2. Text file
+Type your message and press enter:
+Message sent
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email: 
+Please enter your password:
+Please enter your role (Seller/Customer):
+Account created!
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
+Login successful!
+
+You don't have any missed messages
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Stores:
+userAA@gmail.com: good turkey store
+Which store would you like to send a message to?
+How would you like to send a message?
+1. Console
+2. Text file
+Type your message and press enter:
+Message sent
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+Would you like to...
+1. Login
+2. Create an account
+3. Exit
+Please enter your email (type back to go back):
+Please enter your password (type back to go back):
+Login successful!
+
+Missed Messages:
+userBB@gmail.com->userAA@gmail.com (good turkey store) at 15:09:05.051444: do you sell turkey like a good turkey?
+userBB@gmail.com->userAA@gmail.com (good turkey store) at 15:09:05.052618: I want turkey!!
+userCC@gmail.com->userAA@gmail.com (good turkey store) at 15:09:05.054862: hey is there thanksgiving event during thanksgiving?
+
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
+An error has occurred trying to read the database
+Store name: good turkey store
+Customer name: userBB@gmail.com
+Message Received: 2
+
+Store name: good turkey store
+Customer name: userCC@gmail.com
+Message Received: 1
+
+what do you want to do? 
+1. sort stores
+2. sort customers
+3. quit
+How do you want to sort? 
+1. sort by alphabetical order 
+2. sort by alphabetical backwards
+3. sort by lowest message received
+4. sort by highest message received
+5. go back to previous menu
+Store name: good turkey store
+Customer name: userCC@gmail.com
+Message Received: 1
+
+Store name: good turkey store
+Customer name: userBB@gmail.com
+Message Received: 2
+
+How do you want to sort? 
+1. sort by alphabetical order 
+2. sort by alphabetical backwards
+3. sort by lowest message received
+4. sort by highest message received
+5. go back to previous menu
+what do you want to do? 
+1. sort stores
+2. sort customers
+3. quit
+Please enter a valid number
+what do you want to do? 
+1. sort stores
+2. sort customers
+3. quit
+Would you like to...
+1. Message a user
+2. View messages
+3. Edit a message
+4. Delete a message
+5. Export conversations
+6. Block a user
+7. Unblock a user
+8. View stores
+9. View customers
+10. Add a store
+11. Dashboard
+12. Open Filter
+13. Delete your account
+14. Logout
