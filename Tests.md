@@ -59,7 +59,7 @@ Expected Result: both users are able to see each other's views update in real ti
 
 *Test Result: passed*
 
-# Test 3: Editing a message
+# Test 3: The context menu
 Steps:
 1. Run the server (Server.java)
 2. Run Launch.java
@@ -93,5 +93,31 @@ Steps:
 28. Hit the enter key to send the message
 
 Expected Result: The seller and the customer should be able to have a conversation in real time, copy messages, edit messages for both users, delete messages on one side, send the content in a text file (only .txt files are allowed) as a multi-line message to another user, and type multi-line messages to each other in the text box.
+
+*Test Result: passed*
+
+# Test 4: Blocking
+Steps:
+1. Run the server (Server.java)
+2. Run two instances of Launch.java
+3. Login as customer1@gmail.com with password "password"
+4. On the other instance, login as seller3@gmail.com with password "password"
+5. Click on access messages on both clients
+6. Select customer1@gmail.com in seller view and select "A New Turkey" as the store and click message
+7. Select "A New Turkey" as the store in customer view and click message
+8. In customer view, type "Your turkeys are the worst" and click enter
+9. Kill the server
+10. In customer view, attempt to send the message "I will never buy your terrible products"
+11. Click OK on the error
+12. Restart the server
+13. In customer view, send the message "I will never buy your terrible products"
+14. In seller view, click the back button
+15. Select customer1@gmail.com and click the block button and confirm you have done so
+16. In customer view, type "You should stop selling turkeys"
+17. Click OK on the error saying that you are not allowed to message that user
+18. In seller view, select customer1@gmail.com again and click the invisible button
+19. In customer view, click the back button and look for the store "A New Turkey", which you will find does not exist
+
+Expected Result: The first feature should demonstrate the automatic reconnection of the client and the server, meaning that if there is an internet disruption or the server goes down, when they are reconnected, the client will work normally. Now that the customer has sent hate mail to the seller, the seller has blocked them and the customer cannot send new messages to them, though he can view the previous conversation history. The seller then becomes invisible to the customer, meaning that when the customer clicks the back button, the seller's store no longer appears in the list of stores the customer can see.
 
 *Test Result: passed*
