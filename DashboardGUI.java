@@ -285,10 +285,47 @@ public class DashboardGUI implements Runnable {
         return users;
     }
 
+    public ArrayList<String> getReceivedArray() {
+        ArrayList<String> stores = new ArrayList<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String store: statistics.keySet()) {
+            for (String user : statistics.get(store).keySet()) {
+                int received = (int) statistics.get(store).get(user).get(0);
+                if (map.size() == 0) {
+                    map.put(store, received);
+                    stores.add(store);
+                } else {
+                    int index = 0;
+                    int size = map.size();
+                    for (String userr: map.keySet()) {
+                        if (received > map.get(userr)) {
+                            map.put(store, received);
+                            if (!stores.contains(store)){
+                                stores.add(index, store);
+                            }
+                            break;
+                        }
+                        if (index == size - 1) {
+                            map.put(store, received);
+                            stores.add(store);
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
+        return stores;
+    }
+
     /**
      * Sort users by most received messages to least received
      */
     public void sortHighReceived() {
+        if (role == Role.Customer) {
+            storeList.setListData(getReceivedArray().toArray());
+            storeList.updateUI();
+            return;
+        }
         if (selectedStore == null) {
             return;
         }
@@ -305,6 +342,13 @@ public class DashboardGUI implements Runnable {
      * Sort users by least received messages to most received
      */
     public void sortLowReceived() {
+        if (role == Role.Customer) {
+            ArrayList<String> store = getReceivedArray();
+            Collections.reverse(store);
+            storeList.setListData(store.toArray());
+            storeList.updateUI();
+            return;
+        }
         if (selectedStore == null) {
             return;
         }
