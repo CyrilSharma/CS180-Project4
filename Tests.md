@@ -1,4 +1,5 @@
-# Test 1: Login
+# Access Messages
+## Test 1: Login
 Steps:
 1. Run Server.java
 2. Run Launch.java
@@ -14,7 +15,7 @@ Expected Result: User is able to login as a customer and access all the function
 
 *Test Status: passed*
 
-# Test 2: Create Account
+## Test 2: Create Account
 Steps:
 1. Run Server.java
 2. Run Launch.java
@@ -36,7 +37,7 @@ Expected Result: User is able to create an account as well as add stores if they
 
 *Test Result: passed*
 
-# Test 3: Sending a message
+## Test 3: Sending a message
 Steps:
 1. Run Server.java
 2. Run Launch.java
@@ -59,7 +60,7 @@ Expected Result: both users are able to see each other's views update in real ti
 
 *Test Result: passed*
 
-# Test 3: The context menu
+## Test 4: The context menu
 Steps:
 1. Run the server (Server.java)
 2. Run Launch.java
@@ -96,7 +97,7 @@ Expected Result: The seller and the customer should be able to have a conversati
 
 *Test Result: passed*
 
-# Test 4: Blocking
+## Test 5: Blocking
 Steps:
 1. Run the server (Server.java)
 2. Run two instances of Launch.java
@@ -121,3 +122,5 @@ Steps:
 Expected Result: The first feature should demonstrate the automatic reconnection of the client and the server, meaning that if there is an internet disruption or the server goes down, when they are reconnected, the client will work normally. Now that the customer has sent hate mail to the seller, the seller has blocked them and the customer cannot send new messages to them, though he can view the previous conversation history. The seller then becomes invisible to the customer, meaning that when the customer clicks the back button, the seller's store no longer appears in the list of stores the customer can see.
 
 *Test Result: passed*
+
+# Manage Account
