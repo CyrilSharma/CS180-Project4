@@ -6,7 +6,7 @@
 5. Click the customer button
 6. Click the create account button
 
-# Test 1: Delete Account
+# Test 1: Delete Account & Signout
 Steps:
 1. Run Server.java
 2. Run Launch.java
@@ -81,3 +81,5 @@ Steps:
 21. Enter password and confirm.
 
 Expected Result: User can change password. When user tries to log in using old password, attempt fails. Logging in with new password succeeds.
+
+# Test 4: 
