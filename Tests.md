@@ -132,6 +132,8 @@ Setup
 5. Click the customer button
 6. Click the create account button
 
+*Test Status: passed*
+
 # Test 1: Delete Account & Signout
 Steps:
 1. Run Server.java
@@ -159,6 +161,8 @@ Login:
 
 Expected Result: User can succesfull sign in and out while the account exists. When the account is deleted, the user can no longer log in.
 
+*Test Status: passed*
+
 # Test 2: Edit Username.
 Steps:
 1. Run Server.java
@@ -184,6 +188,8 @@ Steps:
 
 Expected Result: User is unable to rename themselves to an existing account. When user tries to rename to a new account, the rename operation is succesful. When the user signs out and signs in, they are able to use the new name, and unable to use the old name. At the end they should be able to change their name back to what it was.
 
+*Test Status: passed*
+
 # Test 3: Edit Password.
 Steps:
 1. Run Server.java
@@ -208,6 +214,8 @@ Steps:
 
 Expected Result: User can change password. When user tries to log in using old password, attempt fails. Logging in with new password succeeds.
 
+*Test Status: passed*
+
 # Test 4: Dashboard
 1. Run Server.java
 2. Run Launch.java
@@ -224,3 +232,35 @@ Expected Result: User can change password. When user tries to log in using old p
 
 Expected Result: Dashboard should correctly display counts of messages for recepient and sender. When the sender sends a new message, the dashboard updates to reflect the change. After the user sends a message to Turkey Island there should be at least two stores in dashboard, thus the effects of sorting should now be visible. You should see the things in ascending or descending alphabetical order according to which buttons were clicked.
 
+*Test Status: passed*
+
+# Test 5: Export CSV.
+1. Run Server.java
+2. Run Launch.java
+3. Login as customer1@gmail.com with password "password"
+4. Navigate to the access conversations button and click it.
+5. Click on some conversation and send a few messages in it, remember which seller you messaged.
+6. Navigate to manage account.
+7. Click export conversations.
+8. Select the same seller you talked to earlier.
+9. Click export, and choose a directory of your convenience.
+
+Expected Result: Upon manual inspection of the csv file, you should see the same messages you sent (along with any other messages previously in the conversation), in the messages column of the csv.
+
+*Test Status: passed*
+
+# Test 6: Filter.
+1. Run Server.java
+2. Run Launch.java
+3. Login as customer1@gmail.com with password "password"
+4. Go to a conversation of your choice and type spinach.
+5. Navigate to the manage Conversations button.
+6. Click it, and then click on filter.
+7. Enter spinach in the textbox.
+8. Click enable filter (if the filter is not already enabled).
+9. Navigate back to your original conversation.
+10. Navigate back to the filter.
+11. Click remove word, then type spinach and click enter.
+12. Go back to the original conversation.
+
+Expected Result: When a word is added to the filter, you should see the word gets replaced with *** in the conversation. When you remove the word, you should see it goes back to normal.

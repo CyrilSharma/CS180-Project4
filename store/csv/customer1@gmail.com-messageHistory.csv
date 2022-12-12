@@ -1,0 +1,14 @@
+Message Number,Sender,Recipient,Store,Time Stamp,Message Contents
+1,customer1@gmail.com,seller3@gmail.com,A New Turkey,2022-12-12T14:49:37.485956500,"Hello, I am looking for turkeys"
+2,seller3@gmail.com,customer1@gmail.com,A New Turkey,2022-12-12T14:50:23.940720900,"Here is my website, www.google.com"
+3,customer1@gmail.com,seller3@gmail.com,A New Turkey,2022-12-12T15:07:58.869135500,"I love turkeys"
+4,seller3@gmail.com,customer1@gmail.com,A New Turkey,2022-12-12T15:08:38.945445900,"I love turkeys"
+5,customer1@gmail.com,seller3@gmail.com,A New Turkey,2022-12-12T15:08:59.552720100,"I hate your turkeys"
+6,seller3@gmail.com,customer1@gmail.com,A New Turkey,2022-12-12T15:10:31.339248300,"I do not agree with your assessment.
+There are many great things about turkeys you simply do not understand.
+"
+7,customer1@gmail.com,seller3@gmail.com,A New Turkey,2022-12-12T15:11:29.756345500,"I don't like your turkeys for this reason
+Your turkeys are too expensive"
+8,customer1@gmail.com,seller3@gmail.com,A New Turkey,2022-12-12T15:25:08.989460500,"Your turkeys are the worst"
+9,customer1@gmail.com,seller3@gmail.com,A New Turkey,2022-12-12T15:25:56.981259300,"I will never buy your terrible products"
+10,customer1@gmail.com,seller3@gmail.com,A New Turkey,2022-12-12T15:55:13.404372,"i changed my mind"
