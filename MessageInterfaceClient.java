@@ -90,7 +90,8 @@ public class MessageInterfaceClient {
      * @param scanner, id, client
      * @return ArrayList<HashMap<String>> messages of the personal message history</String>
      */
-    public ArrayList<HashMap<String, String>> missedMessages(Scanner scanner, String id, Translator client) throws Exception {
+    public ArrayList<HashMap<String, String>> missedMessages(Scanner scanner, 
+        String id, Translator client) throws Exception {
         Instant lastOnline = Instant.parse(client.get("id", id).get("lastOnline"));
         try {
             ArrayList<HashMap<String, String>> history = getPersonalHistory(id);
@@ -116,7 +117,6 @@ public class MessageInterfaceClient {
     public void exportConversations(String id, String[] otherIDs) throws Exception {
         String object = "MessageManager";
         String function = "messagesToCSV";
-        //TODO: change this to objects, I guess
         Object[] args = new Object[]{id, otherIDs};
         translator.query(new Query(object, function, args));
     }

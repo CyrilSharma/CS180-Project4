@@ -98,7 +98,9 @@ public class MessageManager {
             read.put(store, false);
             read2.put(sender, read);
             saveReadStatus(recepient, read2);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.getMessage();
+        }
     }
 
     public synchronized void updateReadStatusSelf(String self, String other, String store) {
@@ -114,20 +116,22 @@ public class MessageManager {
             read2.put(other, read);
             saveReadStatus(self, read2);
         } catch (Exception e) {
+            e.getMessage();
         }
     }
 
     /**
      * Save the read status of a users conversations.
      */
-    public synchronized void saveReadStatus(String sender, HashMap<String, HashMap<String, Boolean>> entries) throws IOException {
+    public synchronized void saveReadStatus(String sender, HashMap<String, 
+        HashMap<String, Boolean>> entries) throws IOException {
         File f = new File(historyDir + sender + "-convosRead.txt");
         HashSet<String> entered = new HashSet<String>();
         f.createNewFile();
         try (PrintWriter pw = new PrintWriter(f)) {
             for (String user: entries.keySet()) {
                 String line = "%s%s%s%s%s\n";
-                for (Map.Entry<String,Boolean> entry : entries.get(user).entrySet()) {
+                for (Map.Entry<String, Boolean> entry : entries.get(user).entrySet()) {
                     if (entered.contains(user + entry.getKey())) {
                         continue;
                     } else {
@@ -155,7 +159,8 @@ public class MessageManager {
             String messageString = "";
             while ((line = bfr.readLine()) != null) {
                 HashMap<String, String> message = new HashMap<String, String>();
-                if (!line.contains(tokenSep) && !line.contains(conversationSplit) && (history.isEmpty() || history.get(history.size() - 1).containsKey("messageBreak"))) {
+                if (!line.contains(tokenSep) && !line.contains(conversationSplit) && 
+                    (history.isEmpty() || history.get(history.size() - 1).containsKey("messageBreak"))) {
                     message.put("recipient", line);
                     recipient = line;
                     history.add(message);
@@ -194,14 +199,16 @@ public class MessageManager {
         ArrayList<HashMap<String, String>> personalHistory = getPersonalHistory(id);
         ArrayList<Message> messages = new ArrayList<>();
         for (HashMap<String, String> message : personalHistory) {
-            if (message.size() > 1 && (message.get("sender").equals(otherID) || message.get("recipient").equals(otherID)) && message.get("store").equals(store)) {
+            if (message.size() > 1 && (message.get("sender").equals(otherID) 
+                || message.get("recipient").equals(otherID)) && message.get("store").equals(store)) {
                 String messageContent = message.get("message");
                 String messageNum = message.get("messageNum");
                 String messageSender = message.get("sender");
                 String messageRecipient = message.get("recipient");
                 Instant messageTimeStamp = Instant.parse(message.get("timeStamp"));
                 String messageStore = message.get("store");
-                messages.add(new Message(messageContent, messageNum, messageSender, messageRecipient, messageTimeStamp, messageStore));
+                messages.add(new Message(messageContent, messageNum, messageSender, 
+                    messageRecipient, messageTimeStamp, messageStore));
             }
         }
         return messages;
@@ -329,8 +336,8 @@ public class MessageManager {
             // update read notifs on message.
             String sender = db.get("id", senderID).get("email");
             String recepient = db.get("id", recipientID).get("email");
-            HashMap<String, HashMap<String,Boolean>> read = getReadStatus(sender);
-            HashMap<String,Boolean> miniMap;
+            HashMap<String, HashMap<String, Boolean>> read = getReadStatus(sender);
+            HashMap<String, Boolean> miniMap;
             if (read.containsKey(recepient)) {
                 miniMap = read.get(recepient);
             } else {

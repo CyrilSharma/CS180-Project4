@@ -66,7 +66,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
      */
     public MessageGUI(JFrame board, String messageChoice, String email, String username, String selectedStore,
         PeopleView parent) {
-        board.setSize(700,550);
+        board.setSize(700, 550);
         messageBoard = board;
         this.conversationHistory = new ArrayList<>();
         this.emailSelected = email; //selected user
@@ -96,8 +96,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         messages.setModel(messageList);
         messages.setCellRenderer(new CellRenderer());
         updateMessages();
-        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(450,400));
+        scrollPane = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(450, 400));
         this.container = messageBoard.getContentPane();
         container.setLayout(new BorderLayout());
         recipientText = new JLabel();
@@ -110,7 +111,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         messageText.setText("Insert Message...");
         messageText.setWrapStyleWord(true);
         messageText.setMaximumSize(messageText.getPreferredSize());
-        messagePane = new JScrollPane(messageText, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messagePane = new JScrollPane(messageText, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         upperPanel = new JPanel();
         rightPanel = new JPanel();
         leftPanel = new JPanel();
@@ -242,8 +244,17 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         messageBoard.repaint();
     }
 
-    //Source: https://stackoverflow.com/questions/27077508/infinite-loop-in-swing
-    //autoupdate
+    /**
+     * Project 5 -> MessageGUI -> UpdateMessages
+     *
+     * Allows for auto updates
+     * One of my sources: https://stackoverflow.com/questions/27077508/infinite-loop-in-swing
+     *
+     * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+     *
+     * @version December 10, 2022
+     *
+     */
     private class UpdateMessages implements Runnable {
 
         private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -263,12 +274,12 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                         int index = 0;
                         for (Message msg: conversationHistory2) {
                             String message = msg.getMessage();
-                            String ID = msg.getMessageID();
+                            String id = msg.getMessageID();
                             String sender = msg.getSender();
                             String rec = msg.getRecipient();
                             Instant inst = msg.getTimeStamp();
                             String store = msg.getStore();
-                            Message newMsg = new Message(FilterInterfaceGUI.filterMsg(message), ID,
+                            Message newMsg = new Message(FilterInterfaceGUI.filterMsg(message), id,
                                     sender, rec, inst, store);
                             conversationHistory2.set(index, msg);
                             index++;
@@ -283,7 +294,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 }
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {
+                    e.getMessage();
+                }
             }
         }
 
@@ -343,8 +356,17 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         }
     }
 
-    //My source: https://docs.oracle.com/javase/8/docs/api/javax/swing/ListCellRenderer.html
-    //Timestamping for notis
+    /**
+     * Project 5 -> MessageGUI -> CellRenderer
+     *
+     * Allows for formatting
+     * My source: https://docs.oracle.com/javase/8/docs/api/javax/swing/ListCellRenderer.html
+     *
+     * @author Atharva Gupta, Cyril Sharma, Josh George, Nitin Murthy, Jacob Choi, L11
+     *
+     * @version December 10, 2022
+     *
+     */
     private class CellRenderer implements ListCellRenderer<String> {
 
         DefaultListCellRenderer renderer = new DefaultListCellRenderer();
@@ -352,7 +374,6 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
         @Override
         public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
                 boolean isSelected, boolean cellHasFocus) {
-            // TODO Auto-generated method stub
             JLabel label = (JLabel) renderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             int maxWidth = (int) (scrollPane.getWidth() * .7);
             int r;
@@ -380,7 +401,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             for (String valueString : valueArray) {
                 String[] anotherValueArray = valueString.split(" ");
                 for (String anotherValueString : anotherValueArray) {
-                    if (anotherValueString.matches("^((((https)|(http))://)|([w0-9])+\\.)[\\.a-zA-Z0-9]+([a-zA-Z0-9/-?=;,\"'+])+$")) {
+                    if (anotherValueString.matches(
+                        "^((((https)|(http))://)|([w0-9])+\\.)[\\.a-zA-Z0-9]+([a-zA-Z0-9/-?=;,\"'+])+$")) {
                         newValue += "<a href=\"" + anotherValueString + "\">" + anotherValueString + "</a> ";
                     } else {
                         newValue += anotherValueString + " ";
@@ -391,9 +413,13 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
             value = newValue.strip();
             value = value.replaceAll("\n", "<br>");
             if (label.getPreferredSize().getWidth() >= maxWidth - 10) {
-                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>", timeString, maxWidth, r, g, b, value);
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d" +
+                    " style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>"
+                    , timeString, maxWidth, r, g, b, value);
             } else {
-                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>", timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
+                value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">" +
+                    "%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>"
+                    , timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
             }
             label.setText(value);
             return label;
@@ -405,27 +431,27 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
             messageText.append("\n");
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             sendMessage.doClick();
             e.consume();
         }
     }
+
     //key typed (undefined)
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
+
     //key released (undefined)
     @Override
     public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
         
     }
+
     //mouseClick recognition
     @Override
     public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
         if (e.getButton() == 3) {
             messages.setSelectedIndex(messages.locationToIndex(e.getPoint()));
             showContextMenu(e);
@@ -475,7 +501,7 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 String originalMessage = (String) messages.getSelectedValue();
                 if (originalMessage == null) {
                     JOptionPane.showMessageDialog(null, "You must select a message!",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                        "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 String confirm = "Do you want to edit " + originalMessage + " ?";
@@ -484,7 +510,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 int ans = JOptionPane.showConfirmDialog(null, confirm, "Edit Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
                     JTextArea textArea = new JTextArea(originalMessage);
-                    JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    JScrollPane scrollPaneThing = new JScrollPane(textArea, 
+                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                     textArea.setLineWrap(true);
                     textArea.setWrapStyleWord(true);
                     textArea.addKeyListener(new KeyListener() {
@@ -507,15 +534,17 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                         }
                         
                     });
-                    int result = JOptionPane.showConfirmDialog(null, scrollPane, "Edit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+                    int result = JOptionPane.showConfirmDialog(null, scrollPaneThing, "Edit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
                     String editedMessage = textArea.getText();
                     if (result == JOptionPane.OK_OPTION && !editedMessage.equals("")) {
                         emailSelected = emailSelected.split(" ")[0];
                         try {
-                            mic.editMessage(mic.getID(), otherID, editedMessage, conversationHistory.get(index).getMessageID());
+                            mic.editMessage(mic.getID(), otherID, editedMessage, 
+                                conversationHistory.get(index).getMessageID());
                             JOptionPane.showMessageDialog(null, "Message Edited");
                         } catch (Exception e1) {
-                            JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), 
+                                "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -532,13 +561,15 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                 String deletedMessage = "";
                 deletedMessage = (String) messages.getSelectedValue();
                 if (deletedMessage == null) {
-                    JOptionPane.showMessageDialog(null, "You must select a message!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "You must select a message!", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 //int index = conversationHistory.indexOf(deletedMessage);
                 int index = messages.getSelectedIndex();
                 String confirm = "Do you want to delete " + deletedMessage + " ?";
-                int ans = JOptionPane.showConfirmDialog(null, confirm, "Delete Message", JOptionPane.INFORMATION_MESSAGE);
+                int ans = JOptionPane.showConfirmDialog(null, confirm, 
+                    "Delete Message", JOptionPane.INFORMATION_MESSAGE);
                 if (ans == JOptionPane.YES_OPTION) {
                     try {
                         emailSelected = emailSelected.split(" ")[0];
@@ -579,7 +610,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                             try {
                                 Desktop.getDesktop().browse(uri);
                             } catch (IOException e1) {
-                                JOptionPane.showMessageDialog(null, "Couldn't open link", "Error", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Couldn't open link", 
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                         
