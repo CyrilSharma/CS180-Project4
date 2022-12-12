@@ -1,1 +1,2 @@
-customer1@gmail.com|||||A New Turkey|||||true
+customer1@gmail.com||||||||||true
+customer1@gmail.com||||||||||true
