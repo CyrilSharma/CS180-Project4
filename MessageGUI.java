@@ -418,7 +418,8 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                     , timeString, maxWidth, r, g, b, value);
             } else {
                 value = String.format("<html><div style=\"color: rgb(211, 211, 211);\">" +
-                    "%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); padding: 5px; white-space: pre-line;\">%s</div></html>"
+                    "%s</div><div WIDTH=%d style=\"background-color: rgb(%d, %d, %d); " +
+                    "padding: 5px; white-space: pre-line;\">%s</div></html>"
                     , timeString, (int) label.getPreferredSize().getWidth() + 10, r, g, b, value);
             }
             label.setText(value);
@@ -534,7 +535,9 @@ public class MessageGUI extends MouseAdapter implements PropertyChangeListener, 
                         }
                         
                     });
-                    int result = JOptionPane.showConfirmDialog(null, scrollPaneThing, "Edit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+                    int result = JOptionPane.showConfirmDialog(null, 
+                        scrollPaneThing, "Edit", JOptionPane.OK_CANCEL_OPTION, 
+                        JOptionPane.QUESTION_MESSAGE, null);
                     String editedMessage = textArea.getText();
                     if (result == JOptionPane.OK_OPTION && !editedMessage.equals("")) {
                         emailSelected = emailSelected.split(" ")[0];
